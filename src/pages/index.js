@@ -1,7 +1,7 @@
 import Sidebar from "../components/Sidebar"
 
 import NavBar from "../components/Layout/NavBar"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { ChevronRightIcon, MusicNoteIcon } from "@heroicons/react/solid"
 
@@ -30,18 +30,18 @@ export default function Home() {
 	// 	}, 5000)
 	// }
 
-	console.log(open)
 	return (
 		<>
 			<div className="container  grid grid-cols-12 gap-1">
-				{/*  */}
 				<div className=" col-span-12 h-16 ">
 					<NavBar setOpen={handleSideBar} open={open} />
 				</div>
 				<div
-					className={`bg-red-500  md:h-[95vh]    ${
-						open ? " col-span-6 md:col-span-1 block h-[95vh]" : "hidden"
-					}  md:col-span-4 md:block transition-all duration-1600 ease-in `}
+					className={`bg-red-500  h-[95vh]  ${
+						open
+							? "col-span-6 md:col-span-3 "
+							: "hidden md:block  md:col-span-1 "
+					}    transition-all duration-1600 ease-in `}
 				>
 					<div
 						className={`  bg-dark-purple h-[95vh] p-2  pt-8 relative duration-300`}
@@ -57,12 +57,12 @@ export default function Home() {
 						>
 							<MusicNoteIcon
 								className={`cursor-pointer duration-500 col-span-2 w-7 text-white  ${
-									open && "rotate-[360deg] col-span-8"
+									!open && "rotate-[360deg] col-span-8"
 								} `}
 							/>
 							<h1
 								className={`text-white origin-left font-medium text-xl duration-200 col-span-6  ${
-									open && "hidden"
+									!open && "hidden"
 								} `}
 							>
 								Mariachon
@@ -91,8 +91,8 @@ export default function Home() {
 				</div>
 
 				<div
-					className={`bg-slate-600 col-span-12 md:col-span-8 h-[95vh] ${
-						open ? "col-span-6 md:col-span-11" : "col-span-12"
+					className={`bg-slate-600 col-span-12 md:col-span-9 h-[95vh] ${
+						open ? "col-span-6 md:col-span-9" : " md:col-span-11"
 					} transition-all duration-1600 ease-in `}
 				>
 					3
