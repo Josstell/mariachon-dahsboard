@@ -12,7 +12,9 @@ const LogoMariachon = (props) => (
 				/>
 			</clipPath>
 			<style>
-				{`.g{fill:none}.h{fill:${props.color1}}.g{stroke:${props.color1};stroke-dasharray:0 21.07;stroke-miterlimit:10;stroke-width:5.27px}`}
+				{
+					".g{fill:none}.g{stroke-dasharray:0 21.07;stroke-miterlimit:10;stroke-width:5.27px}"
+				}
 			</style>
 		</defs>
 		<g id="d">
@@ -24,7 +26,7 @@ const LogoMariachon = (props) => (
 				<path
 					d="m-.51 445.61-.13.76c-.07-.07-.07-.18-.07-.2-.06.13-.2.42-.01.73l.67.18s.07-.03.14-.05c.15-.04.38-.1.61-.3.06-.06.13-.13.19-.21l-.04-.63-.3-.32-.64-.07c-.09 0-.25 0-.42.1Z"
 					style={{
-						fill: `${props.color2}`,
+						fill: "#5c1e52",
 					}}
 				/>
 				<path

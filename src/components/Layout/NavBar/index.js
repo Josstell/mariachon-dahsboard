@@ -2,22 +2,26 @@ import React, { useState } from "react"
 
 import { MenuIcon, XIcon } from "@heroicons/react/solid"
 
-import { CogIcon } from "@heroicons/react/outline"
+import { useTheme } from "next-themes"
 
 import Image from "next/image"
+import LogoMariachon from "../../SVG/Icons/LogoMariachon"
 
 const Nav = ({ open, setOpen }) => {
-	let Links = [
-		{ name: "HOME", link: "/" },
-		{ name: "SERVICE", link: "/" },
-		{ name: "ABOUT", link: "/" },
-		{ name: "BLOG'S", link: "/" },
-		{ name: "CONTACT", link: "/" },
-	]
+	const { theme, setTheme } = useTheme()
+	const [darkMode, setDarkMode] = useState(false)
+
+	const handleDarkMode = (e) => {
+		e.preventDefault()
+		setDarkMode(!darkMode)
+		setTheme(theme === "dark" ? "light" : "dark")
+	}
+
+	console.log(theme)
 
 	return (
-		<div className="shadow-md w-full fixed top-0 left-0">
-			<div className="flex  items-center justify-between bg-white/5 py-0 md:px-10 px-7">
+		<div className="shadow-md  w-full fixed top-0 left-0">
+			<div className="flex bg-slate-100 dark:bg-slate-900 items-center justify-between md:px-10 px-7">
 				<div
 					onClick={() => setOpen()}
 					className="cursor-pointer md:hidden flex "
@@ -25,17 +29,23 @@ const Nav = ({ open, setOpen }) => {
 					{open ? <XIcon className="w-5" /> : <MenuIcon className="w-5" />}
 				</div>
 
-				<div className="w-32 h-16 p-0 m-0 relative cursor-pointer">
-					<Image
+				{/* <Image
 						src="/images/icons/mariachonBlack.svg"
 						layout="fill"
 						objectFit="cover"
 						alt=""
-					/>
-				</div>
+					/> */}
+				<LogoMariachon className="w-32 h-16 fill-slate-900 dark:fill-slate-50 relative cursor-pointer" />
 
 				<div className="mr-5">
-					<input type="checkbox" name="" id="checkbox" className="hidden" />
+					<input
+						type="checkbox"
+						name="darkMode"
+						id="checkbox"
+						className="hidden"
+						value={darkMode}
+						onClick={handleDarkMode}
+					/>
 					<label htmlFor="checkbox" className="cursor-pointer">
 						<div className="w-9 h-5 flex items-center bg-gray-300 rounded-full p2">
 							<div className="w-4 h-4 bg-white rounded-full shadow"></div>
