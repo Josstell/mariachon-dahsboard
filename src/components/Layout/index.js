@@ -1,4 +1,3 @@
-import NavBar from "./NavBar"
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 
@@ -9,6 +8,10 @@ import MariachiIcon from "../../components/SVG/Icons/MariachiIcon"
 import BookingIcon from "../../components/SVG/Icons/BookingIcon"
 import Link from "next/link"
 import Image from "next/image"
+
+import dynamic from "next/dynamic"
+
+const NavBar = dynamic(() => import("./NavBar"), { ssr: false })
 
 export default function Layout({ children }) {
 	const { data: session } = useSession()
