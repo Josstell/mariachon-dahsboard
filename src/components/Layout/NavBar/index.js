@@ -1,13 +1,17 @@
-import React, { useState } from "react"
-
-import { MenuIcon, XIcon } from "@heroicons/react/solid"
+import { useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { useSession, signOut } from "next-auth/react"
 
 import { useTheme } from "next-themes"
+import { MenuIcon, XIcon } from "@heroicons/react/solid"
 
-import Image from "next/image"
 import LogoMariachon from "../../SVG/Icons/LogoMariachon"
+import Search from "../../Search"
 
 const Nav = ({ open, setOpen }) => {
+	const { data: session } = useSession()
+
 	const { theme, setTheme } = useTheme()
 	const [darkMode, setDarkMode] = useState(false)
 
@@ -17,7 +21,7 @@ const Nav = ({ open, setOpen }) => {
 		setTheme(theme === "dark" ? "light" : "dark")
 	}
 
-	console.log(theme)
+	console.log("Session: ", session)
 
 	return (
 		<div className="shadow-md  w-full fixed top-0 left-0">
@@ -28,14 +32,11 @@ const Nav = ({ open, setOpen }) => {
 				>
 					{open ? <XIcon className="w-5" /> : <MenuIcon className="w-5" />}
 				</div>
+				<Link href="/" passHref>
+					<LogoMariachon className="w-32 h-16 fill-slate-900 dark:fill-slate-50 relative cursor-pointer" />
+				</Link>
 
-				{/* <Image
-						src="/images/icons/mariachonBlack.svg"
-						layout="fill"
-						objectFit="cover"
-						alt=""
-					/> */}
-				<LogoMariachon className="w-32 h-16 fill-slate-900 dark:fill-slate-50 relative cursor-pointer" />
+				<Search />
 
 				<div className="mr-5">
 					<input
@@ -57,17 +58,20 @@ const Nav = ({ open, setOpen }) => {
 					{/* <CogIcon className="w-10 mx-2" /> */}
 
 					<div className="flex flex-col justify-center items-center">
-						<div className="w-9 h-9 flex flex-col  relative">
+						<div
+							className="w-8 h-8 flex flex-col  relative cursor-pointer"
+							onClick={signOut}
+						>
 							<Image
 								className="rounded-full"
-								src="/images/user.jpeg"
+								src={session.user.image}
 								layout="fill"
 								objectFit="cover"
 								alt=""
 							/>
 						</div>
 
-						<p className="text-xs text-center text-slate-500">joss</p>
+						<p className="text-xs text-center pt-1 text-slate-500">Admin</p>
 					</div>
 				</div>
 
