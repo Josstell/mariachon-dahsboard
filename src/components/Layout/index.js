@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react"
-
-import { ChevronLeftIcon } from "@heroicons/react/solid"
-
-import { ChartSquareBarIcon, UserAddIcon } from "@heroicons/react/outline"
-import MariachiIcon from "../../components/SVG/Icons/MariachiIcon"
-import BookingIcon from "../../components/SVG/Icons/BookingIcon"
+import { useSession } from "next-auth/react"
 import Link from "next/link"
 import Image from "next/image"
 
-import dynamic from "next/dynamic"
+import { ChevronLeftIcon } from "@heroicons/react/solid"
+import { ChartSquareBarIcon, UserAddIcon } from "@heroicons/react/outline"
+import MariachiIcon from "../../components/SVG/Icons/MariachiIcon"
+import BookingIcon from "../../components/SVG/Icons/BookingIcon"
 
+import dynamic from "next/dynamic"
 const NavBar = dynamic(() => import("./NavBar"), { ssr: false })
 
 export default function Layout({ children }) {
