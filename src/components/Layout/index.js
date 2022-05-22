@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
 
-import { ChevronLeftIcon, MusicNoteIcon } from "@heroicons/react/solid"
+import { ChevronLeftIcon } from "@heroicons/react/solid"
 
 import { ChartSquareBarIcon, UserAddIcon } from "@heroicons/react/outline"
 import MariachiIcon from "../../components/SVG/Icons/MariachiIcon"
@@ -70,7 +69,7 @@ export default function Layout({ children }) {
 									!open && "hidden"
 								} `}
 							>
-								{session.user.name}
+								{session?.user?.name}
 							</h3>
 						</div>
 
