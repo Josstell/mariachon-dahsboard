@@ -51,6 +51,17 @@ export default {
 			title: "Imagen de perfil",
 		},
 		{
+			name: "uid",
+			title: "id de proveedor",
+			type: "string",
+		},
+		{
+			name: "provider",
+			title: "Proveedor de autentificación",
+			type: "string",
+		},
+
+		{
 			name: "publishedAt",
 			title: "Publicado el :",
 			type: "date",

@@ -1,11 +1,12 @@
 {
   "root": true,
-  "project": {
-    "name": "mariachon-v2"
-  },
   "api": {
-    "projectId": "cd3p2eu0",
+    "projectId": "38m2vd2i",
     "dataset": "production"
+  },
+  "project": {
+    "name": "mariachon-v2",
+    "basePath": "/studio"
   },
   "plugins": [
     "@sanity/base",

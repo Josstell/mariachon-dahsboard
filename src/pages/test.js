@@ -1,7 +1,6 @@
 import Image from "next/image"
 import React from "react"
 import BookingIcon from "../components/SVG/Icons/BookingIcon"
-import MariachiIcon from "../components/SVG/Icons/MariachiIcon"
 
 const test = () => {
 	return (
