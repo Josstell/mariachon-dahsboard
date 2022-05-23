@@ -16,11 +16,6 @@ export default function Home({ session, users, userAd }) {
 	const [userAdmin, setUserAdmin] = useState({})
 	const [isAdmin, setIsAdmin] = useState(false)
 	const [error, setError] = useState("")
-	const {
-		user: { email },
-	} = session
-	console.log("data users:", session)
-	console.log("data user:", users)
 
 	useEffect(() => {
 		if (!userAd) {
@@ -40,13 +35,13 @@ export default function Home({ session, users, userAd }) {
 			console.log("is admins", admin)
 			setIsAdmin(admin)
 		}
-	}, [session.user, setUserAdmin])
+	}, [session.user, setUserAdmin, userAd])
 
 	console.log("despues del guardar en sanity: ", userAdmin)
 	console.log("erore", error)
 
 	return (
-		<Layout>
+		<Layout users={users}>
 			{isAdmin ? (
 				<h3>Tienes derechos de usuario</h3>
 			) : (
@@ -60,7 +55,6 @@ export default function Home({ session, users, userAd }) {
 }
 
 export async function getServerSideProps(context) {
-	const preview = false
 	const session = await getSession(context)
 	const users = await client.fetch(query)
 

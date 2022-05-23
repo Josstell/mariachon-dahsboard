@@ -53,13 +53,15 @@ export default function Layout({ children }) {
 									!open && "rotate-[360deg] col-span-8"
 								}`}
 							>
-								<Image
-									className="rounded-full"
-									src={session.user.image}
-									layout="fill"
-									objectFit="cover"
-									alt=""
-								/>
+								{session?.user?.image && (
+									<Image
+										className="rounded-full"
+										src={session?.user?.image}
+										layout="fill"
+										objectFit="cover"
+										alt=""
+									/>
+								)}
 							</div>
 							<h3
 								className={`text-slate-900 ml-0 md:-ml-5  dark:text-slate-50 origin-left font-medium text-sm md:text-lg duration-200 col-span-6  ${
@@ -133,7 +135,7 @@ export default function Layout({ children }) {
 				</div>
 
 				<div
-					className={`flex justify-center items-center bg-slate-100 dark:bg-slate-900/80 col-span-12 md:col-span-9 h-[95vh] ${
+					className={` bg-slate-100 dark:bg-slate-900/80 col-span-12 md:col-span-9 h-[95vh] ${
 						open ? "col-span-6 md:col-span-9" : " md:col-span-11"
 					} transition-all duration-1600 ease-in `}
 				>
