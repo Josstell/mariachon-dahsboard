@@ -1,18 +1,22 @@
 import { getSession } from "next-auth/react"
 
 import Layout from "../components/Layout"
+import MariachiForbiden from "../components/SVG/Icons/MariachiForbiden"
 
 export default function Home({ session }) {
 	console.log("data user:", session)
+	const isAdmin = false
+
 	return (
 		<Layout>
-			<div>
-				<h1>Dashboard(Protected Route)</h1>
-				<p>
-					Welcome to dashboard: <b>hola</b>
-				</p>
-				<p>hola</p>
-			</div>
+			{isAdmin ? (
+				<h3>Tienes derechos de usuario</h3>
+			) : (
+				<>
+					<MariachiForbiden className="w-40 fill-slate-900 dark:fill-slate-50" />
+					<p className="">Usted no esta autorizado para usar esta app.</p>
+				</>
+			)}
 		</Layout>
 	)
 }

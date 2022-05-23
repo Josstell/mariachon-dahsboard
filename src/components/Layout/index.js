@@ -20,8 +20,6 @@ export default function Layout({ children }) {
 		setOpen(!open)
 	}
 
-	useEffect(() => {}, [open])
-
 	return (
 		<>
 			<div className="pl-2 grid grid-cols-12 ">

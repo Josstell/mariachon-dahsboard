@@ -2,10 +2,26 @@ import React from "react"
 
 import dynamic from "next/dynamic"
 import { getSession } from "next-auth/react"
+import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
 const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const usuarios = () => {
-	return <Layout>Usuarios</Layout>
+	const isAdmin = false
+
+	return (
+		<Layout>
+			{isAdmin ? (
+				<h3>Tienes derechos de usuario</h3>
+			) : (
+				<>
+					<MariachiForbiden className="w-80 fill-slate-900 dark:fill-slate-50" />
+					<p className="">
+						Usted no esta autorizado para usar esta app (users).
+					</p>
+				</>
+			)}
+		</Layout>
+	)
 }
 
 export default usuarios
