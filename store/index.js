@@ -1,8 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit"
-import counterReducer from "../features/counter/counterSlice"
+import { createWrapper } from "next-redux-wrapper"
 
-export default configureStore({
-	reducer: {
-		counter: counterReducer,
-	},
-})
+import usersReducer from "./features/users/userSlice"
+
+const makeStore = () =>
+	configureStore({
+		reducer: {
+			users: usersReducer,
+		},
+		devTools: true,
+	})
+
+export const wrapper = createWrapper(makeStore)

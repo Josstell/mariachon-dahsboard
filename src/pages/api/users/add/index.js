@@ -14,7 +14,7 @@ handler.post(async (req, res) => {
 				_type: "user",
 				name: req.body.name,
 				email: req.body.email,
-				categorySet: req.body.categorySet,
+				categorySet: req.body.categorySet || ["client"],
 				profileImage: {
 					url: req.body.image || "",
 					alt: req.body.username || "",

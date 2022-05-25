@@ -60,6 +60,11 @@ export default {
 			title: "Proveedor de autentificación",
 			type: "string",
 		},
+		{
+			name: "isAdmin",
+			title: "Es administrador",
+			type: "boolean",
+		},
 
 		{
 			name: "publishedAt",

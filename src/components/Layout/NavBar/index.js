@@ -1,16 +1,18 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { useSession, signOut } from "next-auth/react"
+import { signOut } from "next-auth/react"
 
 import { useTheme } from "next-themes"
 import { MenuIcon, XIcon } from "@heroicons/react/solid"
 
 import LogoMariachon from "../../SVG/Icons/LogoMariachon"
 import Search from "../../Search"
+import { useSelector } from "react-redux"
+import { selectUserAdmin } from "store/features/users/userSlice"
 
 const Nav = ({ open, setOpen }) => {
-	const { data: session } = useSession()
+	const userAdmin = useSelector(selectUserAdmin)
 
 	const { theme, setTheme } = useTheme()
 	const [darkMode, setDarkMode] = useState(false)
@@ -20,8 +22,6 @@ const Nav = ({ open, setOpen }) => {
 		setDarkMode(!darkMode)
 		setTheme(theme === "dark" ? "light" : "dark")
 	}
-
-	console.log("Session: ", session)
 
 	return (
 		<div className="shadow-md  w-full fixed top-0 left-0">
@@ -62,16 +62,28 @@ const Nav = ({ open, setOpen }) => {
 							className="w-8 h-8 flex flex-col  relative cursor-pointer"
 							onClick={signOut}
 						>
-							<Image
-								className="rounded-full"
-								src={session.user.image}
-								layout="fill"
-								objectFit="cover"
-								alt=""
-							/>
+							{userAdmin?.image ? (
+								<Image
+									className="rounded-full"
+									src={userAdmin?.image}
+									layout="fill"
+									objectFit="cover"
+									alt=""
+								/>
+							) : (
+								<Image
+									className="rounded-full"
+									src={userAdmin?.profileImage.url}
+									layout="fill"
+									objectFit="cover"
+									alt=""
+								/>
+							)}
 						</div>
 
-						<p className="text-xs text-center pt-1 text-slate-500">Admin</p>
+						<p className="text-xs text-center pt-1 text-slate-500">
+							{userAdmin?.isAdmin ? "admin" : "user"}
+						</p>
 					</div>
 				</div>
 

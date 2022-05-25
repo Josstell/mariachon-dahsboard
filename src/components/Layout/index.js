@@ -9,10 +9,13 @@ import MariachiIcon from "../../components/SVG/Icons/MariachiIcon"
 import BookingIcon from "../../components/SVG/Icons/BookingIcon"
 
 import dynamic from "next/dynamic"
+import { useSelector } from "react-redux"
+import { selectUserAdmin } from "store/features/users/userSlice"
+
 const NavBar = dynamic(() => import("./NavBar"), { ssr: false })
 
 export default function Layout({ children }) {
-	const { data: session } = useSession()
+	const userAdmin = useSelector(selectUserAdmin)
 
 	const [open, setOpen] = useState(false)
 
@@ -53,10 +56,18 @@ export default function Layout({ children }) {
 									!open && "rotate-[360deg] col-span-8"
 								}`}
 							>
-								{session?.user?.image && (
+								{userAdmin?.image ? (
 									<Image
 										className="rounded-full"
-										src={session?.user?.image}
+										src={userAdmin?.image}
+										layout="fill"
+										objectFit="cover"
+										alt=""
+									/>
+								) : (
+									<Image
+										className="rounded-full"
+										src={userAdmin?.profileImage.url}
 										layout="fill"
 										objectFit="cover"
 										alt=""
@@ -64,11 +75,14 @@ export default function Layout({ children }) {
 								)}
 							</div>
 							<h3
-								className={`text-slate-900 ml-0 md:-ml-5  dark:text-slate-50 origin-left font-medium text-sm md:text-lg duration-200 col-span-6  ${
+								className={`text-slate-900 ml-0 md:-ml-5 flex flex-col dark:text-slate-50 origin-left font-medium text-sm md:text-lg duration-200 col-span-6  ${
 									!open && "hidden"
 								} `}
 							>
-								{session?.user?.name}
+								<span>{userAdmin?.name}</span>
+								<span className="text-sm  text-slate-500">
+									{userAdmin?.isAdmin ? "admin" : "user"}
+								</span>
 							</h3>
 						</div>
 

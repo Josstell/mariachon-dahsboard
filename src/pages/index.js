@@ -7,42 +7,41 @@ import MariachiForbiden from "../components/SVG/Icons/MariachiForbiden"
 import client from "@lib/sanity"
 import { groq } from "next-sanity"
 import axios from "axios"
+import { wrapper } from "../../store"
+import {
+	fetchUsers,
+	selectError,
+	selectStatus,
+	selectUserAdmin,
+} from "../../store/features/users/userSlice"
+import { useSelector } from "react-redux"
 
 const query = groq`
 *[_type == "user"]
 `
 
-export default function Home({ session, users, userAd }) {
-	const [userAdmin, setUserAdmin] = useState({})
-	const [isAdmin, setIsAdmin] = useState(false)
-	const [error, setError] = useState("")
+export default function Home(props) {
+	const userAdmin = useSelector(selectUserAdmin)
+	const userStatus = useSelector(selectStatus)
+	const errorUs = useSelector(selectError)
 
 	useEffect(() => {
-		if (!userAd) {
+		if (!userAdmin.exist) {
 			const dataRegister = async () => {
 				try {
-					const userData = await axios.post("/api/users/add", session.user)
-					setUserAdmin(userData.data)
+					await axios.post("/api/users/add", userAdmin)
 				} catch (error) {
-					setError(error.response.data)
+					console.log(error)
 				}
 			}
+
 			dataRegister()
-		} else {
-			setUserAdmin(userAd)
-
-			const admin = userAd.categorySet.find((category) => category === "admin")
-			console.log("is admins", admin)
-			setIsAdmin(admin)
 		}
-	}, [session.user, setUserAdmin, userAd])
-
-	console.log("despues del guardar en sanity: ", userAdmin)
-	console.log("erore", error)
+	}, [userAdmin])
 
 	return (
-		<Layout users={users}>
-			{isAdmin ? (
+		<Layout>
+			{userAdmin.isAdmin ? (
 				<h3>Tienes derechos de usuario</h3>
 			) : (
 				<>
@@ -54,29 +53,32 @@ export default function Home({ session, users, userAd }) {
 	)
 }
 
-export async function getServerSideProps(context) {
-	const session = await getSession(context)
-	const users = await client.fetch(query)
+export const getServerSideProps = wrapper.getServerSideProps(
+	(store) => async (ctx) => {
+		const session = await getSession(ctx)
 
-	const userAdmin = users.find((user) => user.email === session.user.email)
+		//store.dispatch(setUsers(users))
+		await store.dispatch(fetchUsers(session))
 
-	console.log("get: ", userAdmin)
+		if (!session)
+			return {
+				redirect: {
+					destination: "/signin",
+					permanent: false,
+				},
+			}
 
-	if (!session)
 		return {
-			redirect: {
-				destination: "/signin",
-				permanent: false,
+			props: {
+				session: {
+					user: {
+						...session.user,
+						provider: "Google",
+						categorySet: ["client"],
+						expires: session.expires,
+					},
+				},
 			},
 		}
-	return {
-		props: {
-			session: {
-				user: { ...session.user, provider: "Google", categorySet: ["client"] },
-				expires: session.expires,
-			},
-			users: users,
-			userAd: userAdmin || null,
-		},
 	}
-}
+)

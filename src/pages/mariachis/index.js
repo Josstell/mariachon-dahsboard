@@ -2,14 +2,16 @@ import React from "react"
 import dynamic from "next/dynamic"
 import { getSession } from "next-auth/react"
 import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
+import { useSelector } from "react-redux"
+import { selectUserAdmin } from "store/features/users/userSlice"
 const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const mariachis = () => {
-	const isAdmin = false
+	const userAdmin = useSelector(selectUserAdmin)
 
 	return (
 		<Layout>
-			{isAdmin ? (
+			{userAdmin?.isAdmin ? (
 				<h3>Tienes derechos de usuario</h3>
 			) : (
 				<>
