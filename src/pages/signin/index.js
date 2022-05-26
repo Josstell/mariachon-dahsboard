@@ -24,7 +24,7 @@ function index({ providers }) {
 	)
 }
 
-export async function getServerSideProps(ctx) {
+export async function getServerSideProps() {
 	const providers = await getProviders()
 	return {
 		props: {

@@ -1,29 +1,21 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { getSession } from "next-auth/react"
 
 import Layout from "../components/Layout"
 import MariachiForbiden from "../components/SVG/Icons/MariachiForbiden"
 
-import client from "@lib/sanity"
-import { groq } from "next-sanity"
 import axios from "axios"
 import { wrapper } from "../../store"
 import {
 	fetchUsers,
-	selectError,
-	selectStatus,
 	selectUserAdmin,
 } from "../../store/features/users/userSlice"
 import { useSelector } from "react-redux"
 
-const query = groq`
-*[_type == "user"]
-`
-
-export default function Home(props) {
+export default function Home() {
 	const userAdmin = useSelector(selectUserAdmin)
-	const userStatus = useSelector(selectStatus)
-	const errorUs = useSelector(selectError)
+	// const userStatus = useSelector(selectStatus)
+	// const errorUs = useSelector(selectError)
 
 	useEffect(() => {
 		if (!userAdmin.exist) {
@@ -70,14 +62,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 		return {
 			props: {
-				session: {
-					user: {
-						...session.user,
-						provider: "Google",
-						categorySet: ["client"],
-						expires: session.expires,
-					},
-				},
+				// session: {
+				// 	user: {
+				// 		...session.user,
+				// 		provider: "Google",
+				// 		categorySet: ["client"],
+				// 		expires: session.expires,
+				// 	},
+				// },
 			},
 		}
 	}

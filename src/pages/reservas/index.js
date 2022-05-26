@@ -25,7 +25,7 @@ const reservas = () => {
 
 export default reservas
 
-export async function getServerSideProps({ req, res }) {
+export async function getServerSideProps({ req }) {
 	const session = await getSession({ req })
 	if (!session)
 		return {

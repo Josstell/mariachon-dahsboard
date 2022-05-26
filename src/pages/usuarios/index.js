@@ -9,8 +9,7 @@ import { useSelector } from "react-redux"
 import { selectUserAdmin } from "../../../store/features/users/userSlice"
 const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
-const usuarios = (props) => {
-	// eslint-disable-next-line react-hooks/rules-of-hooks
+const usuarios = () => {
 	const userAdmin = useSelector(selectUserAdmin)
 
 	return (
@@ -34,7 +33,7 @@ const usuarios = (props) => {
 export default usuarios
 
 export const getServerSideProps = wrapper.getServerSideProps(
-	(store) => async (ctx) => {
+	() => async (ctx) => {
 		const session = await getSession(ctx)
 		if (!session)
 			return {

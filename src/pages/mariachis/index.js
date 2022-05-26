@@ -25,7 +25,7 @@ const mariachis = () => {
 
 export default mariachis
 
-export async function getServerSideProps({ req, res }) {
+export async function getServerSideProps({ req }) {
 	const session = await getSession({ req })
 	if (!session)
 		return {
