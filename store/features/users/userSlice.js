@@ -65,7 +65,7 @@ const usersSlice = createSlice({
 	},
 
 	extraReducers: {
-		[fetchUsers.pending]: (state, action) => {
+		[fetchUsers.pending]: (state) => {
 			state.status = "loading"
 		},
 		[fetchUsers.fulfilled]: (state, action) => {
@@ -73,13 +73,32 @@ const usersSlice = createSlice({
 			state.users = action.payload.users
 			state.admin = action.payload.admin
 		},
-		[fetchUsers.rejected]: (state, action) => {
+		[fetchUsers.rejected]: (state) => {
 			state.status = "failed"
 		},
 		[HYDRATE]: (state, action) => {
+			console.log("hydrate users: ", action.payload)
+			console.log("aqui", state)
+
 			if (
 				action.payload.users.users.length === 0 ||
 				action.payload.users.admin === {}
+			) {
+				return state
+			}
+
+			if (
+				action.payload.bookings.bookings.length === 0 &&
+				action.payload.mariachis.mariachis.length === 0 &&
+				action.payload.users.users.length === 0
+			) {
+				return state
+			}
+
+			if (
+				action.payload.bookings.bookings.length === 0 &&
+				action.payload.mariachis.mariachis.length === 1 &&
+				action.payload.users.users.length === 0
 			) {
 				return state
 			}

@@ -13,19 +13,25 @@ export default {
 			to: { type: "user" },
 		},
 		{
-			name: "region",
-			type: "string",
-			title: "Estado ",
-		},
-		{
-			name: "address",
-			title: "Dirección del evento",
+			name: "userName",
+			title: "Nombre del cliente",
 			type: "string",
 		},
 		{
-			name: "location",
-			title: "Ubicación del evento",
+			name: "itemsPrice",
+			title: "Precio del servicio",
+			type: "number",
+		},
+		{
+			name: "itemsName",
+			title: "Servicio",
 			type: "string",
+		},
+
+		{
+			name: "totalPrice",
+			title: "totalPrice",
+			type: "number",
 		},
 		{
 			name: "dateAndTime",
@@ -38,52 +44,54 @@ export default {
 				calendarTodayLabel: "Today",
 			},
 		},
+		// {
+		// 	name: "address",
+		// 	title: "Dirección del evento",
+		// 	type: "string",
+		// },
+		// {
+		// 	name: "location",
+		// 	title: "Ubicación del evento",
+		// 	type: "string",
+		// },
+		// {
+		// 	name: "region",
+		// 	type: "string",
+		// 	title: "Estado ",
+		// },
 		{
-			name: "mariachi",
-			title: "Mariachi",
-			type: "reference",
-			to: { type: "mariachi" },
-			options: {
-				disableNew: true,
-			},
+			title: "Direción del evento",
+			name: "shippingAddress",
+			type: "shippingAddress",
 		},
 		{
-			name: "service",
-			title: "Servicio",
-			type: "array",
-			of: [{ type: "string" }],
-			options: {
-				list: [
-					{ title: "Serenata", value: "serenata" },
-					{ title: "Hora", value: "hora" },
-				],
-			},
-		},
-		{
-			name: "price",
-			title: "Precio",
-			type: "string",
-		},
-		{
-			name: "deposit",
-			title: "Deposito",
-			type: "string",
+			title: "paymentResult",
+			name: "paymentResult",
+			type: "paymentResult",
 		},
 
+		// {
+		// 	name: "shippingPrice",
+		// 	title: "shippingPrice",
+		// 	type: "number",
+		// },
+		// {
+		// 	name: "taxPrice",
+		// 	title: "taxPrice",
+		// 	type: "number",
+		// },
 		{
-			name: "payment",
-			title: "Tipo de pago",
+			title: "Order Items",
+			name: "orderItems",
 			type: "array",
-			of: [{ type: "string" }],
-			options: {
-				list: [
-					{ title: "Efectivo", value: "cash" },
-					{ title: "Deposito", value: "deposit" },
-					{ title: "Targeta", value: "target" },
-					{ title: "Bitcoin", value: "btc" },
-				],
-			},
+			of: [
+				{
+					title: "Order Item",
+					type: "orderItem",
+				},
+			],
 		},
+
 		{
 			name: "message",
 			title: "Mensaje",
@@ -94,11 +102,6 @@ export default {
 			name: "playlist",
 			type: "array",
 			of: [{ type: "string" }],
-		},
-		{
-			name: "qty",
-			title: "Cantidad",
-			type: "number",
 		},
 
 		{
@@ -125,6 +128,22 @@ export default {
 				],
 			},
 		},
+		{
+			title: "Pagago",
+			name: "isPaid",
+			type: "boolean",
+		},
+		{
+			title: "Fecha de pago",
+			name: "paidAt",
+			type: "datetime",
+		},
+		{
+			title: "Trabajo realizado",
+			name: "isDelivered",
+			type: "boolean",
+		},
+
 		{
 			name: "publishedAt",
 			title: "Publicado en la fecha de :",

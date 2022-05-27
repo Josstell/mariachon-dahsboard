@@ -3,10 +3,10 @@ import React from "react"
 import dynamic from "next/dynamic"
 import { getSession } from "next-auth/react"
 import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
-import TableUser from "../../components/TableUsers"
 import { wrapper } from "../../../store"
 import { useSelector } from "react-redux"
 import { selectUserAdmin } from "../../../store/features/users/userSlice"
+import TableUser from "src/components/Tables/TableUsers"
 const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const usuarios = () => {
