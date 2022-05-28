@@ -8,7 +8,7 @@ import { selectAllUsers } from "store/features/users/userSlice"
 const TableUser = () => {
 	const usersData = useSelector(selectAllUsers)
 	return (
-		<div className="w-[80vw] h-[90vh]">
+		<div className="w-[90vw] h-[90vh]">
 			<div
 				className="relative  flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded sm:mt-0 sm:mb-auto
 					 bg-white  dark:bg-slate-700 dark:text-white"
@@ -85,7 +85,7 @@ const TableUser = () => {
 						</thead>
 						<tbody>
 							{usersData.map((user) => (
-								<tr key={user.id}>
+								<tr key={user._id}>
 									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
 										<span
 											className="ml-3 font-bold 
@@ -136,7 +136,7 @@ const TableUser = () => {
 														alt=""
 													/>
 												) : (
-													<GetLogoWithName text={user.name} />
+													<GetLogoWithName text={user.name} numberLetter={0} />
 												)}
 											</div>
 											{/* {user.images.map((img) => (

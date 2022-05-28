@@ -1,10 +1,10 @@
 export default {
-	title: "paymentResult",
+	title: "Tipo de Pago y estado",
 	name: "paymentResult",
 	type: "object",
 	fields: [
 		{
-			title: "id",
+			title: "Numero de pago",
 			name: "id",
 			type: "string",
 		},
@@ -28,7 +28,7 @@ export default {
 			type: "string",
 		},
 		{
-			title: "email_address",
+			title: "Correo electrónico",
 			name: "email_address",
 			type: "string",
 		},

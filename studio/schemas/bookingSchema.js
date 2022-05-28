@@ -12,27 +12,13 @@ export default {
 			type: "reference",
 			to: { type: "user" },
 		},
+
 		{
 			name: "userName",
 			title: "Nombre del cliente",
 			type: "string",
 		},
-		{
-			name: "itemsPrice",
-			title: "Precio del servicio",
-			type: "number",
-		},
-		{
-			name: "itemsName",
-			title: "Servicio",
-			type: "string",
-		},
 
-		{
-			name: "totalPrice",
-			title: "totalPrice",
-			type: "number",
-		},
 		{
 			name: "dateAndTime",
 			title: "Fecha y Hora del evento",
@@ -60,27 +46,6 @@ export default {
 		// 	title: "Estado ",
 		// },
 		{
-			title: "Direción del evento",
-			name: "shippingAddress",
-			type: "shippingAddress",
-		},
-		{
-			title: "paymentResult",
-			name: "paymentResult",
-			type: "paymentResult",
-		},
-
-		// {
-		// 	name: "shippingPrice",
-		// 	title: "shippingPrice",
-		// 	type: "number",
-		// },
-		// {
-		// 	name: "taxPrice",
-		// 	title: "taxPrice",
-		// 	type: "number",
-		// },
-		{
 			title: "Order Items",
 			name: "orderItems",
 			type: "array",
@@ -90,6 +55,31 @@ export default {
 					type: "orderItem",
 				},
 			],
+		},
+		{
+			title: "Direción del evento",
+			name: "shippingAddress",
+			type: "shippingAddress",
+		},
+		{
+			title: "Datos de pago",
+			name: "paymentResult",
+			type: "paymentResult",
+		},
+		{
+			name: "service",
+			title: "Servicio ",
+			type: "string",
+		},
+		{
+			name: "qty",
+			title: "Cantidad ",
+			type: "number",
+		},
+		{
+			name: "price",
+			title: "Precio total",
+			type: "number",
 		},
 
 		{
@@ -105,16 +95,7 @@ export default {
 		},
 
 		{
-			name: "slug",
-			title: "Slug",
-			type: "slug",
-			options: {
-				source: "dateAndTime",
-				maxLength: 96,
-			},
-		},
-		{
-			name: "state",
+			name: "status",
 			title: "Estado de la reservación",
 			type: "array",
 			of: [{ type: "string" }],
@@ -129,7 +110,7 @@ export default {
 			},
 		},
 		{
-			title: "Pagago",
+			title: "Pagado",
 			name: "isPaid",
 			type: "boolean",
 		},
@@ -140,7 +121,7 @@ export default {
 		},
 		{
 			title: "Trabajo realizado",
-			name: "isDelivered",
+			name: "isMade",
 			type: "boolean",
 		},
 

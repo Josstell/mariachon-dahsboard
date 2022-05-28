@@ -74,14 +74,6 @@ const mariachisSlice = createSlice({
 			state.status = "failed"
 		},
 		[HYDRATE]: (state, action) => {
-			console.log("hydrate mariachis: ", action.payload)
-
-			if (action.payload.mariachis.mariachis.length === 0) {
-				console.log("1", state)
-
-				return state
-			}
-
 			if (
 				action.payload.bookings.bookings.length === 0 &&
 				action.payload.mariachis.mariachis.length === 1 &&
@@ -90,12 +82,8 @@ const mariachisSlice = createSlice({
 				return { ...state, mariachis: action.payload.mariachis.mariachis }
 			}
 
-			if (
-				action.payload.bookings.bookings.length === 0 &&
-				action.payload.mariachis.mariachis.length === 0 &&
-				action.payload.users.users.length === 0
-			) {
-				return { ...state, mariachis: action.payload.mariachis.mariachis }
+			if (action.payload.mariachis.mariachis.length === 0) {
+				return state
 			}
 
 			state.mariachis = action.payload.mariachis.mariachis

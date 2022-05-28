@@ -33,7 +33,9 @@ const Nav = ({ open, setOpen }) => {
 					{open ? <XIcon className="w-5" /> : <MenuIcon className="w-5" />}
 				</div>
 				<Link href="/" passHref>
-					<LogoMariachon className="w-32 h-16 fill-slate-900 dark:fill-slate-50 relative cursor-pointer" />
+					<a>
+						<LogoMariachon className="w-32 h-16 fill-slate-900 dark:fill-slate-50 relative cursor-pointer" />
+					</a>
 				</Link>
 
 				<Search />
@@ -70,10 +72,18 @@ const Nav = ({ open, setOpen }) => {
 									objectFit="cover"
 									alt=""
 								/>
+							) : userAdmin?.profileImage?.url ? (
+								<Image
+									className="rounded-full"
+									src={userAdmin?.profileImage?.url}
+									layout="fill"
+									objectFit="cover"
+									alt=""
+								/>
 							) : (
 								<Image
 									className="rounded-full"
-									src={userAdmin?.profileImage.url}
+									src="/images/icons/logoMariachon.png"
 									layout="fill"
 									objectFit="cover"
 									alt=""

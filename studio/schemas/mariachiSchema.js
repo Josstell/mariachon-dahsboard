@@ -51,6 +51,7 @@ export default {
 			fields: [
 				{ name: "serenata", type: "string", title: "Precio por serenata" },
 				{ name: "hora", type: "string", title: "Precio por hora" },
+				{ name: "contract", type: "string", title: "Contrato" },
 			],
 		},
 		{

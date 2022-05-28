@@ -4,12 +4,13 @@ import React from "react"
 import { useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
 import useTruncatedIdOrTel from "src/hook/useTruncatedId"
+import { selectAllBookings } from "store/features/bookings/bookingSlice"
 
 const TableBookings = () => {
 	const BookingsData = useSelector(selectAllBookings)
 	console.log("Bookings: ", BookingsData)
 	return (
-		<div className="w-[80vw] h-[90vh]">
+		<div className="w-[90vw] h-[90vh]">
 			<div
 				className="relative  flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded sm:mt-0 sm:mb-auto
 					 bg-white  dark:bg-slate-700 dark:text-white"
@@ -40,7 +41,14 @@ const TableBookings = () => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Nombre
+									Mariachi
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Servicio y precio
 								</th>
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
@@ -54,21 +62,14 @@ const TableBookings = () => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Tel
+									Lugar
 								</th>
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Estado
-								</th>
-								<th
-									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
-											bg-slate-50 text-slate-500 border-slate-100
-											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
-								>
-									Vinculos
+									Estado de reserva
 								</th>
 								{/* <th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
@@ -85,74 +86,47 @@ const TableBookings = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{mariachisData.map((mariachi) => (
-								<tr key={mariachi.id}>
-									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
+							{BookingsData?.map((booking) => (
+								<tr key={booking._id}>
+									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left ">
 										<span
-											className="ml-3 font-bold 
+											className=" font-bold 
 													text-slate-600
 													dark:text-white"
 										>
-											{/* {useTruncatedIdOrTel(mariachi._id)} */}
-											{mariachi?.logo ? (
-												<div className="w-8 h-8 flex flex-col  relative cursor-pointer">
-													<Image
-														className="rounded-full"
-														src={mariachi.logo}
-														layout="fill"
-														objectFit="cover"
-														alt=""
-													/>
-												</div>
-											) : (
-												<GetLogoWithName text={mariachi.name} />
-											)}
+											{useTruncatedIdOrTel(booking?._id)}
 										</span>
 									</th>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{mariachi.name}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{mariachi.coordinator.name}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{mariachi?.tel
-											? useTruncatedIdOrTel(mariachi.tel)
-											: "no disponible"}{" "}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{mariachi.region}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										<div className="flex ">
-											{/* {mariachi?.image ? (
-											<div className="w-10 h-10 rounded-full border-2 border-slate-50 shadow relative">
-													<Image
-														className="rounded-full"
-														src={mariachi?.image}
-														layout="fill"
-														objectFit="cover"
-														alt=""
-													/>
-												) : (
-													<Image
-														className="rounded-full"
-														src={mariachi?.profileImage.url}
-														layout="fill"
-														objectFit="cover"
-														alt=""
-													/>
+										{booking?.orderItems?.mariachi?.logo ? (
+											<div className="w-8 h-8 flex flex-col  relative cursor-pointer">
+												<Image
+													className="rounded-full"
+													src={booking?.logo}
+													layout="fill"
+													objectFit="cover"
+													alt=""
+												/>
 											</div>
-												)} */}
-											{/* {mariachi.images.map((img) => (
-												<img
-													key={img.uid}
-													src={img.url}
-													alt="..."
-													className="w-10 h-10 rounded-full border-2 border-slate-50 shadow"
-												></img>
-											))} */}
-										</div>
+										) : booking?.orderItems?.mariachi?.name ? (
+											<GetLogoWithName
+												text={booking?.orderItems?.mariachi?.name}
+												numberLetter={9}
+											/>
+										) : null}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{booking?.orderItems?.service} en{" "}
+										{booking?.orderItems?.price}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{booking?.orderItems?.mariachi?.coordinator?.name}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{booking?.shippingAddress.city}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{booking?.status}
 									</td>
 									{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex items-center">

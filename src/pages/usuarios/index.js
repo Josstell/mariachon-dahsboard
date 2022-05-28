@@ -1,21 +1,40 @@
-import React from "react"
+import React, { useEffect } from "react"
 
-import dynamic from "next/dynamic"
 import { getSession } from "next-auth/react"
 import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
 import { wrapper } from "../../../store"
-import { useSelector } from "react-redux"
-import { selectUserAdmin } from "../../../store/features/users/userSlice"
+import { useDispatch, useSelector } from "react-redux"
+import {
+	fetchUsers,
+	selectUserAdmin,
+} from "../../../store/features/users/userSlice"
 import TableUser from "src/components/Tables/TableUsers"
-const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
+import Layout from "src/components/Layout"
+import SpinnerGral from "src/components/Spinners/SpinnerGral"
+//const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
-const usuarios = () => {
+const usuarios = ({ session }) => {
 	const userAdmin = useSelector(selectUserAdmin)
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		if (!userAdmin.exist) {
+			const reloadUsers = async () => {
+				await dispatch(fetchUsers(session))
+			}
+			reloadUsers()
+			//	router.push("/")
+		}
+	}, [userAdmin, dispatch, session])
+
+	if (!userAdmin.exist) {
+		return <SpinnerGral />
+	}
 
 	return (
 		<Layout>
 			{userAdmin.isAdmin ? (
-				<div className="flex flex-col justify-center items-center">
+				<div className="flex  justify-center items-center">
 					<TableUser />
 				</div>
 			) : (
@@ -35,15 +54,28 @@ export default usuarios
 export const getServerSideProps = wrapper.getServerSideProps(
 	() => async (ctx) => {
 		const session = await getSession(ctx)
-		if (!session)
+
+		if (!session) {
 			return {
 				redirect: {
 					destination: "/signin",
 					permanent: false,
 				},
 			}
+		}
+
+		// if (!(existAdmin.users.admin.name !== undefined)) {
+		// 	console.log("Existe dentro: ", existAdmin.users.admin.name)
+		// 	return {
+		// 		redirect: {
+		// 			destination: "/",
+		// 			permanent: false,
+		// 		},
+		// 	}
+		// }
+
 		return {
-			props: {},
+			props: { session: session },
 		}
 	}
 )

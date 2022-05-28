@@ -10,7 +10,7 @@ const TableMariachis = () => {
 	const mariachisData = useSelector(selectAllMariachis)
 	console.log("mariachis: ", mariachisData)
 	return (
-		<div className="w-[80vw] h-[90vh]">
+		<div className="w-[90vw] h-[90vh]">
 			<div
 				className="relative  flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded sm:mt-0 sm:mb-auto
 					 bg-white  dark:bg-slate-700 dark:text-white"
@@ -87,7 +87,7 @@ const TableMariachis = () => {
 						</thead>
 						<tbody>
 							{mariachisData.map((mariachi) => (
-								<tr key={mariachi.id}>
+								<tr key={mariachi._id}>
 									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
 										<span
 											className="ml-3 font-bold 
@@ -106,7 +106,10 @@ const TableMariachis = () => {
 													/>
 												</div>
 											) : (
-												<GetLogoWithName text={mariachi.name} />
+												<GetLogoWithName
+													text={mariachi.name}
+													numberLetter={10}
+												/>
 											)}
 										</span>
 									</th>

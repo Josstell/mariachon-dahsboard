@@ -1,7 +1,10 @@
 import React, { useMemo } from "react"
 
-const GetLogoWithName = ({ text }) => {
-	const logoLetra = useMemo(() => `${text.charAt(0)}`, [text])
+const GetLogoWithName = ({ text, numberLetter }) => {
+	const logoLetra = useMemo(
+		() => `${text.charAt(numberLetter)}`,
+		[text, numberLetter]
+	)
 
 	return (
 		<div>

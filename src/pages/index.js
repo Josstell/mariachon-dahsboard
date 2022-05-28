@@ -47,9 +47,15 @@ export default function Home() {
 
 export const getServerSideProps = wrapper.getServerSideProps(
 	(store) => async (ctx) => {
+		// if(store.getState(selectUserAdmin.users.admin ==={}){
+		// 			await store.dispatch(fetchUsers(session))
+
+		// }
+
 		const session = await getSession(ctx)
 
 		//store.dispatch(setUsers(users))
+		console.log("is Admin", store.getState(selectUserAdmin))
 		await store.dispatch(fetchUsers(session))
 
 		if (!session)
@@ -61,16 +67,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			}
 
 		return {
-			props: {
-				// session: {
-				// 	user: {
-				// 		...session.user,
-				// 		provider: "Google",
-				// 		categorySet: ["client"],
-				// 		expires: session.expires,
-				// 	},
-				// },
-			},
+			props: {},
 		}
 	}
 )

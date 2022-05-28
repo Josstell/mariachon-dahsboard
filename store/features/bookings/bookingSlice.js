@@ -10,8 +10,46 @@ const initialState = {
 	error: null,
 }
 const query = groq`
-*[_type == "booking"]
-
+*[_type == "booking"]{
+  _id,
+  client->{
+  _id,
+  name,
+  tel,
+ email,
+  slug{
+  current
+}
+},
+dateAndTime,
+orderItems[0]{
+  desposit,
+  price,
+  service,
+  fee,
+  mariachi->{
+  _id,
+  name,
+  logo,
+  coordinator->{
+  _id,
+  name,
+  tel,
+ email,
+}
+}
+},
+shippingAddress,
+paymentResult,
+qty,
+price,
+message,
+playlist,
+status,
+isPaid,
+paidAt,
+isMade
+}
 `
 export const fetchBookings = createAsyncThunk(
 	"bookings/fetchBookings",
@@ -49,25 +87,15 @@ const bookingsSlice = createSlice({
 			state.status = "failed"
 		},
 		[HYDRATE]: (state, action) => {
-			console.log("hydrate bookings: ", action.payload)
-			if (action.payload.bookings.bookings.length === 0) {
-				return state
-			}
-
 			if (
-				action.payload.bookings.bookings.length === 0 &&
+				action.payload.bookings.bookings.length === 1 &&
 				action.payload.mariachis.mariachis.length === 0 &&
 				action.payload.users.users.length === 0
 			) {
 				return { ...state, bookings: action.payload.bookings.bookings }
 			}
-
-			if (
-				action.payload.bookings.bookings.length === 0 &&
-				action.payload.mariachis.mariachis.length === 1 &&
-				action.payload.users.users.length === 0
-			) {
-				return { ...state, bookings: action.payload.bookings.bookings }
+			if (action.payload.bookings.bookings.length === 0) {
+				return state
 			}
 
 			state.bookings = action.payload.bookings.bookings

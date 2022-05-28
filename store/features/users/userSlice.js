@@ -77,28 +77,20 @@ const usersSlice = createSlice({
 			state.status = "failed"
 		},
 		[HYDRATE]: (state, action) => {
-			console.log("hydrate users: ", action.payload)
-			console.log("aqui", state)
+			if (
+				action.payload.bookings.bookings.length === 0 &&
+				action.payload.mariachis.mariachis.length === 0 &&
+				action.payload.users.users.length === 1
+			) {
+				return {
+					...state,
+					users: action.payload.users.users,
+				}
+			}
 
 			if (
 				action.payload.users.users.length === 0 ||
 				action.payload.users.admin === {}
-			) {
-				return state
-			}
-
-			if (
-				action.payload.bookings.bookings.length === 0 &&
-				action.payload.mariachis.mariachis.length === 0 &&
-				action.payload.users.users.length === 0
-			) {
-				return state
-			}
-
-			if (
-				action.payload.bookings.bookings.length === 0 &&
-				action.payload.mariachis.mariachis.length === 1 &&
-				action.payload.users.users.length === 0
 			) {
 				return state
 			}

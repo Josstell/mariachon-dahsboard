@@ -63,7 +63,7 @@ export default function Layout({ children }) {
 										objectFit="cover"
 										alt=""
 									/>
-								) : (
+								) : userAdmin?.profileImage?.url ? (
 									<Image
 										className="rounded-full"
 										src={userAdmin?.profileImage.url}
@@ -71,7 +71,16 @@ export default function Layout({ children }) {
 										objectFit="cover"
 										alt=""
 									/>
+								) : (
+									<Image
+										className="rounded-full"
+										src="/images/icons/logoMariachon.png"
+										layout="fill"
+										objectFit="cover"
+										alt=""
+									/>
 								)}
+								}
 							</div>
 							<h3
 								className={`text-slate-900 ml-0 md:-ml-5 flex flex-col dark:text-slate-50 origin-left font-medium text-sm md:text-lg duration-200 col-span-6  ${

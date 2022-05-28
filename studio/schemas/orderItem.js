@@ -1,5 +1,5 @@
 export default {
-	title: "Order Item",
+	title: "Mariachi, servicio y costo",
 	name: "orderItem",
 	type: "object",
 	fields: [
@@ -21,27 +21,33 @@ export default {
 				list: [
 					{ title: "Serenata", value: "serenata" },
 					{ title: "Hora", value: "hora" },
+					{ title: "Contrato", value: "contract" },
 				],
 			},
 		},
 		{
+			name: "qty",
+			title: "Cantidad ",
+			type: "number",
+		},
+		{
 			name: "price",
 			title: "Precio",
-			type: "string",
+			type: "number",
 		},
 		{
 			name: "deposit",
 			title: "Deposito",
-			type: "string",
+			type: "number",
 		},
 		{
 			name: "fee",
 			title: "Comisión",
-			type: "string",
+			type: "number",
 		},
 		{
-			name: "qty",
-			title: "Cantidad ",
+			name: "totalPrice",
+			title: "Precio total",
 			type: "number",
 		},
 	],
