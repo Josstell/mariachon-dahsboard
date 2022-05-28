@@ -46,7 +46,7 @@ export default {
 		// 	title: "Estado ",
 		// },
 		{
-			title: "Order Items",
+			title: "Mariachi y servicio",
 			name: "orderItems",
 			type: "array",
 			of: [

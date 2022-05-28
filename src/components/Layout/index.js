@@ -24,18 +24,18 @@ export default function Layout({ children }) {
 
 	return (
 		<>
-			<div className="pl-2 grid grid-cols-12 ">
-				<div className="bg-transparent col-span-12 h-16 ">
+			<div className=" grid grid-cols-12 ">
+				<div className="bg-transparent col-span-12 h-16 z-10">
 					<NavBar setOpen={handleSideBar} open={open} />
 				</div>
 				<div
-					className={`bg-slate-200 dark:bg-slate-900  h-[95vh]  ${
+					className={`pl-1 bg-slate-200 dark:bg-slate-900  h-[95vh]  ${
 						open
 							? "col-span-6 md:col-span-3 "
 							: "hidden md:block  md:col-span-1 "
 					}    transition-all duration-1600 ease-in `}
 				>
-					<div className={`  h-[95vh] p-2  pt-8 relative duration-300`}>
+					<div className={`  h-[95vh] p-2  pt-8 relative duration-300 z-10`}>
 						<ChevronLeftIcon
 							className={`w-7 bg-slate-100 dark:bg-slate-900 absolute cursor-pointer -right-3 top-9  border-slate-800
            border-2 rounded-full  ${!open && "rotate-180"}`}

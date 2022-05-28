@@ -10,7 +10,7 @@ const TableMariachis = () => {
 	const mariachisData = useSelector(selectAllMariachis)
 	console.log("mariachis: ", mariachisData)
 	return (
-		<div className="w-[90vw] h-[90vh]">
+		<div className="px-2 md:px1 w-full h-full">
 			<div
 				className="relative  flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded sm:mt-0 sm:mb-auto
 					 bg-white  dark:bg-slate-700 dark:text-white"
@@ -108,7 +108,7 @@ const TableMariachis = () => {
 											) : (
 												<GetLogoWithName
 													text={mariachi.name}
-													numberLetter={10}
+													numberLetter={9}
 												/>
 											)}
 										</span>

@@ -28,11 +28,11 @@ export default {
 			of: [{ type: "string" }],
 			options: {
 				list: [
-					{ title: "Cliente", value: "client" },
-					{ title: "Coordinador", value: "coordinaor" },
-					{ title: "Mariachi", value: "mariachi" },
-					{ title: "Admin", value: "admin" },
-					{ title: "Vendedor", value: "seller" },
+					{ title: "Cliente", value: "Client" },
+					{ title: "Coordinador", value: "Coordinador" },
+					{ title: "Mariachi", value: "Mariachi" },
+					{ title: "Admin", value: "Admin" },
+					{ title: "Vendedor", value: "Vendedor" },
 				],
 			},
 		},

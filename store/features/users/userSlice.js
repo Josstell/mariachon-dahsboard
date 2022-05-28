@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { HYDRATE } from "next-redux-wrapper"
 import client from "@lib/sanity"
 import { groq } from "next-sanity"
+import axios from "axios"
 
 const initialState = {
 	users: [],
@@ -13,6 +14,8 @@ const initialState = {
 const query = groq`
 *[_type == "user"]
 `
+
+// get all users
 export const fetchUsers = createAsyncThunk(
 	"users/fetchUsers",
 	async (session) => {
@@ -24,14 +27,14 @@ export const fetchUsers = createAsyncThunk(
 
 			if (!(userAdmin === undefined)) {
 				const admin = userAdmin.categorySet.find(
-					(category) => category === "admin"
+					(category) => category === "Admin"
 				)
 				return {
 					users: users,
 					admin: {
 						...userAdmin,
 						exist: true,
-						isAdmin: admin === "admin" ? true : false,
+						isAdmin: admin === "Admin" ? true : false,
 					},
 				}
 			} else {
@@ -52,6 +55,22 @@ export const fetchUsers = createAsyncThunk(
 		}
 
 		//dispatch(setAdminUser(userAdmin))
+	}
+)
+
+//post new user
+
+export const addNewUser = createAsyncThunk(
+	"user/addNewUser",
+	// The payload creator receives the partial `{title, content, user}` object
+	async (newUser) => {
+		// We send the initial data to the fake API server
+		try {
+			await axios.post("/api/users/add", newUser)
+		} catch (error) {
+			console.log(error)
+		}
+		// The response includes the complete post object, including unique ID
 	}
 )
 
@@ -76,6 +95,16 @@ const usersSlice = createSlice({
 		[fetchUsers.rejected]: (state) => {
 			state.status = "failed"
 		},
+		[addNewUser.pending]: (state) => {
+			state.status = "loading"
+		},
+		[addNewUser.fulfilled]: (state) => {
+			state.status = "succeeded"
+		},
+		[addNewUser.rejected]: (state) => {
+			state.status = "failed"
+		},
+
 		[HYDRATE]: (state, action) => {
 			if (
 				action.payload.bookings.bookings.length === 0 &&

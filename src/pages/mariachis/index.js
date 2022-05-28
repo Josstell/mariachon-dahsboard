@@ -1,29 +1,16 @@
-import React, { useEffect } from "react"
 import { getSession } from "next-auth/react"
 import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
-import { useDispatch, useSelector } from "react-redux"
-import { fetchUsers, selectUserAdmin } from "store/features/users/userSlice"
+
 import { fetchMariachis } from "store/features/mariachis/mariachiSlice"
 import { wrapper } from "../../../store"
 import TableMariachis from "src/components/Tables/TableMariachis"
 import Layout from "../../components/Layout"
 import SpinnerGral from "src/components/Spinners/SpinnerGral"
+import useFetchUsers from "src/hook/useFetchUsers"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const mariachis = ({ session }) => {
-	const userAdmin = useSelector(selectUserAdmin)
-
-	const dispatch = useDispatch()
-
-	useEffect(() => {
-		if (!userAdmin.exist) {
-			const reloadUsers = async () => {
-				await dispatch(fetchUsers(session))
-			}
-			reloadUsers()
-			//	router.push("/")
-		}
-	}, [userAdmin, dispatch, session])
+	const userAdmin = useFetchUsers(session)
 
 	if (!userAdmin.exist) {
 		return <SpinnerGral />

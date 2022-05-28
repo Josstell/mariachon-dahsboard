@@ -4,32 +4,33 @@ import { getSession } from "next-auth/react"
 import Layout from "../components/Layout"
 import MariachiForbiden from "../components/SVG/Icons/MariachiForbiden"
 
-import axios from "axios"
+//import axios from "axios"
 import { wrapper } from "../../store"
 import {
+	addNewUser,
 	fetchUsers,
 	selectUserAdmin,
 } from "../../store/features/users/userSlice"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 export default function Home() {
 	const userAdmin = useSelector(selectUserAdmin)
-	// const userStatus = useSelector(selectStatus)
-	// const errorUs = useSelector(selectError)
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 		if (!userAdmin.exist) {
 			const dataRegister = async () => {
-				try {
-					await axios.post("/api/users/add", userAdmin)
-				} catch (error) {
-					console.log(error)
-				}
+				await dispatch(addNewUser(userAdmin))
+				// try {
+				// 	await axios.post("/api/users/add", userAdmin)
+				// } catch (error) {
+				// 	console.log(error)
+				// }
 			}
 
 			dataRegister()
 		}
-	}, [userAdmin])
+	}, [userAdmin, dispatch])
 
 	return (
 		<Layout>

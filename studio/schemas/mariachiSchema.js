@@ -55,14 +55,18 @@ export default {
 			],
 		},
 		{
-			name: "slug",
-			title: "Slug",
-			type: "slug",
+			name: "categorySet",
+			type: "array",
+			of: [{ type: "string" }],
 			options: {
-				source: "name",
-				maxLength: 96,
+				list: [
+					{ title: "Economico", value: "Economico" },
+					{ title: "Normal", value: "Normal" },
+					{ title: "Premium", value: "Premium" },
+				],
 			},
 		},
+
 		{
 			name: "like",
 			title: "Likes",
@@ -83,6 +87,15 @@ export default {
 			name: "logo",
 			type: "figure",
 			title: "Logo de la agrupación",
+		},
+		{
+			name: "slug",
+			title: "Slug",
+			type: "slug",
+			options: {
+				source: "name",
+				maxLength: 96,
+			},
 		},
 		{
 			name: "publishedAt",

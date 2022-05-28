@@ -1,26 +1,14 @@
-import React, { useEffect } from "react"
 import { getSession } from "next-auth/react"
-import { useDispatch, useSelector } from "react-redux"
-import { fetchUsers, selectUserAdmin } from "store/features/users/userSlice"
+
 import { wrapper } from "store"
 import { fetchBookings } from "store/features/bookings/bookingSlice"
 import Layout from "../../components/Layout"
 import SpinnerGral from "src/components/Spinners/SpinnerGral"
 import TableBookings from "src/components/Tables/TableBookings"
+import useFetchUsers from "src/hook/useFetchUsers"
 
 const reservas = ({ session }) => {
-	const userAdmin = useSelector(selectUserAdmin)
-
-	const dispatch = useDispatch()
-
-	useEffect(() => {
-		if (!userAdmin.exist) {
-			const reloadUsers = async () => {
-				await dispatch(fetchUsers(session))
-			}
-			reloadUsers()
-		}
-	}, [userAdmin, dispatch, session])
+	const userAdmin = useFetchUsers(session)
 
 	if (!userAdmin.exist) {
 		return <SpinnerGral />

@@ -1,10 +1,9 @@
-import nc from "next-connect"
+import handlerCors from "src/helpers/api/allowCors"
 import axios from "axios"
 import client from "@lib/sanity"
+import * as urlSlug from "url-slug"
 
-const handler = nc()
-
-handler.post(async (req, res) => {
+export default handlerCors().post(async (req, res) => {
 	const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
 	const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
 	const tokenWithWriteAccess = process.env.SANITY_API_TOKEN
@@ -21,6 +20,7 @@ handler.post(async (req, res) => {
 				},
 				uid: req.body.uid || "",
 				provider: req.body.provider || "",
+				slug: { current: urlSlug(req.body.name) },
 			},
 		},
 	]
@@ -56,5 +56,3 @@ handler.post(async (req, res) => {
 		res.send({ ...user })
 	}
 })
-
-export default handler
