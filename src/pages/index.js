@@ -8,14 +8,20 @@ import MariachiForbiden from "../components/SVG/Icons/MariachiForbiden"
 import { wrapper } from "../../store"
 import {
 	addNewUser,
-	fetchUsers,
+	fetchUsersNew,
 	selectUserAdmin,
+	selectUserUpdate,
+	setUserUpdate,
+	updateUser,
 } from "../../store/features/users/userSlice"
 import { useDispatch, useSelector } from "react-redux"
 
 export default function Home() {
 	const userAdmin = useSelector(selectUserAdmin)
+	const userUpdate = useSelector(selectUserUpdate)
 	const dispatch = useDispatch()
+
+	console.log("update", userUpdate)
 
 	useEffect(() => {
 		if (!userAdmin.exist) {
@@ -30,7 +36,8 @@ export default function Home() {
 
 			dataRegister()
 		}
-	}, [userAdmin, dispatch])
+		console.log("dentro de update", userUpdate)
+	}, [])
 
 	return (
 		<Layout>
@@ -56,8 +63,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		const session = await getSession(ctx)
 
 		//store.dispatch(setUsers(users))
-		console.log("is Admin", store.getState(selectUserAdmin))
-		await store.dispatch(fetchUsers(session))
+		await store.dispatch(fetchUsersNew(session))
+
+		console.log("entramos de new")
 
 		if (!session)
 			return {

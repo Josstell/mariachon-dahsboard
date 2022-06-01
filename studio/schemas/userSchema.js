@@ -22,6 +22,11 @@ export default {
 			type: "string",
 		},
 		{
+			name: "city",
+			title: "Cidad o estado",
+			type: "string",
+		},
+		{
 			title: "Tipo de usuario:",
 			name: "categorySet",
 			type: "array",

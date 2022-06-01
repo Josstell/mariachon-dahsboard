@@ -1,9 +1,15 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { signOut } from "next-auth/react"
 
 import { ChevronLeftIcon } from "@heroicons/react/solid"
-import { ChartSquareBarIcon, UserAddIcon } from "@heroicons/react/outline"
+import {
+	ChartSquareBarIcon,
+	UserAddIcon,
+	AdjustmentsIcon,
+	LogoutIcon,
+} from "@heroicons/react/outline"
 import MariachiIcon from "../../components/SVG/Icons/MariachiIcon"
 import BookingIcon from "../../components/SVG/Icons/BookingIcon"
 
@@ -151,6 +157,37 @@ export default function Layout({ children }) {
 									</span>
 								</li>
 							</Link>
+						</ul>
+
+						<hr className="my-10" />
+						<ul>
+							<Link href="/perfil" passHref>
+								<li
+									className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white bg-slate-100 dark:bg-slate-900 text-sm items-center gap-x-4 
+              								mt-2
+										 bg-light-white`}
+								>
+									<AdjustmentsIcon className="w-7 bg-slate-100 dark:bg-slate-900" />
+									<span
+										className={`${!open && "hidden"} origin-left duration-200 `}
+									>
+										Edital perfil
+									</span>
+								</li>
+							</Link>
+							<li
+								className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white bg-slate-100 dark:bg-slate-900 text-sm items-center gap-x-4 
+              								mt-2
+										 bg-light-white`}
+								onClick={signOut}
+							>
+								<LogoutIcon className="w-7 bg-slate-100 dark:bg-slate-900" />
+								<span
+									className={`${!open && "hidden"} origin-left duration-200 `}
+								>
+									Salir
+								</span>
+							</li>
 						</ul>
 					</div>
 				</div>

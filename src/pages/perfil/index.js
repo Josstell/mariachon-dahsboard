@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 
 import { getSession } from "next-auth/react"
 import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
@@ -8,12 +8,15 @@ import {
 	fetchUsersNew,
 	selectUserAdmin,
 } from "../../../store/features/users/userSlice"
-import TableUser from "src/components/Tables/TableUsers"
 import Layout from "src/components/Layout"
 import SpinnerGral from "src/components/Spinners/SpinnerGral"
+import AdminCard from "src/components/Cards/AdminCard"
+import AdminForm from "src/components/Forms/AdminForm"
+
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
-const usuarios = ({ session }) => {
+const perfil = ({ session }) => {
+	const [editCard, setEditCard] = useState(false)
 	const userAdmin = useSelector(selectUserAdmin)
 	const dispatch = useDispatch()
 
@@ -25,7 +28,7 @@ const usuarios = ({ session }) => {
 			reloadUsers()
 			//	router.push("/")
 		}
-	}, [userAdmin, dispatch, session])
+	}, [])
 
 	if (!userAdmin.exist) {
 		return <SpinnerGral />
@@ -34,8 +37,27 @@ const usuarios = ({ session }) => {
 	return (
 		<Layout>
 			{userAdmin.isAdmin ? (
-				<div className="flex  justify-center items-center">
-					<TableUser />
+				<div className={`no-scrollbar overflow-auto h-full  `}>
+					<div
+						className={`no-scrollbar overflow-auto  h-full  flex flex-col md:flex-row ${
+							editCard ? "justify-evenly h-fit md:h-full" : "justify-center"
+						}   items-center`}
+					>
+						<div
+							className={` ${
+								editCard ? "block" : "hidden"
+							} no-scrollbar w-10/12	 md:w-2/5 h-fit md:h-full mb-5 md:mb-0 flex justify-center items-center`}
+						>
+							<AdminForm />
+						</div>
+						<div
+							className={
+								editCard ? "w-11/12	 md:w-2/5  h-[80vh] md:h-3/5" : "w-3/4 h-3/5"
+							}
+						>
+							<AdminCard setEditCard={setEditCard} editCard={editCard} />
+						</div>
+					</div>
 				</div>
 			) : (
 				<>
@@ -49,7 +71,7 @@ const usuarios = ({ session }) => {
 	)
 }
 
-export default usuarios
+export default perfil
 
 export const getServerSideProps = wrapper.getServerSideProps(
 	() => async (ctx) => {
@@ -63,16 +85,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 				},
 			}
 		}
-
-		// if (!(existAdmin.users.admin.name !== undefined)) {
-		// 	console.log("Existe dentro: ", existAdmin.users.admin.name)
-		// 	return {
-		// 		redirect: {
-		// 			destination: "/",
-		// 			permanent: false,
-		// 		},
-		// 	}
-		// }
 
 		return {
 			props: { session: session },

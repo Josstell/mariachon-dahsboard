@@ -42,9 +42,12 @@ export const fetchMariachis = createAsyncThunk(
 	"mariachis/fetchMariachis",
 	async (isAdmin) => {
 		if (isAdmin) {
-			const mariachis = await client.fetch(query)
-			console.log("Hola mariachis", mariachis)
-			return mariachis
+			try {
+				const mariachis = await client.fetch(query)
+				return mariachis
+			} catch (error) {
+				console.log(error)
+			}
 		} else {
 			return []
 		}

@@ -8,6 +8,7 @@ import axios from "axios"
 const initialState = {
 	users: [],
 	admin: {},
+	userUpdate: {},
 	status: "idle",
 	error: null,
 }
@@ -16,14 +17,13 @@ const query = groq`
 `
 
 // get all users
-export const fetchUsers = createAsyncThunk(
-	"users/fetchUsers",
+export const fetchUsersNew = createAsyncThunk(
+	"users/fetchUsersNew",
 	async (session) => {
 		const users = await client.fetch(query)
-		console.log("client: ", users)
+		console.log("si entra!!!!!!", users)
 		if (users.length > 0) {
 			const userAdmin = users.find((user) => user.email === session.user.email)
-			console.log("Si entramos", userAdmin)
 
 			if (!(userAdmin === undefined)) {
 				const admin = userAdmin.categorySet.find(
@@ -58,8 +58,28 @@ export const fetchUsers = createAsyncThunk(
 	}
 )
 
-//post new user
+// update user
 
+export const updateUser = createAsyncThunk("users/updateUser", async (user) => {
+	// We send the initial data to the fake API server
+	try {
+		const { data } = await axios.put("/api/users/update", user)
+
+		if (data) {
+			const admin = data.categorySet.find((category) => category === "Admin")
+			return {
+				...data,
+				exist: true,
+				isAdmin: admin === "Admin" ? true : false,
+			}
+		}
+	} catch (error) {
+		console.log(error)
+	}
+	// The response includes the complete post object, including unique ID
+})
+
+// add new user
 export const addNewUser = createAsyncThunk(
 	"user/addNewUser",
 	// The payload creator receives the partial `{title, content, user}` object
@@ -79,20 +99,24 @@ const usersSlice = createSlice({
 	initialState,
 	reducers: {
 		setAdminUser: (state, action) => {
-			state.admin = action.payload
+			const data = action.data
+			state.admin = { ...state.admin, data }
+		},
+		setUserUpdate: (state, action) => {
+			state.userUpdate = action.payload
 		},
 	},
 
 	extraReducers: {
-		[fetchUsers.pending]: (state) => {
+		[fetchUsersNew.pending]: (state) => {
 			state.status = "loading"
 		},
-		[fetchUsers.fulfilled]: (state, action) => {
+		[fetchUsersNew.fulfilled]: (state, action) => {
 			state.status = "succeeded"
 			state.users = action.payload.users
 			state.admin = action.payload.admin
 		},
-		[fetchUsers.rejected]: (state) => {
+		[fetchUsersNew.rejected]: (state) => {
 			state.status = "failed"
 		},
 		[addNewUser.pending]: (state) => {
@@ -103,6 +127,19 @@ const usersSlice = createSlice({
 		},
 		[addNewUser.rejected]: (state) => {
 			state.status = "failed"
+		},
+
+		[updateUser.fulfilled]: (state, action) => {
+			state.status = "succeeded"
+			state.userUpdate = {}
+			const userAd = action.payload
+
+			if (action.payload.isAdmin) {
+				state.admin = action.payload
+				state.users = state.users.map((user) =>
+					user._id === userAd._id ? userAd : user
+				)
+			}
 		},
 
 		[HYDRATE]: (state, action) => {
@@ -135,9 +172,10 @@ const usersSlice = createSlice({
 //export const { setUsers } = usersSlice.actions
 
 export default usersSlice.reducer
-export const { setAdminUser } = usersSlice.actions
+export const { setAdminUser, setUserUpdate } = usersSlice.actions
 
 export const selectAllUsers = (state) => state.users.users
 export const selectUserAdmin = (state) => state.users.admin
+export const selectUserUpdate = (state) => state.users.userUpdate
 export const selectStatus = (state) => state.users.status
 export const selectError = (state) => state.users.error

@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import React from "react"
 import { useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
@@ -118,28 +119,32 @@ const TableUser = () => {
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex ">
-											<div className="w-10 h-10 rounded-full border-1 border-slate-50 shadow relative">
-												{user?.image ? (
-													<Image
-														className="rounded-full"
-														src={user?.image}
-														layout="fill"
-														objectFit="cover"
-														alt=""
-													/>
-												) : user?.profileImage?.url ? (
-													<Image
-														className="rounded-full"
-														src={user?.profileImage.url}
-														layout="fill"
-														objectFit="cover"
-														alt=""
-													/>
-												) : (
-													<GetLogoWithName text={user.name} numberLetter={0} />
-												)}
-											</div>
-											{/* {user.images.map((img) => (
+											<Link href={`/usuarios/${user._id.toString()}`}>
+												<a className="w-10 h-10 rounded-full border-1 border-slate-50 shadow relative">
+													{user?.image ? (
+														<Image
+															className="rounded-full"
+															src={user?.image}
+															layout="fill"
+															objectFit="cover"
+															alt=""
+														/>
+													) : user?.profileImage?.url ? (
+														<Image
+															className="rounded-full"
+															src={user?.profileImage.url}
+															layout="fill"
+															objectFit="cover"
+															alt=""
+														/>
+													) : (
+														<GetLogoWithName
+															text={user.name}
+															numberLetter={0}
+														/>
+													)}
+												</a>
+												{/* {user.images.map((img) => (
 												<img
 													key={img.uid}
 													src={img.url}
@@ -147,6 +152,7 @@ const TableUser = () => {
 													className="w-10 h-10 rounded-full border-2 border-slate-50 shadow"
 												></img>
 											))} */}
+											</Link>
 										</div>
 									</td>
 									{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
