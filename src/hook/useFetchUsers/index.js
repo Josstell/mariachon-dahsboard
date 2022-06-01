@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchUsers, selectUserAdmin } from "store/features/users/userSlice"
+import { fetchUsersNew, selectUserAdmin } from "store/features/users/userSlice"
 
 export default function useFetchUsers(session) {
 	const userAdmin = useSelector(selectUserAdmin)
@@ -9,7 +9,7 @@ export default function useFetchUsers(session) {
 	useEffect(() => {
 		if (!userAdmin.exist) {
 			const reloadUsers = async () => {
-				await dispatch(fetchUsers(session))
+				await dispatch(fetchUsersNew(session))
 			}
 			reloadUsers()
 			//	router.push("/")

@@ -13,7 +13,7 @@ export default handlerCors().post(async (req, res) => {
 				_type: "user",
 				name: req.body.name,
 				email: req.body.email,
-				categorySet: req.body.categorySet || ["client"],
+				categorySet: req.body.categorySet || ["Cliente"],
 				profileImage: {
 					url: req.body.image || "",
 					alt: req.body.username || "",

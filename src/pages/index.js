@@ -11,8 +11,6 @@ import {
 	fetchUsersNew,
 	selectUserAdmin,
 	selectUserUpdate,
-	setUserUpdate,
-	updateUser,
 } from "../../store/features/users/userSlice"
 import { useDispatch, useSelector } from "react-redux"
 
@@ -36,7 +34,6 @@ export default function Home() {
 
 			dataRegister()
 		}
-		console.log("dentro de update", userUpdate)
 	}, [])
 
 	return (

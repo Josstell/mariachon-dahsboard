@@ -1,5 +1,6 @@
 //import Image from "next/image"
 import Image from "next/image"
+import Link from "next/link"
 import React from "react"
 import { useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
@@ -92,25 +93,32 @@ const TableMariachis = () => {
 										<span
 											className="ml-3 font-bold 
 													text-slate-600
-													dark:text-white"
+													dark:text-white cursor-pointer"
 										>
 											{/* {useTruncatedIdOrTel(mariachi._id)} */}
-											{mariachi?.logo ? (
-												<div className="w-8 h-8 flex flex-col  relative cursor-pointer">
-													<Image
-														className="rounded-full"
-														src={mariachi.logo}
-														layout="fill"
-														objectFit="cover"
-														alt=""
-													/>
-												</div>
-											) : (
-												<GetLogoWithName
-													text={mariachi.name}
-													numberLetter={9}
-												/>
-											)}
+											<Link
+												href={`/mariachis/${mariachi.slug.current}`}
+												passHref
+											>
+												<a>
+													{mariachi?.logo ? (
+														<div className="w-8 h-8 flex flex-col  relative cursor-pointer">
+															<Image
+																className="rounded-full"
+																src={mariachi.logo}
+																layout="fill"
+																objectFit="cover"
+																alt=""
+															/>
+														</div>
+													) : (
+														<GetLogoWithName
+															text={mariachi.name}
+															numberLetter={9}
+														/>
+													)}
+												</a>
+											</Link>
 										</span>
 									</th>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">

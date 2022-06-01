@@ -20,38 +20,44 @@ const query = groq`
 export const fetchUsersNew = createAsyncThunk(
 	"users/fetchUsersNew",
 	async (session) => {
-		const users = await client.fetch(query)
-		console.log("si entra!!!!!!", users)
-		if (users.length > 0) {
-			const userAdmin = users.find((user) => user.email === session.user.email)
-
-			if (!(userAdmin === undefined)) {
-				const admin = userAdmin.categorySet.find(
-					(category) => category === "Admin"
+		try {
+			const users = await client.fetch(query)
+			console.log("si entra!!!!!!", users)
+			if (users.length > 0) {
+				const userAdmin = users.find(
+					(user) => user.email === session.user.email
 				)
-				return {
-					users: users,
-					admin: {
-						...userAdmin,
-						exist: true,
-						isAdmin: admin === "Admin" ? true : false,
-					},
+
+				if (!(userAdmin === undefined)) {
+					const admin = userAdmin.categorySet.find(
+						(category) => category === "Admin"
+					)
+					return {
+						users: users,
+						admin: {
+							...userAdmin,
+							exist: true,
+							isAdmin: admin === "Admin" ? true : false,
+						},
+					}
+				} else {
+					return {
+						users: users,
+						admin: {
+							...session.user,
+							exist: false,
+							isAdmin: false,
+						},
+					}
 				}
 			} else {
 				return {
 					users: users,
-					admin: {
-						...session.user,
-						exist: false,
-						isAdmin: false,
-					},
+					admin: { ...session.user, exist: false, isAdmin: false },
 				}
 			}
-		} else {
-			return {
-				users: users,
-				admin: { ...session.user, exist: false, isAdmin: false },
-			}
+		} catch (error) {
+			console.log(error)
 		}
 
 		//dispatch(setAdminUser(userAdmin))
@@ -134,8 +140,14 @@ const usersSlice = createSlice({
 			state.userUpdate = {}
 			const userAd = action.payload
 
-			if (action.payload.isAdmin) {
+			console.log("update: ", userAd)
+
+			if (action.payload?.isAdmin) {
 				state.admin = action.payload
+				state.users = state.users.map((user) =>
+					user._id === userAd._id ? userAd : user
+				)
+			} else {
 				state.users = state.users.map((user) =>
 					user._id === userAd._id ? userAd : user
 				)

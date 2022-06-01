@@ -34,7 +34,7 @@ export default {
 		},
 
 		{
-			name: "members",
+			name: "crew",
 			title: "Elementos",
 			type: "array",
 			of: [
@@ -43,6 +43,11 @@ export default {
 					to: [{ type: "user" }],
 				},
 			],
+		},
+		{
+			name: "members",
+			title: "Numero de Elementos",
+			type: "number",
 		},
 		{
 			name: "service",

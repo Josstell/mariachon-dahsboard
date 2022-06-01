@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import { useForm } from "react-hook-form"
@@ -8,7 +8,8 @@ import { useRouter } from "next/router"
 const AdminForm = () => {
 	const router = useRouter()
 	const userAdmin = useSelector((state) => state.users.admin)
-	const loading = useSelector((state) => state.users.status)
+
+	const [loading, setLoading] = useState(false)
 
 	const dispatch = useDispatch()
 
@@ -27,7 +28,9 @@ const AdminForm = () => {
 		city: watch("city"),
 	}
 
-	dispatch(setUserUpdate(userUpdate))
+	useEffect(() => {
+		dispatch(setUserUpdate(userUpdate))
+	}, [userUpdate])
 
 	useEffect(() => {
 		setValue("name", userAdmin.name)
@@ -37,16 +40,19 @@ const AdminForm = () => {
 	}, [])
 
 	const onSubmit = (data) => {
+		setLoading(true)
 		console.log("despues del formulario...", data)
 
 		//Creando variable session para recargar datos
 
 		dispatch(setUserUpdate({ ...data, _id: userAdmin._id }))
 		dispatch(updateUser({ ...data, _id: userAdmin._id }))
+		setLoading(false)
 
 		router.push("/")
 	}
 
+	console.log("loading: ", loading)
 	return (
 		<form
 			onSubmit={handleSubmit((data) => onSubmit(data))}
@@ -140,13 +146,13 @@ const AdminForm = () => {
 			>
 				Actualizar datos
 			</button>
-			{/* {loading === "loading" && (
+			{loading && (
 				<div className="flex items-center justify-center space-x-2 animate-pulse">
-					<div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-					<div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-					<div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-				</div> 
-			)}*/}
+					<div className="w-8 h-8 bg-slate-600 dark:bg-slate-50 rounded-full"></div>
+					<div className="w-8 h-8 bg-slate-600 dark:bg-slate-50 rounded-full"></div>
+					<div className="w-8 h-8 bg-slate-600 dark:bg-slate-50 rounded-full"></div>
+				</div>
+			)}
 		</form>
 	)
 }
