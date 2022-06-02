@@ -61,11 +61,15 @@ const userById = ({ data }) => {
 			setUserUpdate({
 				...dataForm,
 				_id: data._id,
-				categorySet: data.categorySet,
+				categorySet: data?.categorySet || "",
 			})
 		)
 		dispatch(
-			updateUser({ ...dataForm, _id: data._id, categorySet: data.categorySet })
+			updateUser({
+				...dataForm,
+				_id: data._id,
+				categorySet: data?.categorySet || "",
+			})
 		)
 		// setLoading(false)
 
@@ -77,7 +81,7 @@ const userById = ({ data }) => {
 		tel: watch("tel"),
 		email: watch("email"),
 		city: watch("city"),
-		categorySet: data.categorySet,
+		categorySet: data?.categorySet || "",
 	}
 
 	if (!userAdmin.exist || router.isFallback) {
