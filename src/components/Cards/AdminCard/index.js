@@ -2,9 +2,8 @@ import Image from "next/image"
 import React from "react"
 import { useSelector } from "react-redux"
 
-const AdminCard = ({ editCard, setEditCard }) => {
+const AdminCard = ({ editCard, setEditCard, userUpdate }) => {
 	const userAdmin = useSelector((state) => state.users.admin)
-	const userUpdate = useSelector((state) => state.users.userUpdate)
 	return (
 		<div className="w-full h-full flex flex-col justify-center items-center">
 			<div className="w-full h-1/3 bg-gradient-to-r from-slate-50 to-slate-300 dark:bg-gradient-to-r dark:from-slate-700 dark:to-slate-900 rounded-t-md shadow-xl relative ">

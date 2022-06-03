@@ -1,58 +1,8 @@
-import React, { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import React from "react"
 
-import { useForm } from "react-hook-form"
-import { setUserUpdate, updateUser } from "store/features/users/userSlice"
-import { useRouter } from "next/router"
+import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 
-const UserForm = () => {
-	const router = useRouter()
-	const userUp = useSelector((state) => state.users.userUpdate)
-
-	const [loading, setLoading] = useState(false)
-
-	const dispatch = useDispatch()
-
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		watch,
-		formState: { errors },
-	} = useForm()
-
-	useEffect(() => {
-		const userUpdat = {
-			name: watch("name"),
-			tel: watch("tel"),
-			email: watch("email"),
-			city: watch("city"),
-		}
-		console.log("watching:  ", userUpdat)
-		dispatch(setUserUpdate({ ...userUp, userUpdat }))
-	}, [watch])
-
-	useEffect(() => {
-		setValue("name", userUp.name)
-		setValue("tel", userUp.tel)
-		setValue("email", userUp.email)
-		setValue("city", userUp?.city || "")
-	}, [])
-
-	const onSubmit = (data) => {
-		setLoading(true)
-		console.log("despues del formulario...", data)
-
-		//Creando variable session para recargar datos
-
-		dispatch(setUserUpdate({ ...data, _id: userUp._id }))
-		dispatch(updateUser({ ...data, _id: userUp._id }))
-		setLoading(false)
-
-		router.push("/usuarios")
-	}
-
-	console.log("loading: ", loading)
+const UserForm = ({ register, handleSubmit, onSubmit, errors, loading }) => {
 	return (
 		<form
 			onSubmit={handleSubmit((data) => onSubmit(data))}
@@ -77,7 +27,6 @@ const UserForm = () => {
 					Télefono
 				</label>
 				<input
-					type="tel"
 					{...register("tel", {
 						required: true,
 						pattern: /^[0-9\b]+$/i,
@@ -116,18 +65,6 @@ const UserForm = () => {
 					placeholder="Correo electrónico"
 				/>
 			</div>
-			{/* 			
-			<div className="w-full items-center  py-2 border-teal-500  border-b my-2">
-				<label className="block uppercase tracking-wide text-gray-700 dark:text-slate-50 text-[10px] font-bold mb-2">
-					Dirección
-				</label>
-				<input
-					{...register("address", { required: false })}
-					className="appearance-none bg-transparent border-none w-full text-gray-700 dark:text-slate-50 mr-3 py-1 px-2 leading-tight focus:outline-none"
-					type="text"
-					placeholder="Dirección"
-				/>
-			</div> */}
 
 			<div className="w-full items-center  py-2 border-teal-500  border-b my-2">
 				<label className="block uppercase tracking-wide text-gray-700 dark:text-slate-50 text-[10px] font-bold mb-2">
@@ -143,16 +80,11 @@ const UserForm = () => {
 			<button
 				className=" my-10 mb:mt-0 w-3/5 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-2 text-white py-1 px-2 rounded"
 				type="submit"
+				disabled={loading}
 			>
 				Actualizar datos
 			</button>
-			{loading && (
-				<div className="flex items-center justify-center space-x-2 animate-pulse">
-					<div className="w-8 h-8 bg-slate-600 dark:bg-slate-50 rounded-full"></div>
-					<div className="w-8 h-8 bg-slate-600 dark:bg-slate-50 rounded-full"></div>
-					<div className="w-8 h-8 bg-slate-600 dark:bg-slate-50 rounded-full"></div>
-				</div>
-			)}
+			{loading && <SpinnerLoadign />}
 		</form>
 	)
 }

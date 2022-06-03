@@ -27,6 +27,17 @@ export default {
 			type: "string",
 		},
 		{
+			name: "region",
+			type: "string",
+			title: "Estado",
+		},
+
+		{
+			name: "logo",
+			type: "figure",
+			title: "Logo de la agrupación",
+		},
+		{
 			name: "coordinator",
 			title: "Coordinador",
 			type: "reference",
@@ -82,17 +93,7 @@ export default {
 			title: "Calificación",
 			type: "number",
 		},
-		{
-			name: "region",
-			type: "string",
-			title: "Estado",
-		},
 
-		{
-			name: "logo",
-			type: "figure",
-			title: "Logo de la agrupación",
-		},
 		{
 			name: "slug",
 			title: "Slug",

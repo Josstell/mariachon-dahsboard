@@ -1,58 +1,7 @@
-import React, { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import React from "react"
+import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 
-import { useForm } from "react-hook-form"
-import { setUserUpdate, updateUser } from "store/features/users/userSlice"
-import { useRouter } from "next/router"
-
-const AdminForm = () => {
-	const router = useRouter()
-	const userAdmin = useSelector((state) => state.users.admin)
-
-	const [loading, setLoading] = useState(false)
-
-	const dispatch = useDispatch()
-
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		watch,
-		formState: { errors },
-	} = useForm()
-
-	const userUpdate = {
-		name: watch("name"),
-		tel: watch("tel"),
-		email: watch("email"),
-		city: watch("city"),
-	}
-
-	useEffect(() => {
-		dispatch(setUserUpdate(userUpdate))
-	}, [userUpdate])
-
-	useEffect(() => {
-		setValue("name", userAdmin.name)
-		setValue("tel", userAdmin.tel)
-		setValue("email", userAdmin.email)
-		setValue("city", userAdmin?.city || "")
-	}, [])
-
-	const onSubmit = (data) => {
-		setLoading(true)
-		console.log("despues del formulario...", data)
-
-		//Creando variable session para recargar datos
-
-		dispatch(setUserUpdate({ ...data, _id: userAdmin._id }))
-		dispatch(updateUser({ ...data, _id: userAdmin._id }))
-		setLoading(false)
-
-		router.push("/")
-	}
-
-	console.log("loading: ", loading)
+const AdminForm = ({ register, handleSubmit, onSubmit, errors, loading }) => {
 	return (
 		<form
 			onSubmit={handleSubmit((data) => onSubmit(data))}
@@ -77,7 +26,6 @@ const AdminForm = () => {
 					Télefono
 				</label>
 				<input
-					type="tel"
 					{...register("tel", {
 						required: true,
 						pattern: /^[0-9\b]+$/i,
@@ -146,13 +94,7 @@ const AdminForm = () => {
 			>
 				Actualizar datos
 			</button>
-			{loading && (
-				<div className="flex items-center justify-center space-x-2 animate-pulse">
-					<div className="w-8 h-8 bg-slate-600 dark:bg-slate-50 rounded-full"></div>
-					<div className="w-8 h-8 bg-slate-600 dark:bg-slate-50 rounded-full"></div>
-					<div className="w-8 h-8 bg-slate-600 dark:bg-slate-50 rounded-full"></div>
-				</div>
-			)}
+			{loading && <SpinnerLoadign />}
 		</form>
 	)
 }

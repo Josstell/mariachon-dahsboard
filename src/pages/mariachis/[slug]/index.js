@@ -1,21 +1,27 @@
+import React from "react"
 import client from "@lib/sanity"
 import { getSession } from "next-auth/react"
 import { groq } from "next-sanity"
 import { useRouter } from "next/router"
-import React from "react"
+import { useForm } from "react-hook-form"
 import { useSelector } from "react-redux"
 import MariachiCard from "src/components/Cards/MariachiCard"
+import MariachiForm from "src/components/Forms/MariachiForm"
 import Layout from "src/components/Layout"
 import SpinnerGral from "src/components/Spinners/SpinnerGral"
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
+import MariachiTab from "src/components/Tabs/MariachiTab"
 import { wrapper } from "store"
 import { selectUserAdmin } from "store/features/users/userSlice"
 
 const mariachiById = ({ data }) => {
 	const router = useRouter()
 	const userAdmin = useSelector(selectUserAdmin)
+	const activeFormTab = useSelector(
+		(state) => state.mariachis.mariachiTabActive
+	)
 
-	console.log("Mariahchi: ", data)
+	const methods = useForm()
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerGral />
@@ -25,13 +31,17 @@ const mariachiById = ({ data }) => {
 			{userAdmin.isAdmin ? (
 				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
 					<div
-						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-center
-							justify-evenly items-center`}
+						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-evenly
+							 items-center`}
 					>
-						<div className={"w-4/12 h-5/6	 "}>
-							<MariachiCard />
+						<div className={"w-4/12 h-3/5 "}>
+							<MariachiTab>
+								<MariachiForm methods={methods} activeFormTab={activeFormTab} />
+							</MariachiTab>
 						</div>
-						<div className={"w-4/12 h-3/5 "}></div>
+						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
+							<MariachiCard mariachiUp={data} />
+						</div>
 					</div>
 				</div>
 			) : (
@@ -69,9 +79,29 @@ export async function getStaticPaths() {
 export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
 	const query = groq`*[_type == "mariachi" && slug.current == $slug][0]{
   _id,
-  slug
-}
-	`
+  slug{
+  current
+},
+name,
+description[0]{
+  children[0]{
+    text
+  }
+},
+address,
+tel,
+coordinator->{
+  _id,
+  name,
+  tel
+},
+crew,
+memebers,
+service,
+categorySet,
+region,
+logo
+}`
 
 	const mariachi = await client.fetch(query, {
 		slug: ctx.params.slug,

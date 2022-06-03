@@ -8,6 +8,11 @@ const initialState = {
 	mariachis: [],
 	status: "idle",
 	error: null,
+	mariachiTabActive: {
+		data: true,
+		mariachi: false,
+		gral: false,
+	},
 }
 const query = groq`
 *[_type == "mariachi"]{
@@ -63,6 +68,9 @@ const mariachisSlice = createSlice({
 		// setAdminUser: (state, action) => {
 		// 	state.admin = action.payload
 		// },
+		setDispMariachiTabActive: (state, action) => {
+			state.mariachiTabActive = action.payload
+		},
 	},
 
 	extraReducers: {
@@ -99,7 +107,7 @@ const mariachisSlice = createSlice({
 //export const { setUsers } = mariachisSlice.actions
 
 export default mariachisSlice.reducer
-// export const { setAdminUser } = mariachisSlice.actions
+export const { setDispMariachiTabActive } = mariachisSlice.actions
 
 export const selectAllMariachis = (state) => state.mariachis.mariachis
 export const selectStatus = (state) => state.mariachis.status
