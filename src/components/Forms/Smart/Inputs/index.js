@@ -1,4 +1,3 @@
-import React from "react"
 import { ChevronDownIcon } from "@heroicons/react/outline"
 
 export function Input({ register, name, label, hidden, ...rest }) {
@@ -16,6 +15,80 @@ export function Input({ register, name, label, hidden, ...rest }) {
 				{...rest}
 				className="appearance-none bg-transparent border-none w-full text-gray-700 dark:text-slate-50 mr-3 py-1 px-2 leading-tight focus:outline-none"
 			/>
+		</div>
+	)
+}
+
+export function Checkbox({ register, name, label, hidden, ...rest }) {
+	return (
+		<div className={`md:flex md:items-center mb-6 ${!hidden && "hidden"}`}>
+			<div className="md:w-1/3"></div>
+			<label className="md:w-2/3 block text-gray-500 font-bold">
+				<input
+					{...register(name)}
+					{...rest}
+					className="mr-2 leading-tight"
+					type="checkbox"
+				/>
+				<span className="text-sm">{label}</span>
+			</label>
+		</div>
+	)
+}
+
+export function RadioButton({ register, name, label, hidden, ...rest }) {
+	return (
+		<div className={`flex justify-center items-center ${!hidden && "hidden"}`}>
+			<div className="bg-gray-200 rounded-lg ">
+				<div className={`inline-flex rounded-lg `}>
+					<input
+						className="peer"
+						{...register(name)}
+						{...rest}
+						id="basicMariachi"
+						value={"Basico"}
+						hidden
+					/>
+					<label
+						htmlFor="basicMariachi"
+						className="bg-slate-200 text-slate-900 peer-checked:text-slate-50  peer-checked:bg-green-600  text-center self-center py-2 px-4 rounded-lg cursor-pointer hover:opacity-75"
+					>
+						{label[0]}
+					</label>
+				</div>
+				<div className="inline-flex rounded-lg">
+					<input
+						className="peer"
+						{...register(name)}
+						{...rest}
+						id="normalMariachi"
+						value={"Normal"}
+						hidden
+					/>
+					<label
+						htmlFor="normalMariachi"
+						className="bg-slate-200 text-slate-900 peer-checked:text-slate-50 peer-checked:bg-green-600 text-center self-center py-2 px-4 rounded-lg cursor-pointer hover:opacity-75"
+					>
+						{label[1]}
+					</label>
+				</div>
+				<div className="inline-flex rounded-lg">
+					<input
+						className="peer"
+						{...register(name)}
+						{...rest}
+						id="premiumMariachi"
+						value={"Premium"}
+						hidden
+					/>
+					<label
+						htmlFor="premiumMariachi"
+						className="bg-slate-200 text-slate-900 peer-checked:text-slate-50 peer-checked:bg-green-600 text-center self-center py-2 px-4 rounded-lg cursor-pointer hover:opacity-75"
+					>
+						{label[2]}
+					</label>
+				</div>
+			</div>
 		</div>
 	)
 }
@@ -56,8 +129,8 @@ export function Select({ register, options, name, label, hidden, ...rest }) {
 				{...rest}
 			>
 				{options.map((value) => (
-					<option key={value} value={value}>
-						{value}
+					<option key={value._id} value={value._id}>
+						{value.name}
 					</option>
 				))}
 			</select>

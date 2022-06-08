@@ -10,7 +10,7 @@ const initialState = {
 	error: null,
 }
 const query = groq`
-*[_type == "booking"]{
+*[_type == "booking"  && !(_id in path('drafts.**'))]{
   _id,
   client->{
   _id,

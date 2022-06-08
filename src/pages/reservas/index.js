@@ -3,15 +3,17 @@ import { getSession } from "next-auth/react"
 import { wrapper } from "store"
 import { fetchBookings } from "store/features/bookings/bookingSlice"
 import Layout from "../../components/Layout"
-import SpinnerGral from "src/components/Spinners/SpinnerGral"
 import TableBookings from "src/components/Tables/TableBookings"
 import useFetchUsers from "src/hook/useFetchUsers"
+import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
+// import HbookingCard from "src/components/Cards/BookingCard/HbookingCard"
+// import BookingCard from "src/components/Cards/BookingCard"
 
 const reservas = ({ session }) => {
 	const userAdmin = useFetchUsers(session)
 
 	if (!userAdmin.exist) {
-		return <SpinnerGral />
+		return <SpinnerLogo />
 	}
 
 	return (
@@ -19,6 +21,8 @@ const reservas = ({ session }) => {
 			{userAdmin?.isAdmin ? (
 				<div className="flex justify-center items-center">
 					<TableBookings />
+					{/* <HbookingCard /> */}
+					{/* <BookingCard /> */}
 				</div>
 			) : (
 				<>

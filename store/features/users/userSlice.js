@@ -187,6 +187,7 @@ export default usersSlice.reducer
 export const { setAdminUser, setUserUpdate } = usersSlice.actions
 
 export const selectAllUsers = (state) => state.users.users
+
 export const selectUserAdmin = (state) => state.users.admin
 export const selectUserUpdate = (state) => state.users.userUpdate
 export const selectStatus = (state) => state.users.status

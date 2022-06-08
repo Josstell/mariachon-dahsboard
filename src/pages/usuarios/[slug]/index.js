@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux"
 import UserCard from "src/components/Cards/UserCard"
 import UserForm from "src/components/Forms/UserForm"
 import Layout from "src/components/Layout"
-import SpinnerGral from "src/components/Spinners/SpinnerGral"
+import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import { wrapper } from "store"
 import {
@@ -82,7 +82,7 @@ const userById = ({ data }) => {
 	}
 
 	if (!userAdmin.exist || router.isFallback) {
-		return <SpinnerGral />
+		return <SpinnerLogo />
 	}
 
 	return (

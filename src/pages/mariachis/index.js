@@ -5,15 +5,15 @@ import { fetchMariachis } from "store/features/mariachis/mariachiSlice"
 import { wrapper } from "../../../store"
 import TableMariachis from "src/components/Tables/TableMariachis"
 import Layout from "../../components/Layout"
-import SpinnerGral from "src/components/Spinners/SpinnerGral"
 import useFetchUsers from "src/hook/useFetchUsers"
+import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const mariachis = ({ session }) => {
 	const userAdmin = useFetchUsers(session)
 
 	if (!userAdmin.exist) {
-		return <SpinnerGral />
+		return <SpinnerLogo />
 	}
 
 	return (

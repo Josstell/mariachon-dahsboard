@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 //import Image from "next/image"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,7 +10,7 @@ import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 
 const TableMariachis = () => {
 	const mariachisData = useSelector(selectAllMariachis)
-	console.log("mariachis: ", mariachisData)
+
 	return (
 		<div className="px-2 md:px1 w-full h-full">
 			<div
@@ -125,7 +126,7 @@ const TableMariachis = () => {
 										{mariachi.name}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{mariachi.coordinator.name}
+										{mariachi?.coordinator?.name}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{mariachi?.tel

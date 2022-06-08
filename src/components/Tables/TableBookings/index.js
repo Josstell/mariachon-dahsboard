@@ -1,5 +1,6 @@
 //import Image from "next/image"
 import Image from "next/image"
+import Link from "next/link"
 import React from "react"
 import { useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
@@ -8,7 +9,6 @@ import { selectAllBookings } from "store/features/bookings/bookingSlice"
 
 const TableBookings = () => {
 	const BookingsData = useSelector(selectAllBookings)
-	console.log("Bookings: ", BookingsData)
 	return (
 		<div className="px-2 md:px1 w-full h-full">
 			<div
@@ -89,13 +89,15 @@ const TableBookings = () => {
 							{BookingsData?.map((booking) => (
 								<tr key={booking._id}>
 									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left ">
-										<span
-											className=" font-bold 
+										<Link href={`/reservas/${booking._id}`} passHref>
+											<span
+												className=" font-bold 
 													text-slate-600
 													dark:text-white"
-										>
-											{useTruncatedIdOrTel(booking?._id)}
-										</span>
+											>
+												{useTruncatedIdOrTel(booking?._id)}
+											</span>
+										</Link>
 									</th>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{booking?.orderItems?.mariachi?.logo ? (

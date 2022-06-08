@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { HYDRATE } from "next-redux-wrapper"
 import client from "@lib/sanity"
 import { groq } from "next-sanity"
+import axios from "axios"
 
 const initialState = {
 	mariachis: [],
@@ -15,14 +16,10 @@ const initialState = {
 	},
 }
 const query = groq`
-*[_type == "mariachi"]{
+*[_type == "mariachi" && !(_id in path('drafts.**')) ]{
   _id,
   name,
-  description[0]{
-    children[0]{
-      text
-    }
-  },
+  description,
 address,
 tel,
 service,
@@ -32,6 +29,7 @@ slug{
 },
 region,
 logo,
+categorySet,
 coordinator->{
   _id,
   name,
@@ -61,6 +59,27 @@ export const fetchMariachis = createAsyncThunk(
 	}
 )
 
+// update Marichi
+
+export const updateMariachi = createAsyncThunk(
+	"mariachis/updateUser",
+	async (mariachi) => {
+		// We send the initial data to the fake API server
+		try {
+			const { data } = await axios.put("/api/mariachis/update", mariachi)
+
+			if (data) {
+				return {
+					...data,
+				}
+			}
+		} catch (error) {
+			console.log(error)
+		}
+		// The response includes the complete post object, including unique ID
+	}
+)
+
 const mariachisSlice = createSlice({
 	name: "mariachis",
 	initialState,
@@ -83,6 +102,13 @@ const mariachisSlice = createSlice({
 		},
 		[fetchMariachis.rejected]: (state) => {
 			state.status = "failed"
+		},
+		[updateMariachi.fulfilled]: (state, action) => {
+			state.status = "succeeded"
+			const mariachiUp = action.payload
+			state.mariachis = state.mariachis.map((mariachi) =>
+				mariachi._id === mariachiUp._id ? mariachiUp : mariachi
+			)
 		},
 		[HYDRATE]: (state, action) => {
 			if (

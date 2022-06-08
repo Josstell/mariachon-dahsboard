@@ -20,7 +20,7 @@ export default {
 		},
 		{
 			title: "Estado",
-			name: "postalCode",
+			name: "region",
 			type: "string",
 		},
 		// {

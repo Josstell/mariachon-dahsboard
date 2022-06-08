@@ -66,26 +66,11 @@ export default {
 			name: "paymentResult",
 			type: "paymentResult",
 		},
-		{
-			name: "service",
-			title: "Servicio ",
-			type: "string",
-		},
-		{
-			name: "qty",
-			title: "Cantidad ",
-			type: "number",
-		},
-		{
-			name: "price",
-			title: "Precio total",
-			type: "number",
-		},
 
 		{
 			name: "message",
 			title: "Mensaje",
-			type: "richText",
+			type: "text",
 		},
 		{
 			title: "Lista de canciones",

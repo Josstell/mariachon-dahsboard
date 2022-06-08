@@ -14,7 +14,7 @@ export default {
 		{
 			name: "description",
 			title: "Descripción",
-			type: "richText",
+			type: "text",
 		},
 		{
 			name: "address",
@@ -24,7 +24,7 @@ export default {
 		{
 			name: "tel",
 			title: "Teléfono",
-			type: "string",
+			type: "number",
 		},
 		{
 			name: "region",

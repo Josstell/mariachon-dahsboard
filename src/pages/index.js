@@ -13,6 +13,8 @@ import {
 	selectUserUpdate,
 } from "../../store/features/users/userSlice"
 import { useDispatch, useSelector } from "react-redux"
+import { fetchMariachis } from "store/features/mariachis/mariachiSlice"
+import { fetchBookings } from "store/features/bookings/bookingSlice"
 
 export default function Home() {
 	const userAdmin = useSelector(selectUserAdmin)
@@ -61,6 +63,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 		//store.dispatch(setUsers(users))
 		await store.dispatch(fetchUsersNew(session))
+
+		await store.dispatch(fetchMariachis(true))
+		await store.dispatch(fetchBookings(true))
 
 		console.log("entramos de new")
 
