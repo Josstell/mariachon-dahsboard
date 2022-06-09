@@ -111,7 +111,7 @@ export default function BookingCard({ reserva }) {
 				</div>
 				<div className="col-span-6  bg-gray-900   dark:bg-gray-400 dark:text-slate-900 font-bold">
 					<div className="flex justify-between items-center  border-t-blue-100 border-b-2 px-2">
-						<LogoMariachon className="fill-purple-900 dark:fill-purple-100 w-14 px-2" />
+						<LogoMariachon className="fill-blue-400 dark:fill-blue-900 w-14 px-2" />
 						<h5 className="text-sm uppercase">
 							{" "}
 							{reserva.orderItems[0].service} x {reserva.orderItems[0].qty}

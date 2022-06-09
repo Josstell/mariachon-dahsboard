@@ -40,8 +40,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 	(store) => async (ctx) => {
 		const session = await getSession(ctx)
 
-		await store.dispatch(fetchBookings(true))
-
 		if (!session) {
 			return {
 				redirect: {
@@ -51,6 +49,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			}
 		}
 
+		await store.dispatch(fetchBookings(true))
 		// if (!existAdmin.users.admin) {
 		// 	return {
 		// 		redirect: {

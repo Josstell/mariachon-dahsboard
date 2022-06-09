@@ -62,13 +62,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		const session = await getSession(ctx)
 
 		//store.dispatch(setUsers(users))
-		await store.dispatch(fetchUsersNew(session))
-
-		await store.dispatch(fetchMariachis(true))
-		await store.dispatch(fetchBookings(true))
-
-		console.log("entramos de new")
-
 		if (!session)
 			return {
 				redirect: {
@@ -76,6 +69,13 @@ export const getServerSideProps = wrapper.getServerSideProps(
 					permanent: false,
 				},
 			}
+
+		await store.dispatch(fetchUsersNew(session))
+
+		await store.dispatch(fetchMariachis(true))
+		await store.dispatch(fetchBookings(true))
+
+		console.log("entramos de new")
 
 		return {
 			props: {},
