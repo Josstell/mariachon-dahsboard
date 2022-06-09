@@ -33,7 +33,7 @@ export default function BookingCard({ reserva }) {
 	console.log("mariachis data", mariachiData)
 
 	return (
-		<div className="mx-auto max-w-[400px]  h-screen flex flex-col justify-around  bg-slate-900">
+		<div className="mx-auto max-w-[400px] min-h-[650px]	 h-screen flex flex-col justify-around  bg-slate-900">
 			<div className="flex  px-2 my-2 ">
 				<TicketIcon className="fill-slate-900 dark:fill-slate-100 w-5 h-5 " />
 				<p className="ml-2">{reserva._id}</p>
