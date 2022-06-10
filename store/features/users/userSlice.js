@@ -9,6 +9,7 @@ const initialState = {
 	users: [],
 	admin: {},
 	userUpdate: {},
+	userById: {},
 	status: "idle",
 	error: null,
 }
@@ -110,6 +111,10 @@ const usersSlice = createSlice({
 		},
 		setUserUpdate: (state, action) => {
 			state.userUpdate = action.payload
+		},
+		getUserById: (state, action) => {
+			const user = state.users.find((user) => user._id === action.payload)
+			state.userById = user
 		},
 	},
 

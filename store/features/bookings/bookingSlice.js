@@ -8,6 +8,12 @@ const initialState = {
 	bookings: [],
 	status: "idle",
 	error: null,
+	bookingTabActive: {
+		client: true,
+		mariachi: false,
+		address: false,
+		parameters: false,
+	},
 }
 const query = groq`
 *[_type == "booking"  && !(_id in path('drafts.**'))]{
@@ -73,6 +79,9 @@ const bookingsSlice = createSlice({
 		// setAdminUser: (state, action) => {
 		// 	state.admin = action.payload
 		// },
+		setDispBookingTabActive: (state, action) => {
+			state.bookingTabActive = action.payload
+		},
 	},
 
 	extraReducers: {
@@ -108,6 +117,8 @@ const bookingsSlice = createSlice({
 //export const { setUsers } = mariachisSlice.actions
 
 export default bookingsSlice.reducer
+export const { setDispBookingTabActive } = bookingsSlice.actions
+
 // export const { setAdminUser } = bookingsSlice.actions
 
 export const selectAllBookings = (state) => state.bookings.bookings

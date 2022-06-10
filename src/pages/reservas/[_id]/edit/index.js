@@ -4,22 +4,38 @@ import { groq } from "next-sanity"
 import { useRouter } from "next/router"
 import React from "react"
 import { useSelector } from "react-redux"
+import BookingCard from "src/components/Cards/BookingCard"
+import BookingForm from "src/components/Forms/BookingForm"
 import Layout from "src/components/Layout"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
+import BookingTa from "src/components/Tabs/ReservaTabs"
 import { wrapper } from "store"
 import { selectUserAdmin } from "store/features/users/userSlice"
+import useGetMaraichiAndCoordinatorByMariachiId, {
+	useGetUserById,
+} from "src/hook/useGetMariachiById"
 
 const reservaById = ({ data }) => {
 	const router = useRouter()
 
 	const userAdmin = useSelector(selectUserAdmin)
 
+	const [mariachiBy_Id, coordinatorById] =
+		useGetMaraichiAndCoordinatorByMariachiId(data.orderItems[0].mariachi._ref)
+
+	const clientbyId = useGetUserById(data.client._ref)
+
+	const dataReserva = {
+		...data,
+		mariachiBy_Id,
+		coordinatorById,
+		client: clientbyId,
+	}
+
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
 	}
-
-	console.log("Reserva: ", data)
 
 	return (
 		<Layout>
@@ -29,8 +45,14 @@ const reservaById = ({ data }) => {
 						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-evenly
 							 items-center`}
 					>
-						<div className={"w-4/12 h-3/5 "}>Hola</div>
-						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>tu</div>
+						<div className={"w-4/12 h-3/5 "}>
+							<BookingTa>
+								<BookingForm />
+							</BookingTa>
+						</div>
+						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
+							<BookingCard reserva={dataReserva} />
+						</div>
 					</div>
 				</div>
 			) : (
@@ -66,6 +88,7 @@ export async function getStaticPaths() {
 export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
 	const query = groq`*[_type == "booking" && _id == $id][0]{
    _id,
+   client,
   dateAndTime,
   message,
   playlist,

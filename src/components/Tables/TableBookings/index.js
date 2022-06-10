@@ -89,7 +89,7 @@ const TableBookings = () => {
 							{BookingsData?.map((booking) => (
 								<tr key={booking._id}>
 									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left ">
-										<Link href={`/reservas/${booking._id}`} passHref>
+										<Link href={`/reservas/${booking._id}/edit`} passHref>
 											<span
 												className=" font-bold 
 													text-slate-600
