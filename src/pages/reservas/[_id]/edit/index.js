@@ -2,6 +2,7 @@ import client from "@lib/sanity"
 import { getSession } from "next-auth/react"
 import { groq } from "next-sanity"
 import { useRouter } from "next/router"
+import { useForm } from "react-hook-form"
 import { useSelector } from "react-redux"
 
 import BookingCard from "src/components/Cards/BookingCard"
@@ -20,19 +21,24 @@ const reservaById = ({ data }) => {
 
 	const userAdmin = useSelector(selectUserAdmin)
 
-	// const [mariachiBy_Id, coordinatorById] =
-	// 	useGetMaraichiAndCoordinatorByMariachiId(data.orderItems[0].mariachi._ref)
+	const methods = useForm()
+	const { watch } = methods
 
-	// const clientbyId = useGetUserById(data.client._ref)
-
-	// useEffect(() => {
-	// 	setDataRever({
-	// 		...data,
-	// 		mariachiBy_Id,
-	// 		coordinatorById,
-	// 		client: clientbyId,
-	// 	})
-	// }, [data, clientbyId, mariachiBy_Id, coordinatorById])
+	const dataReservaToCard = {
+		client: {
+			_id: watch("clientId"),
+			name: watch("nameClient"),
+			tel: watch("telClient"),
+			email: watch("emailClient"),
+		},
+		shippingAddress: {
+			address: watch("address"),
+			city: watch("city"),
+			cp: watch("cp"),
+			region: watch("region"),
+		},
+		otro: watch("address"),
+	}
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
@@ -48,11 +54,11 @@ const reservaById = ({ data }) => {
 					>
 						<div className={"w-4/12 h-3/5 "}>
 							<BookingTa>
-								<BookingForm />
+								<BookingForm methods={methods} reserva={data} />
 							</BookingTa>
 						</div>
 						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
-							<BookingCard reserva={data} />
+							<BookingCard reserva={dataReservaToCard} data={data} />
 						</div>
 					</div>
 				</div>

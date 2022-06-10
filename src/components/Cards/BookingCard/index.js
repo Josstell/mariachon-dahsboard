@@ -7,7 +7,7 @@ import LogoMariachon from "src/components/SVG/Icons/LogoMariachon"
 import MessageIcon from "src/components/SVG/Icons/MessageIcon"
 import PlaylistIcon from "src/components/SVG/Icons/PlaylistIcon"
 
-export default function BookingCard({ reserva }) {
+export default function BookingCard({ reserva, data }) {
 	//const users = useSelector(selectAllUsers)
 
 	const options = {
@@ -23,7 +23,7 @@ export default function BookingCard({ reserva }) {
 	console.log("bookingCard: ", reserva)
 
 	return (
-		<div className="mx-auto max-w-[400px] min-w-[350px] min-h-[650px]	 h-screen flex flex-col justify-around bg-slate-200 dark:bg-slate-800 shadow-[0_35px_100px_rgba(0,0,0,0.25)] dark:shadow-[0_35px_100px_rgba(00,00,00,0.1)]">
+		<div className="mx-auto no-scrollbar overflow-auto max-w-[400px] min-w-[370px] min-h-[650px]	 h-screen flex flex-col justify-around bg-slate-200 dark:bg-slate-800 shadow-[0_35px_100px_rgba(0,0,0,0.25)] dark:shadow-[0_35px_100px_rgba(00,00,00,0.1)]">
 			<div className="flex  px-2 my-2 ">
 				<TicketIcon className="fill-slate-900 dark:fill-slate-100 w-5 h-5 " />
 				<p className="ml-2">{reserva._id}</p>
@@ -38,17 +38,17 @@ export default function BookingCard({ reserva }) {
 				</div>
 				<div className="w-1/2 p-1 flex flex-col justify-evenly items-center ">
 					<h2 className="text-center text-3xl text-slate-900 dark:text-slate-100  font-bold">
-						{reserva.orderItems.mariachi?.name}
+						{reserva?.orderItems?.mariachi?.name}
 					</h2>
 					<p className="text-center text-xs flex flex-row text-slate-900 dark:text-slate-100">
-						{reserva?.orderItems.mariachi?.coordinator?.name}
+						{reserva?.orderItems?.mariachi?.coordinator?.name}
 					</p>
 					<div className="flex justify-between">
-						<p className="text-xs text-red-100/90  bg-black px-1 mr-2">
-							({reserva.orderItems.mariachi?.members} elementos)
+						<p className="text-xs text-red-50/90  bg-black px-[6px] pt-[1px] pb-[2px] mr-2 rounded-sm">
+							({reserva?.orderItems?.mariachi?.members} elementos)
 						</p>
-						<p className="text-xs text-red-100/90 bg-black dark:bg-black px-1">
-							{reserva.orderItems.mariachi?.categorySet}
+						<p className="text-xs text-red-50/90 bg-black dark:bg-black px-[6px] pt-[1px] pb-[2px] rounded-sm">
+							{reserva?.orderItems?.mariachi?.categorySet}
 						</p>
 					</div>
 				</div>
@@ -60,8 +60,18 @@ export default function BookingCard({ reserva }) {
 				</div>
 				<div className="col-span-10 ">
 					<h4>
-						{reserva?.shippingAddress?.address},{" "}
-						{reserva?.shippingAddress?.city}, {reserva?.shippingAddress?.region}
+						{reserva?.shippingAddress?.address === undefined
+							? data.shippingAddress.address
+							: reserva?.shippingAddress?.address}
+						{reserva?.shippingAddress?.city === undefined
+							? ", " + data?.shippingAddress?.city
+							: ", " + reserva?.shippingAddress?.city}
+						{reserva?.shippingAddress?.region === undefined
+							? ", " + data?.shippingAddress?.region
+							: ", " + reserva?.shippingAddress?.region}
+						{reserva?.shippingAddress?.cp === undefined
+							? ", " + data?.shippingAddress?.cp
+							: ", " + reserva?.shippingAddress?.cp}
 					</h4>
 				</div>
 
@@ -71,10 +81,18 @@ export default function BookingCard({ reserva }) {
 				<div className="col-span-10 ">
 					<div className="flex flex-col">
 						<h4 className="text-lg text-slate-900 dark:text-slate-100">
-							{reserva.client?.name}
+							{reserva?.client?.name === undefined
+								? data.client.name
+								: reserva?.client?.name}
 						</h4>
 						<h5 className="text-sm text-slate-900/50 dark:text-slate-100/50 ">
-							{reserva?.client?.tel}, {reserva?.client?.email}
+							{reserva?.client?.tel === undefined
+								? data.client.tel
+								: reserva?.client?.tel}
+							,{" "}
+							{reserva?.client?.email === undefined
+								? data.client.email
+								: reserva?.client?.email}
 						</h5>
 					</div>
 				</div>

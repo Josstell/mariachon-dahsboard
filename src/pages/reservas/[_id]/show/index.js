@@ -13,7 +13,7 @@ const reservaByIDShow = ({ data }) => {
 	}
 
 	return (
-		<div className="w-screen h-fit bg-slate-100 dark:bg-slate-900">
+		<div className="w-screen no-scrollbar overflow-auto h-screen bg-slate-100 dark:bg-slate-900">
 			<BookingCard reserva={data} />
 		</div>
 	)

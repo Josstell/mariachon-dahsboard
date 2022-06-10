@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
-import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
-import { selectAllUsers } from "store/features/users/userSlice"
 
-export default function useGetMaraichiAndCoordinatorByMariachiId(_id) {
-	const users = useSelector(selectAllUsers)
-	const mariachis = useSelector(selectAllMariachis)
-
+export default function useGetMaraichiAndCoordinatorByMariachiId(
+	users,
+	mariachis,
+	_id
+) {
 	const [mariachiBy_Id, setMarachiBy_Id] = useState({})
 	const [coordinatorById, setCoordinatorById] = useState({})
 	useEffect(() => {
@@ -31,13 +29,11 @@ export default function useGetMaraichiAndCoordinatorByMariachiId(_id) {
 	return [mariachiBy_Id, coordinatorById]
 }
 
-export function useGetUserById(_id) {
-	const users = useSelector(selectAllUsers)
-
+export function useGetDataById(data, _id) {
 	const [userById, setUserById] = useState({})
 
 	useEffect(() => {
-		const userById_ = users.find((user) => user._id === _id)
+		const userById_ = data.find((user) => user._id === _id)
 		setUserById(userById_)
 	}, [])
 

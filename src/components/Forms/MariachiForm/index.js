@@ -10,20 +10,14 @@ import { Button, Input, Select, TextArea, RadioButton } from "../Smart/Inputs"
 
 export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 	const [loading, setloading] = useState(false)
+
 	const router = useRouter()
+
 	const userAdmin = useSelector(selectUserAdmin)
-	const dispatch = useDispatch()
 	const users = useSelector(selectAllUsers)
+	const dispatch = useDispatch()
 
 	const usersByCoordinator = useSearchUserByCategory(users, "Coordinador")
-
-	console.log(
-		"users",
-		users,
-		usersByCoordinator.map((users) => users.name)
-	)
-
-	console.log("mariachis!!!!!", mariachiData)
 
 	const { setValue } = methods
 

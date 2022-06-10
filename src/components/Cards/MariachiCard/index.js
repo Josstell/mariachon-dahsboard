@@ -10,8 +10,6 @@ import PricesIcon from "src/components/SVG/Icons/PricesIcon"
 import { selectAllUsers } from "store/features/users/userSlice"
 
 const MariachiCard = ({ mariachiUp }) => {
-	console.log("mariachi Card!!!!:", mariachiUp)
-
 	const [coordinator, setCoordinator] = useState({})
 
 	const allUser = useSelector(selectAllUsers)
@@ -21,8 +19,6 @@ const MariachiCard = ({ mariachiUp }) => {
 	useEffect(() => {
 		setCoordinator(allUser.find((user) => user._id === mariachiUp.coordinator))
 	}, [mariachiUp.coordinator])
-
-	console.log("coord editar: ", coordinator)
 
 	return (
 		<div className="w-full h-full shadow-[0_0_100px_rgba(0,0,0,0.3)] dark:shadow-[0_0_100px_rgba(50,50,50,0.3)] bg-slate-100 dark:bg-slate-800  rounded-t-lg rounded-b-lg flex flex-col text-slate-300">

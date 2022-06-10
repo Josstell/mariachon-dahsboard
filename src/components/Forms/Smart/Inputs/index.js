@@ -129,7 +129,10 @@ export function Select({ register, options, name, label, hidden, ...rest }) {
 				{...rest}
 			>
 				{options.map((value) => (
-					<option key={value._id} value={value._id}>
+					<option
+						key={value._id || value.clave}
+						value={value._id || value.clave}
+					>
 						{value.name}
 					</option>
 				))}

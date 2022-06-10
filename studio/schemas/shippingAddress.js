@@ -4,11 +4,6 @@ export default {
 	type: "object",
 	fields: [
 		{
-			title: "Nombre completo",
-			name: "fullName",
-			type: "string",
-		},
-		{
 			title: "Dirección",
 			name: "address",
 			type: "string",
@@ -21,6 +16,12 @@ export default {
 		{
 			title: "Estado",
 			name: "region",
+			type: "string",
+		},
+
+		{
+			title: "Codigo Postal",
+			name: "cp",
 			type: "string",
 		},
 		// {

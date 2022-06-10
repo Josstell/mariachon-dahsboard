@@ -41,11 +41,6 @@ const mariachiById = ({ data }) => {
 			contract: watch("contract"),
 		},
 		coordinator: watch("coordinator"),
-		// watch("hora", .service.hora)
-		// watch("serenata", .service.serenata)
-		// watch("contrato", .service.contract)
-		// watch("category_mariachi", .categorySet[0])
-		// watch("coordinator", .coordinator._id)
 	}
 
 	if (!userAdmin.exist || router.isFallback) {
