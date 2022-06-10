@@ -38,18 +38,17 @@ export default function BookingCard({ reserva }) {
 				</div>
 				<div className="w-1/2 p-1 flex flex-col justify-evenly items-center ">
 					<h2 className="text-center text-3xl text-slate-900 dark:text-slate-100  font-bold">
-						{reserva.mariachiBy_Id?.name}
+						{reserva.orderItems.mariachi?.name}
 					</h2>
 					<p className="text-center text-xs flex flex-row text-slate-900 dark:text-slate-100">
-						{reserva.coordinatorById?.name ||
-							reserva?.mariachiBy_Id?.coordinator?.name}
+						{reserva?.orderItems.mariachi?.coordinator?.name}
 					</p>
 					<div className="flex justify-between">
 						<p className="text-xs text-red-100/90  bg-black px-1 mr-2">
-							({reserva.mariachiBy_Id?.members} elementos)
+							({reserva.orderItems.mariachi?.members} elementos)
 						</p>
 						<p className="text-xs text-red-100/90 bg-black dark:bg-black px-1">
-							{reserva.mariachiBy_Id?.categorySet}
+							{reserva.orderItems.mariachi?.categorySet}
 						</p>
 					</div>
 				</div>
@@ -118,29 +117,27 @@ export default function BookingCard({ reserva }) {
 						<LogoMariachon className="fill-blue-400 dark:fill-blue-900 w-14 px-2" />
 						<h5 className="text-sm uppercase">
 							{" "}
-							{reserva?.orderItems[0]?.service} x {reserva?.orderItems[0]?.qty}
+							{reserva?.orderItems?.service} x {reserva?.orderItems?.qty}
 						</h5>
 					</div>
 					<div className="flex justify-between  items-center px-2 py-2">
 						<div className="w-16">
 							<p>Precio: </p>
 						</div>
-						<h5>${reserva?.orderItems[0]?.price}</h5>
+						<h5>${reserva?.orderItems?.price}</h5>
 					</div>
 
 					<div className="flex justify-between  items-center border-t-blue-100 border-b-2 px-2 py-2">
 						<div className="w-16">
 							<p>Deposito: </p>
 						</div>
-						<p>${reserva?.orderItems[0]?.deposit}</p>
+						<p>${reserva?.orderItems?.deposit}</p>
 					</div>
 					<div className="flex justify-between  items-center m-2 px-2">
 						<div className="w-16">
 							<p>Resta: </p>
 						</div>
-						<p>
-							${reserva?.orderItems[0]?.price - reserva?.orderItems[0]?.deposit}
-						</p>
+						<p>${reserva?.orderItems?.price - reserva?.orderItems?.deposit}</p>
 					</div>
 				</div>
 			</div>
