@@ -76,7 +76,7 @@ export default {
 			of: [{ type: "string" }],
 			options: {
 				list: [
-					{ title: "Economico", value: "Economico" },
+					{ title: "Basico", value: "Basico" },
 					{ title: "Normal", value: "Normal" },
 					{ title: "Premium", value: "Premium" },
 				],

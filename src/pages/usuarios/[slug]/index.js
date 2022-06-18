@@ -18,22 +18,18 @@ import {
 } from "store/features/users/userSlice"
 
 const userById = ({ data }) => {
+	const [loading, setLoading] = useState(false)
+
 	const router = useRouter()
 	const dispatch = useDispatch()
-
-	const [loading, setLoading] = useState(false)
 
 	const [editCard, setEditCard] = useState(false)
 
 	const userAdmin = useSelector(selectUserAdmin)
 
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		watch,
-		formState: { errors },
-	} = useForm()
+	const methods = useForm()
+
+	const { setValue, watch } = methods
 
 	useEffect(() => {
 		if (data) {
@@ -45,12 +41,14 @@ const userById = ({ data }) => {
 		setValue("name", data.name)
 		setValue("tel", data.tel)
 		setValue("email", data.email)
-		setValue("city", data?.city || "")
+		setValue("region", data?.region || "")
 		// 		//
 	}, [])
 
 	const onSubmit = (dataForm) => {
 		setLoading(true)
+
+		console.log(dataForm)
 
 		//Creando variable session para recargar datos
 
@@ -68,7 +66,7 @@ const userById = ({ data }) => {
 				categorySet: data?.categorySet || "",
 			})
 		)
-		// setLoading(false)
+		setLoading(false)
 
 		router.push("/usuarios")
 	}
@@ -77,7 +75,7 @@ const userById = ({ data }) => {
 		name: watch("name"),
 		tel: watch("tel"),
 		email: watch("email"),
-		city: watch("city"),
+		region: watch("region"),
 		categorySet: data?.categorySet || "",
 	}
 
@@ -99,12 +97,9 @@ const userById = ({ data }) => {
 							{/* <UserForm />  Formulario */}
 
 							<UserForm
-								register={register}
-								handleSubmit={handleSubmit}
+								methods={methods}
+								data={data}
 								onSubmit={onSubmit}
-								setValue={setValue}
-								watch={watch}
-								errors={errors}
 								loading={loading}
 							/>
 						</div>
@@ -156,7 +151,8 @@ export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
   email,
   name,
   tel,
-  city
+  city,
+  region
 }
 	`
 

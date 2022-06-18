@@ -1,5 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 //import Image from "next/image"
+import { ViewGridAddIcon } from "@heroicons/react/outline"
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
@@ -19,10 +20,13 @@ const TableMariachis = () => {
 			>
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
-						<div className="relative w-full px-4 max-w-full flex-grow flex-1">
+						<div className="relative w-full px-4 max-w-full flex justify-between">
 							<h3 className="font-semibold text-lg text-slate-700 dark:text-white">
 								Lista de Mariachis
 							</h3>
+							<Link href={`mariachis/nuevo`} passHref>
+								<ViewGridAddIcon className="w-5 cursor-pointer" />
+							</Link>
 						</div>
 					</div>
 				</div>

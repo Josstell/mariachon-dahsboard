@@ -2,6 +2,7 @@ import { useRouter } from "next/router"
 import React, { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
+import { regions } from "src/helpers/dataset"
 import useSearchUserByCategory from "src/hook/useSearchUserByCategory"
 import { updateMariachi } from "store/features/mariachis/mariachiSlice"
 import { selectAllUsers, selectUserAdmin } from "store/features/users/userSlice"
@@ -9,6 +10,8 @@ import Form from "../Smart/Form"
 import { Button, Input, Select, TextArea, RadioButton } from "../Smart/Inputs"
 
 export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
+	const regionData = regions.response.estado
+
 	const [loading, setloading] = useState(false)
 
 	const router = useRouter()
@@ -50,6 +53,8 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 
 	const [arrayImages, setArrayImages] = useState([])
 	const [arrayVideos, setArrayVideos] = useState([])
+
+	console.log(arrayImages, arrayVideos)
 
 	const handleArrayImage = () => {
 		console.log("valor: ", imageRef.current.value)
@@ -97,8 +102,7 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 
 		router.push("/mariachis")
 	}
-	console.log(arrayImages)
-	console.log(arrayVideos)
+
 	return (
 		<>
 			<Form onSubmit={onSubmit} methods={methods}>
@@ -115,7 +119,18 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 				/>
 				<Input
 					hidden={activeFormTab.data && true}
+					name="city"
+					label="Ciudad o municipio"
+				/>
+				{/* <Input
+					hidden={activeFormTab.data && true}
 					name="region"
+					label="Estado"
+				/> */}
+				<Select
+					hidden={activeFormTab.data && true}
+					name="region"
+					options={regionData}
 					label="Estado"
 				/>
 				<Input
@@ -135,12 +150,7 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 					options={usersByCoordinator}
 					label="Coordinador"
 				/>
-				{/* <Select
-				hidden={activeFormTab.mariachi && true}
-				name="crew"
-				options={usersByCoordinator}
-				label="Elementos"
-			/> */}
+
 				<Input
 					hidden={activeFormTab.mariachi && true}
 					name="members"
@@ -252,6 +262,7 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 						</button>
 					</div>
 				</div>
+
 				<Button message="Actualizar" />
 			</Form>
 			{loading && <SpinnerLoadign />}

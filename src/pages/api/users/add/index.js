@@ -13,7 +13,9 @@ export default handlerCors().post(async (req, res) => {
 				_type: "user",
 				name: req.body.name,
 				email: req.body.email,
+				tel: req.body.tel || "",
 				categorySet: req.body.categorySet || ["Cliente"],
+				region: req.body.region || "",
 				profileImage: {
 					url: req.body.image || "",
 					alt: req.body.username || "",
@@ -34,25 +36,32 @@ export default handlerCors().post(async (req, res) => {
 	if (existUser) {
 		return res.status(401).send({ message: "Email o usuario ya existe!" })
 	} else {
-		const { data } = await axios.post(
-			`https://${projectId}.api.sanity.io/v1/data/mutate/${dataset}?returnIds=true`,
-			{ mutations: createMutations },
-			{
-				headers: {
-					"Content-type": "application/json",
-					Authorization: `Bearer ${tokenWithWriteAccess}`,
-				},
+		try {
+			const { data } = await axios.post(
+				`https://${projectId}.api.sanity.io/v1/data/mutate/${dataset}?returnIds=true`,
+				{ mutations: createMutations },
+				{
+					headers: {
+						"Content-type": "application/json",
+						Authorization: `Bearer ${tokenWithWriteAccess}`,
+					},
+				}
+			)
+
+			const userId = data.results[0].id
+			const user = {
+				_id: userId,
+				name: req.body.name,
+				email: req.body.email,
+				tel: req.body.tel || "",
+
+				categorySet: req.body.categorySet || ["Cliente"],
+				isAdmin: false,
 			}
-		)
 
-		const userId = data.results[0].id
-		const user = {
-			_id: userId,
-			name: req.body.name,
-			email: req.body.email,
-			isAdmin: false,
+			return res.send({ ...user })
+		} catch (error) {
+			return res.status(401).send({ message: "Algo paso!" })
 		}
-
-		res.send({ ...user })
 	}
 })

@@ -6,6 +6,8 @@ import GetLogoWithName from "src/components/GetLogoWithName"
 import useTruncatedIdOrTel from "src/hook/useTruncatedId"
 import { selectAllUsers } from "store/features/users/userSlice"
 
+import { ViewGridAddIcon } from "@heroicons/react/outline"
+
 const TableUser = () => {
 	const usersData = useSelector(selectAllUsers)
 	return (
@@ -16,10 +18,13 @@ const TableUser = () => {
 			>
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
-						<div className="relative w-full px-4 max-w-full flex-grow flex-1">
+						<div className="relative w-full px-4 max-w-full flex flex-row justify-between">
 							<h3 className="font-semibold text-lg text-slate-700 dark:text-white">
 								Lista de usuarios
 							</h3>
+							<Link href={`/usuarios/nuevo`} passHref>
+								<ViewGridAddIcon className="w-5 cursor-pointer" />
+							</Link>
 						</div>
 					</div>
 				</div>

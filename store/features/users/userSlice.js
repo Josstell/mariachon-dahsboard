@@ -65,6 +65,12 @@ export const fetchUsersNew = createAsyncThunk(
 	}
 )
 
+// New user
+
+// export const createNewUser = createAsyncThunk("users/createNewUser", async(newUser) => {
+
+// })
+
 // update user
 
 export const updateUser = createAsyncThunk("users/updateUser", async (user) => {
@@ -93,9 +99,11 @@ export const addNewUser = createAsyncThunk(
 	async (newUser) => {
 		// We send the initial data to the fake API server
 		try {
-			await axios.post("/api/users/add", newUser)
+			const { data } = await axios.post("/api/users/add", newUser)
+			return data
 		} catch (error) {
-			console.log(error)
+			console.log("El error!!!", error)
+			return error.response.data
 		}
 		// The response includes the complete post object, including unique ID
 	}
@@ -116,6 +124,9 @@ const usersSlice = createSlice({
 			const user = state.users.find((user) => user._id === action.payload)
 			state.userById = user
 		},
+		setStatus: (state, action) => {
+			state.status = action.payload
+		},
 	},
 
 	extraReducers: {
@@ -133,19 +144,21 @@ const usersSlice = createSlice({
 		[addNewUser.pending]: (state) => {
 			state.status = "loading"
 		},
-		[addNewUser.fulfilled]: (state) => {
-			state.status = "succeeded"
-		},
-		[addNewUser.rejected]: (state) => {
-			state.status = "failed"
+		[addNewUser.fulfilled]: (state, action) => {
+			console.log("user:!!!", action.payload, state.users.users)
+			if (action.payload.message) {
+				state.status = "failed"
+				state.error = action.payload.message
+			} else {
+				state.status = "succeeded"
+				state.users.push(action.payload)
+			}
 		},
 
 		[updateUser.fulfilled]: (state, action) => {
 			state.status = "succeeded"
 			state.userUpdate = {}
 			const userAd = action.payload
-
-			console.log("update: ", userAd)
 
 			if (action.payload?.isAdmin) {
 				state.admin = action.payload
@@ -189,7 +202,7 @@ const usersSlice = createSlice({
 //export const { setUsers } = usersSlice.actions
 
 export default usersSlice.reducer
-export const { setAdminUser, setUserUpdate } = usersSlice.actions
+export const { setAdminUser, setUserUpdate, setStatus } = usersSlice.actions
 
 export const selectAllUsers = (state) => state.users.users
 

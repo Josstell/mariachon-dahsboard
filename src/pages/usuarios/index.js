@@ -6,7 +6,9 @@ import { wrapper } from "../../../store"
 import { useDispatch, useSelector } from "react-redux"
 import {
 	fetchUsersNew,
+	selectStatus,
 	selectUserAdmin,
+	setStatus,
 } from "../../../store/features/users/userSlice"
 import TableUser from "src/components/Tables/TableUsers"
 import Layout from "src/components/Layout"
@@ -16,15 +18,19 @@ import SpinnerGral from "src/components/Spinners/SpinnerGral"
 const usuarios = ({ session }) => {
 	const userAdmin = useSelector(selectUserAdmin)
 	const dispatch = useDispatch()
+	const status = useSelector(selectStatus)
+
+	useEffect(() => {
+		if (status === "succeeded") {
+			dispatch(setStatus("idle"))
+		}
+	}, [status])
 
 	useEffect(() => {
 		if (!userAdmin.exist) {
-			const reloadUsers = async () => {
-				await dispatch(fetchUsersNew(session))
-			}
-			reloadUsers()
-			//	router.push("/")
+			dispatch(fetchUsersNew(session))
 		}
+		//	router.push("/")
 	}, [userAdmin, dispatch, session])
 
 	if (!userAdmin.exist) {

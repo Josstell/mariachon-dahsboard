@@ -25,6 +25,7 @@ export default function Home() {
 
 	useEffect(() => {
 		if (!userAdmin.exist) {
+			console.log("Entro para guardar el user:")
 			const dataRegister = async () => {
 				await dispatch(addNewUser(userAdmin))
 				// try {
@@ -41,7 +42,7 @@ export default function Home() {
 	return (
 		<Layout>
 			{userAdmin.isAdmin ? (
-				<h3>Tienes derechos de usuario</h3>
+				<h3 className="font-robotoMono">Tienes derechos de usuario</h3>
 			) : (
 				<>
 					<MariachiForbiden className="w-40 fill-slate-900 dark:fill-slate-50" />

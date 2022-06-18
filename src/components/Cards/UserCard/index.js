@@ -32,7 +32,7 @@ const UserCard = ({ userUpdat }) => {
 					/>
 				) : (
 					<GetLogoWithNameV
-						text={userUpdate.name || "Mariahcon"}
+						text={userUpdate.name || "Mariachon"}
 						numberLetter={0}
 					/>
 				)}
@@ -40,10 +40,10 @@ const UserCard = ({ userUpdat }) => {
 			<div className="w-full h-2/3 text-slate-50 dark:text-slate-900 bg-slate-50 rounded-b-lg flex flex-col justify-center items-center ">
 				<h3 className="text-xl font-semibold ">{userUpdate?.name}</h3>
 				<h3 className="text-base font-light ">
-					{userUpdate?.categorySet || "user"}
+					{userUpdate?.categorySet[0] || "user"}
 				</h3>
 				<h3 className="text-sm font-light ">
-					{userUpdate?.city || "no disponible"}
+					{userUpdate?.region || "no disponible"}
 				</h3>
 				<h3 className="text-xs font-light ">
 					{userUpdate?.email || "no disponible"}

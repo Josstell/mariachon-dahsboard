@@ -12,18 +12,21 @@ export default {
 				disableNew: true,
 			},
 		},
+
 		{
 			name: "service",
 			title: "Servicio",
-			type: "array",
-			of: [{ type: "string" }],
-			options: {
-				list: [
-					{ title: "Serenata", value: "serenata" },
-					{ title: "Hora", value: "hora" },
-					{ title: "Contrato", value: "contract" },
-				],
-			},
+			type: "string",
+		},
+		{
+			name: "categorySet",
+			title: "Categoría",
+			type: "string",
+		},
+		{
+			name: "members",
+			title: "Numero de elementos",
+			type: "number",
 		},
 		{
 			name: "qty",

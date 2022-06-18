@@ -2,7 +2,11 @@
 import React from "react"
 
 export default function Form({ methods, children, onSubmit }) {
-	const { handleSubmit, register } = methods
+	const {
+		handleSubmit,
+		register,
+		formState: { errors },
+	} = methods
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
@@ -12,6 +16,7 @@ export default function Form({ methods, children, onSubmit }) {
 							...{
 								...child.props,
 								register,
+								errors,
 								key: child.props.name,
 							},
 					  })

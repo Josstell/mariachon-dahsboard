@@ -63,14 +63,21 @@ export const fetchMariachis = createAsyncThunk(
 
 export const updateMariachi = createAsyncThunk(
 	"mariachis/updateUser",
-	async (mariachi) => {
+	async (mariachi, { getState }) => {
 		// We send the initial data to the fake API server
+		const {
+			users: { users },
+		} = getState()
 		try {
 			const { data } = await axios.put("/api/mariachis/update", mariachi)
 
 			if (data) {
+				const coordinatorUpdated = users.find(
+					(user) => user._id === data.coordinator._ref
+				)
 				return {
 					...data,
+					coordinator: coordinatorUpdated,
 				}
 			}
 		} catch (error) {

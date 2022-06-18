@@ -22,7 +22,7 @@ export default {
 			type: "string",
 		},
 		{
-			name: "city",
+			name: "region",
 			title: "Cidad o estado",
 			type: "string",
 		},
@@ -33,7 +33,7 @@ export default {
 			of: [{ type: "string" }],
 			options: {
 				list: [
-					{ title: "Cliente", value: "Client" },
+					{ title: "Cliente", value: "Cliente" },
 					{ title: "Coordinador", value: "Coordinador" },
 					{ title: "Mariachi", value: "Mariachi" },
 					{ title: "Admin", value: "Admin" },
