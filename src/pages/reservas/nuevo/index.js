@@ -1,7 +1,7 @@
 import React from "react"
 
-const addnewbooking = () => {
-	return <div>addnewbooking</div>
+const nuevo = () => {
+	return <div>nuevo</div>
 }
 
-export default addnewbooking
+export default nuevo

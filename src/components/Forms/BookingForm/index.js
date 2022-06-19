@@ -14,58 +14,66 @@ import { updateBooking } from "store/features/bookings/bookingSlice"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import { useRouter } from "next/router"
 
-const BookingForm = ({ methods, reserva, arrayPlayList, setArrayPlayList }) => {
+const BookingForm = ({
+	methods,
+	reserva,
+	arrayPlayList,
+	setArrayPlayList,
+	setUserbyId,
+	setMariachibyId,
+}) => {
 	const [loading, setLoading] = useState(false)
 	const regionData = regions.response.estado
-	const [userbyId, setUserbyId] = useState(reserva.client)
-	const [mariachibyId, setMariachibyId] = useState(reserva.orderItems.mariachi)
+
+	console.log("real life:  ", reserva)
 
 	const activeFormTab = useSelector((state) => state.bookings.bookingTabActive)
 
 	const users = useSelector(selectAllUsers)
 	const mariachis = useSelector(selectAllMariachis)
-	const { setValue } = methods
 
 	const usersByClient = useSearchUserByCategory(users, "Client")
 
 	const dispatch = useDispatch()
 
 	const router = useRouter()
+	// //use form
+	// const { setValue } = methods
 
-	useEffect(() => {
-		setValue("nameClient", userbyId.name)
-		setValue("telClient", userbyId.tel)
-		setValue("emailClient", userbyId.email)
-	}, [userbyId])
+	// useEffect(() => {
+	// 	setValue("nameClient", userbyId.name)
+	// 	setValue("telClient", userbyId.tel)
+	// 	setValue("emailClient", userbyId.email)
+	// }, [userbyId])
 
-	useEffect(() => {
-		setValue("idMariachi", mariachibyId._id)
-	}, [mariachibyId])
+	// useEffect(() => {
+	// 	setValue("idMariachi", mariachibyId._id)
+	// }, [mariachibyId])
 
-	useEffect(() => {
-		setValue("idMariachi", reserva.orderItems.mariachi._id)
-		setValue("clientId", reserva.client._id)
-		setValue("address", reserva.shippingAddress.address)
-		setValue("city", reserva?.shippingAddress.city || "")
-		setValue("cp", reserva?.shippingAddress.cp || "")
-		setValue("region", reserva?.shippingAddress.region || "")
-		setValue("dateAndTime", reserva?.dateAndTime)
-		setValue("members", reserva.orderItems.members)
-		setValue("category_mariachi", reserva?.orderItems?.categorySet)
-		setValue("fee", reserva.orderItems.fee || 0)
-		setValue("qty", reserva.orderItems.qty || 0)
-		setValue("price", reserva.orderItems.price)
-		setValue("deposit", reserva.orderItems.deposit)
-		setValue(
-			"service",
-			reserva?.orderItems?.service === undefined
-				? ""
-				: reserva?.orderItems?.service
-		)
-		setValue("message", reserva.message)
+	// useEffect(() => {
+	// 	setValue("idMariachi", reserva.orderItems.mariachi._id)
+	// 	setValue("clientId", reserva.client._id)
+	// 	setValue("address", reserva.shippingAddress.address)
+	// 	setValue("city", reserva?.shippingAddress.city || "")
+	// 	setValue("cp", reserva?.shippingAddress.cp || "")
+	// 	setValue("region", reserva?.shippingAddress.region || "")
+	// 	setValue("dateAndTime", reserva?.dateAndTime)
+	// 	setValue("members", reserva.orderItems.members)
+	// 	setValue("category_mariachi", reserva?.orderItems?.categorySet)
+	// 	setValue("fee", reserva.orderItems.fee || 0)
+	// 	setValue("qty", reserva.orderItems.qty || 0)
+	// 	setValue("price", reserva.orderItems.price)
+	// 	setValue("deposit", reserva.orderItems.deposit)
+	// 	setValue(
+	// 		"service",
+	// 		reserva?.orderItems?.service === undefined
+	// 			? ""
+	// 			: reserva?.orderItems?.service
+	// 	)
+	// 	setValue("message", reserva.message)
 
-		//
-	}, [reserva.orderItems.categorySet, reserva.orderItems.members])
+	// 	//
+	// }, [reserva.orderItems.categorySet, reserva.orderItems.members])
 
 	const onSubmit = (data) => {
 		const reservaUpdate = {
@@ -150,7 +158,7 @@ const BookingForm = ({ methods, reserva, arrayPlayList, setArrayPlayList }) => {
 					name="clientId"
 					options={usersByClient}
 					label="Cambiar cliente"
-					onChange={hangleGetClient}
+					onChange={(e) => hangleGetClient(e)}
 				/>
 				<Input
 					hidden={activeFormTab.client}
@@ -207,7 +215,7 @@ const BookingForm = ({ methods, reserva, arrayPlayList, setArrayPlayList }) => {
 					name="idMariachi"
 					options={mariachis}
 					label="Cambiar mariachi"
-					onChange={hangleGetMariachi}
+					onChange={(e) => hangleGetMariachi(e)}
 				/>
 
 				<RadioButton
