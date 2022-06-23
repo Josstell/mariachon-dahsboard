@@ -1,7 +1,7 @@
 export default {
-	name: "figure",
+	name: "video",
 	type: "object",
-	title: "Image",
+	title: "Video",
 	fields: [
 		{
 			name: "url",

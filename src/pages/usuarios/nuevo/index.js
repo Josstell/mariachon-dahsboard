@@ -11,9 +11,9 @@ import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import {
 	addNewUser,
 	selectError,
-	selectStatus,
+	selectStatusUser,
 	selectUserAdmin,
-	setStatus,
+	setStatusUser,
 } from "store/features/users/userSlice"
 
 import { nanoid } from "@reduxjs/toolkit"
@@ -26,7 +26,7 @@ const addnewuser = () => {
 	const router = useRouter()
 
 	const userAdmin = useSelector(selectUserAdmin)
-	const status = useSelector(selectStatus)
+	const status = useSelector(selectStatusUser)
 	const error = useSelector(selectError)
 
 	const dispatch = useDispatch()
@@ -41,7 +41,7 @@ const addnewuser = () => {
 	const notifySuccess = () => toast.success("Datos creados correctamente")
 
 	useEffect(() => {
-		dispatch(setStatus("idle"))
+		dispatch(setStatusUser("idle"))
 		setValue("name", "")
 		setValue("tel", "")
 		setValue("email", "")
@@ -52,7 +52,7 @@ const addnewuser = () => {
 		if (status === "failed") {
 			setLoading(false)
 			notifyError()
-			dispatch(setStatus("idle"))
+			dispatch(setStatusUser("idle"))
 		}
 		if (status === "succeeded") {
 			setLoading(false)
@@ -73,9 +73,10 @@ const addnewuser = () => {
 				dataFormUser.Coordinador,
 				dataFormUser.Admin,
 			],
+			createdBy: { _ref: userAdmin._id, _type: "reference" },
 		}
 
-		const dataUpdate = {
+		const dataNew = {
 			...data,
 			email:
 				data.email === "" ? `noemail${nanoid()}@mariachon.com.mx` : data.email,
@@ -84,9 +85,8 @@ const addnewuser = () => {
 					? []
 					: data?.categorySet?.filter((cat) => cat !== false),
 		}
-		console.log("formulario:  ", dataUpdate)
 
-		dispatch(addNewUser(dataUpdate))
+		dispatch(addNewUser(dataNew))
 	}
 
 	const userUpdat = {
@@ -101,8 +101,6 @@ const addnewuser = () => {
 			watch("Admin"),
 		],
 	}
-
-	console.log(userUpdat)
 
 	return (
 		<Layout>

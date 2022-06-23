@@ -7,8 +7,13 @@ import {
 import {
 	fetchMariachis,
 	selectAllMariachis,
+	setStatus,
 } from "store/features/mariachis/mariachiSlice"
-import { fetchUsersNew, selectUserAdmin } from "store/features/users/userSlice"
+import {
+	fetchUsersNew,
+	selectUserAdmin,
+	setStatusUser,
+} from "store/features/users/userSlice"
 
 export default function useFetchUsers(session) {
 	const userAdmin = useSelector(selectUserAdmin)
@@ -31,6 +36,9 @@ export default function useFetchUsers(session) {
 		if (!(reservaData.length > 0)) {
 			dispatch(fetchBookings(true))
 		}
+		dispatch(setStatus("idle"))
+
+		dispatch(setStatusUser("idle"))
 	}, [userAdmin, dispatch, session, mariachiData, reservaData])
 
 	return userAdmin

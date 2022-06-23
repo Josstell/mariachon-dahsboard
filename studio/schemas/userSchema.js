@@ -70,6 +70,18 @@ export default {
 			title: "Es administrador",
 			type: "boolean",
 		},
+		{
+			name: "createdBy",
+			title: "Creado Por:",
+			type: "reference",
+			to: { type: "user" },
+		},
+		{
+			name: "modifiedBy",
+			title: "Modificado Por:",
+			type: "reference",
+			to: { type: "user" },
+		},
 
 		{
 			name: "publishedAt",

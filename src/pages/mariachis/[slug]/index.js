@@ -1,10 +1,10 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import client from "@lib/sanity"
 import { getSession } from "next-auth/react"
 import { groq } from "next-sanity"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import MariachiCard from "src/components/Cards/MariachiCard"
 import MariachiForm from "src/components/Forms/MariachiForm"
 import Layout from "src/components/Layout"
@@ -13,10 +13,26 @@ import MariachiTab from "src/components/Tabs/MariachiTab"
 import { wrapper } from "store"
 import { selectUserAdmin } from "store/features/users/userSlice"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
+import {
+	selectError,
+	selectStatus,
+	setStatus,
+	updateMariachi,
+} from "store/features/mariachis/mariachiSlice"
+import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
+import toast, { Toaster } from "react-hot-toast"
 
 const mariachiById = ({ data }) => {
+	const [arrayImages, setArrayImages] = useState(data?.images || [])
+	const [arrayVideos, setArrayVideos] = useState(data?.videos || [])
+
 	const router = useRouter()
+	const [loading, setLoading] = useState(false)
+
 	const userAdmin = useSelector(selectUserAdmin)
+	const status = useSelector(selectStatus)
+	const error = useSelector(selectError)
+	const dispatch = useDispatch()
 
 	//Activar Tab
 	const activeFormTab = useSelector(
@@ -25,7 +41,28 @@ const mariachiById = ({ data }) => {
 
 	const methods = useForm()
 
-	const { watch } = methods
+	const { watch, setValue } = methods
+
+	useEffect(() => {
+		if (!userAdmin.exist) {
+			router.push("/")
+		}
+		setValue("name", data.name)
+		setValue("tel", data.tel)
+		setValue("description", data.description)
+		setValue("address", data.address)
+		setValue("region", data?.region || "")
+		setValue("city", data?.city || "")
+		setValue("cp", data?.cp || "")
+
+		setValue("members", data?.members || "No definido")
+		setValue("hora", data?.service?.hora)
+		setValue("serenata", data?.service?.serenata)
+		setValue("contrato", data?.service?.contrato)
+		setValue("category_mariachi", data.categorySet[0])
+		setValue("coordinator", data.coordinator._id)
+		//
+	}, [])
 
 	const dataMariachiToCard = {
 		name: watch("name"),
@@ -34,14 +71,58 @@ const mariachiById = ({ data }) => {
 		description: watch("description"),
 		address: watch("address"),
 		region: watch("region"),
+		city: watch("city"),
+		cp: watch("cp"),
 		members: watch("members"),
 		service: {
 			hora: watch("hora"),
 			serenata: watch("serenata"),
-			contract: watch("contract"),
+			contrato: watch("contrato"),
 		},
 		coordinator: watch("coordinator"),
 	}
+
+	const onSubmit = (dataForm) => {
+		setLoading(true)
+		dispatch(
+			updateMariachi({
+				...dataForm,
+				_id: data._id,
+				modifiedBy: { _ref: userAdmin._id, _type: "reference" },
+
+				coordinator: { _ref: dataForm.coordinator, _type: "reference" },
+				categorySet: [dataForm.category_mariachi],
+				city: dataForm.city,
+				cp: dataForm.cp,
+				images: arrayImages,
+				videos: arrayVideos,
+				service: {
+					hora: dataForm.hora,
+					serenata: dataForm.serenata,
+					contrato: dataForm.contrato,
+				},
+			})
+		)
+	}
+
+	const notifyError = () => toast.error(error)
+	const notifySuccess = () => toast.success("Datos actualizados correctamente")
+
+	useEffect(() => {
+		if (status === "failed") {
+			setLoading(false)
+			notifyError()
+			dispatch(setStatus("idle"))
+		}
+		if (status === "succeeded") {
+			dispatch(setStatus("idle"))
+			notifySuccess()
+			setLoading(false)
+
+			//dispatch(setStatus("idle"))
+			router.push("/mariachis")
+		}
+	}, [status, error])
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
@@ -51,20 +132,34 @@ const mariachiById = ({ data }) => {
 			{userAdmin.isAdmin ? (
 				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
 					<div
-						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-evenly
+						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-around
 							 items-center`}
 					>
 						<div className={"w-4/12 h-3/5 "}>
 							<MariachiTab>
 								<MariachiForm
 									methods={methods}
+									onSubmit={onSubmit}
 									activeFormTab={activeFormTab}
-									mariachiData={data}
+									arrayImages={arrayImages}
+									setArrayImages={setArrayImages}
+									arrayVideos={arrayVideos}
+									setArrayVideos={setArrayVideos}
 								/>
+								<Toaster />
 							</MariachiTab>
+							{loading && <SpinnerLoadign />}
 						</div>
-						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
-							<MariachiCard mariachiUp={dataMariachiToCard} />
+						<div
+							className={
+								"w-full h-full md:w-5/12 max-w-[400px] min-w-[350px] md:h-5/6	 "
+							}
+						>
+							<MariachiCard
+								mariachiUp={dataMariachiToCard}
+								arrayImages={arrayImages}
+								arrayVideos={arrayVideos}
+							/>
 						</div>
 					</div>
 				</div>
@@ -109,6 +204,9 @@ export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
 name,
 description,
 address,
+city,
+region,
+cp,
 tel,
 coordinator->{
   _id,
@@ -119,8 +217,11 @@ crew,
 members,
 service,
 categorySet,
-region,
-logo
+logo, 
+images,
+videos,
+createdBy,
+modifiedBy,
 }`
 
 	const mariachi = await client.fetch(query, {
@@ -128,6 +229,7 @@ logo
 	})
 
 	const session = await getSession(ctx)
+
 	// const data = users.filter((est) => est._id.toString() === ctx.params.slug)
 
 	// const data = await store

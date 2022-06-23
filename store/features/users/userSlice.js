@@ -102,12 +102,39 @@ export const addNewUser = createAsyncThunk(
 			const { data } = await axios.post("/api/users/add", newUser)
 			return data
 		} catch (error) {
-			console.log("El error!!!", error)
 			return error.response.data
 		}
 		// The response includes the complete post object, including unique ID
 	}
 )
+
+/// get user by Id
+
+// const queryUserById = groq`*[_type == "user" && _id == $id][0]{
+//   _id,
+//   categorySet,
+//   email,
+//   name,
+//   tel,
+//   city,
+//   region
+// }
+// 	`
+
+// export const fetchUserbyId = createAsyncThunk(
+// 	"user/fetchUserbyId",
+// 	// The payload creator receives the partial `{title, content, user}` object
+// 	async (newUser, { dispatch }) => {
+// 		// We send the initial data to the fake API server
+// 		try {
+// 			const users = await client.fetch(queryUserById, { id: newUser._ref })
+// 			return users
+// 		} catch (error) {
+// 			return error.response.data
+// 		}
+// 		// The response includes the complete post object, including unique ID
+// 	}
+// )
 
 const usersSlice = createSlice({
 	name: "users",
@@ -124,7 +151,7 @@ const usersSlice = createSlice({
 			const user = state.users.find((user) => user._id === action.payload)
 			state.userById = user
 		},
-		setStatus: (state, action) => {
+		setStatusUser: (state, action) => {
 			state.status = action.payload
 		},
 	},
@@ -202,11 +229,11 @@ const usersSlice = createSlice({
 //export const { setUsers } = usersSlice.actions
 
 export default usersSlice.reducer
-export const { setAdminUser, setUserUpdate, setStatus } = usersSlice.actions
+export const { setAdminUser, setUserUpdate, setStatusUser } = usersSlice.actions
 
 export const selectAllUsers = (state) => state.users.users
 
 export const selectUserAdmin = (state) => state.users.admin
 export const selectUserUpdate = (state) => state.users.userUpdate
-export const selectStatus = (state) => state.users.status
+export const selectStatusUser = (state) => state.users.status
 export const selectError = (state) => state.users.error

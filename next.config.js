@@ -13,7 +13,7 @@ const nextConfig = {
 
 	reactStrictMode: true,
 	images: {
-		domains: ["localhost", "lh3.googleusercontent.com"],
+		domains: ["localhost", "lh3.googleusercontent.com", "drive.google.com"],
 	},
 }
 

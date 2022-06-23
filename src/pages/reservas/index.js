@@ -1,7 +1,10 @@
 import { getSession } from "next-auth/react"
 
 import { wrapper } from "store"
-import { fetchBookings } from "store/features/bookings/bookingSlice"
+import {
+	fetchBookings,
+	setStatusBooking,
+} from "store/features/bookings/bookingSlice"
 import Layout from "../../components/Layout"
 import TableBookings from "src/components/Tables/TableBookings"
 import useFetchUsers from "src/hook/useFetchUsers"
@@ -19,7 +22,7 @@ const reservas = ({ session }) => {
 	return (
 		<Layout>
 			{userAdmin?.isAdmin ? (
-				<div className="flex justify-center items-center">
+				<div className="flex  justify-center items-center">
 					<TableBookings />
 					{/* <HbookingCard /> */}
 					{/* <BookingCard /> */}
@@ -50,6 +53,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		}
 
 		await store.dispatch(fetchBookings(true))
+
+		await store.dispatch(setStatusBooking("idle"))
+
 		// if (!existAdmin.users.admin) {
 		// 	return {
 		// 		redirect: {

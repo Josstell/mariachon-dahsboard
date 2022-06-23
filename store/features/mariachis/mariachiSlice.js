@@ -30,6 +30,8 @@ slug{
 region,
 logo,
 categorySet,
+createdBy,
+modifiedBy,
 coordinator->{
   _id,
   name,
@@ -41,6 +43,8 @@ coordinator->{
 }  
 }
 `
+
+// get all mariachis
 export const fetchMariachis = createAsyncThunk(
 	"mariachis/fetchMariachis",
 	async (isAdmin) => {
@@ -59,10 +63,10 @@ export const fetchMariachis = createAsyncThunk(
 	}
 )
 
-// update Marichi
+// update Mariachi
 
 export const updateMariachi = createAsyncThunk(
-	"mariachis/updateUser",
+	"mariachis/updateMariachi",
 	async (mariachi, { getState }) => {
 		// We send the initial data to the fake API server
 		const {
@@ -81,11 +85,55 @@ export const updateMariachi = createAsyncThunk(
 				}
 			}
 		} catch (error) {
-			console.log(error)
+			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
+
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
+
+			return errorData
 		}
 		// The response includes the complete post object, including unique ID
 	}
 )
+
+// add new mariachi
+
+export const addMariachi = createAsyncThunk(
+	"mariachis/addMariachi",
+	async (mariachi, { getState }) => {
+		// We send the initial data to the fake API server
+		const {
+			users: { users },
+		} = getState()
+		try {
+			const { data } = await axios.post("/api/mariachis/add", mariachi)
+
+			console.log("Datos agregados:!!!!", data)
+			if (data) {
+				const coordinatorUpdated = users.find(
+					(user) => user._id === data.coordinator._ref
+				)
+
+				return {
+					...data,
+					coordinator: coordinatorUpdated,
+				}
+			}
+		} catch (error) {
+			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
+
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
+
+			return errorData
+		}
+		// The response includes the complete post object, including unique ID
+	}
+)
+
+///
 
 const mariachisSlice = createSlice({
 	name: "mariachis",
@@ -96,6 +144,9 @@ const mariachisSlice = createSlice({
 		// },
 		setDispMariachiTabActive: (state, action) => {
 			state.mariachiTabActive = action.payload
+		},
+		setStatus: (state, action) => {
+			state.status = action.payload
 		},
 	},
 
@@ -111,11 +162,25 @@ const mariachisSlice = createSlice({
 			state.status = "failed"
 		},
 		[updateMariachi.fulfilled]: (state, action) => {
-			state.status = "succeeded"
-			const mariachiUp = action.payload
-			state.mariachis = state.mariachis.map((mariachi) =>
-				mariachi._id === mariachiUp._id ? mariachiUp : mariachi
-			)
+			if (action.payload.data) {
+				state.status = "failed"
+				state.error = "Algo paso, por favor intentelo nuevamente."
+			} else {
+				state.status = "succeeded"
+				const mariachiUp = action.payload
+				state.mariachis = state.mariachis.map((mariachi) =>
+					mariachi._id === mariachiUp._id ? mariachiUp : mariachi
+				)
+			}
+		},
+		[addMariachi.fulfilled]: (state, action) => {
+			if (action.payload.data) {
+				state.status = "failed"
+				state.error = "Algo paso, por favor intentelo nuevamente."
+			} else {
+				state.status = "succeeded"
+				state.mariachis.push(action.payload)
+			}
 		},
 		[HYDRATE]: (state, action) => {
 			if (
@@ -140,7 +205,7 @@ const mariachisSlice = createSlice({
 //export const { setUsers } = mariachisSlice.actions
 
 export default mariachisSlice.reducer
-export const { setDispMariachiTabActive } = mariachisSlice.actions
+export const { setDispMariachiTabActive, setStatus } = mariachisSlice.actions
 
 export const selectAllMariachis = (state) => state.mariachis.mariachis
 export const selectStatus = (state) => state.mariachis.status

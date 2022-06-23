@@ -12,14 +12,12 @@ export default function BookingCard({ reserva, data }) {
 	const options = {
 		weekday: "short",
 		year: "numeric",
-		month: "long",
+		month: "short",
 		day: "numeric",
 	}
 
 	const date = new Date(reserva.dateAndTime || data.dateAndTime)
 	const fecha = date.toLocaleDateString("es-MX", options)
-
-	console.log("reserva cards:!!!! ", reserva)
 
 	return (
 		<div className="mx-auto no-scrollbar overflow-auto max-w-[400px] min-w-[370px] min-h-[650px]	 h-screen flex flex-col justify-around bg-slate-200 dark:bg-slate-800 shadow-[0_35px_100px_rgba(0,0,0,0.25)] dark:shadow-[0_35px_100px_rgba(00,00,00,0.1)]">

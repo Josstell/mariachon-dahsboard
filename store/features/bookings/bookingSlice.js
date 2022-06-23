@@ -56,7 +56,9 @@ playlist,
 status,
 isPaid,
 paidAt,
-isMade
+isMade,
+createdBy,
+modifiedBy,
 }
 `
 export const fetchBookings = createAsyncThunk(
@@ -82,8 +84,8 @@ export const updateBooking = createAsyncThunk(
 			users: { users },
 		} = getState()
 
-		console.log("todos los estados: ", mariachis, users, booking)
-		// We send the initial data to the fake API server
+		// We send the initial data to the fake API server booking
+
 		try {
 			const { data } = await axios.put("/api/reservas/update", booking)
 
@@ -106,7 +108,13 @@ export const updateBooking = createAsyncThunk(
 				}
 			}
 		} catch (error) {
-			console.log("Pinche Error", error)
+			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
+
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
+
+			return errorData
 		}
 		// The response includes the complete post object, including unique ID
 	}
@@ -122,6 +130,9 @@ const bookingsSlice = createSlice({
 		setDispBookingTabActive: (state, action) => {
 			state.bookingTabActive = action.payload
 		},
+		setStatusBooking: (state, action) => {
+			state.status = action.payload
+		},
 	},
 
 	extraReducers: {
@@ -136,11 +147,16 @@ const bookingsSlice = createSlice({
 			state.status = "failed"
 		},
 		[updateBooking.fulfilled]: (state, action) => {
-			state.status = "succeeded"
-			const bookingUp = action.payload
-			state.bookings = state.bookings.map((booking) =>
-				booking._id === bookingUp._id ? bookingUp : booking
-			)
+			if (action.payload.data) {
+				state.status = "failed"
+				state.error = "Algo paso, por favor intentelo nuevamente."
+			} else {
+				state.status = "succeeded"
+				const bookingUp = action.payload
+				state.bookings = state.bookings.map((booking) =>
+					booking._id === bookingUp._id ? bookingUp : booking
+				)
+			}
 		},
 
 		[HYDRATE]: (state, action) => {
@@ -165,7 +181,8 @@ const bookingsSlice = createSlice({
 //export const { setUsers } = mariachisSlice.actions
 
 export default bookingsSlice.reducer
-export const { setDispBookingTabActive } = bookingsSlice.actions
+export const { setDispBookingTabActive, setStatusBooking } =
+	bookingsSlice.actions
 
 // export const { setAdminUser } = bookingsSlice.actions
 

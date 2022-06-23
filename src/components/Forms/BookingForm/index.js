@@ -1,6 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import React, { useEffect, useRef, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import React, { useEffect, useRef } from "react"
 import useSearchUserByCategory from "src/hook/useSearchUserByCategory"
 import { selectAllUsers } from "store/features/users/userSlice"
 import Form from "../Smart/Form"
@@ -10,22 +9,17 @@ import { TrashIcon } from "@heroicons/react/outline"
 
 import { regions } from "../../../helpers/dataset"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
-import { updateBooking } from "store/features/bookings/bookingSlice"
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
-import { useRouter } from "next/router"
+import { useSelector } from "react-redux"
 
 const BookingForm = ({
 	methods,
-	reserva,
 	arrayPlayList,
 	setArrayPlayList,
 	setUserbyId,
 	setMariachibyId,
+	onSubmit,
 }) => {
-	const [loading, setLoading] = useState(false)
 	const regionData = regions.response.estado
-
-	console.log("real life:  ", reserva)
 
 	const activeFormTab = useSelector((state) => state.bookings.bookingTabActive)
 
@@ -34,9 +28,6 @@ const BookingForm = ({
 
 	const usersByClient = useSearchUserByCategory(users, "Client")
 
-	const dispatch = useDispatch()
-
-	const router = useRouter()
 	// //use form
 	// const { setValue } = methods
 
@@ -75,50 +66,49 @@ const BookingForm = ({
 	// 	//
 	// }, [reserva.orderItems.categorySet, reserva.orderItems.members])
 
-	const onSubmit = (data) => {
-		const reservaUpdate = {
-			client: { _ref: data.clientId, _type: "reference" },
-			dateAndTime: data.dateAndTime,
-			message: data.message,
-			orderItems: [
-				{
-					mariachi: {
-						_ref: data.idMariachi,
-						_type: "reference",
-					},
-					categorySet: data.category_mariachi,
-					members: data.members,
-					service: data.service,
-					price: data.price * 1,
-					deposit: data.deposit * 1 || 0,
-					qty: data.qty * 1,
-					_key: reserva.orderItems._key,
-					_type: "orderItem",
-				},
-			],
-			// paymentResult: {
-			// 	_type: "paymentResult",
-			// 	email_address: "xonitg@gmail.com",
-			// },
-			playlist: arrayPlayList,
-			shippingAddress: {
-				address: data.address,
-				city: data.city,
-				cp: data.cp,
-				region: data.region,
-			},
-			//	status: ["PE"],
-			userName: data.nameClient,
-			_id: reserva._id,
-		}
-		console.log(reservaUpdate)
+	// const onSubmit = (data) => {
+	// 	const reservaUpdate = {
+	// 		client: { _ref: data.clientId, _type: "reference" },
+	// 		dateAndTime: data.dateAndTime,
+	// 		message: data.message,
+	// 		orderItems: [
+	// 			{
+	// 				mariachi: {
+	// 					_ref: data.idMariachi,
+	// 					_type: "reference",
+	// 				},
+	// 				categorySet: data.category_mariachi,
+	// 				members: data.members,
+	// 				service: data.service,
+	// 				price: data.price * 1,
+	// 				deposit: data.deposit * 1 || 0,
+	// 				qty: data.qty * 1,
+	// 				_key: reserva.orderItems._key,
+	// 				_type: "orderItem",
+	// 			},
+	// 		],
+	// 		// paymentResult: {
+	// 		// 	_type: "paymentResult",
+	// 		// 	email_address: "xonitg@gmail.com",
+	// 		// },
+	// 		playlist: arrayPlayList,
+	// 		shippingAddress: {
+	// 			address: data.address,
+	// 			city: data.city,
+	// 			cp: data.cp,
+	// 			region: data.region,
+	// 		},
+	// 		//	status: ["PE"],
+	// 		userName: data.nameClient,
+	// 		_id: reserva._id,
+	// 	}
 
-		setLoading(!loading)
-		dispatch(updateBooking(reservaUpdate))
-		setLoading(!loading)
+	// 	setLoading(!loading)
+	// 	dispatch(updateBooking(reservaUpdate))
+	// 	setLoading(!loading)
 
-		router.push("/reservas")
-	}
+	// 	router.push("/reservas")
+	// }
 
 	const hangleGetClient = (e) => {
 		const userSelected = users.find((user) => user._id === e.target.value)
@@ -322,7 +312,6 @@ const BookingForm = ({
 
 				<Button message="Actualizar" />
 			</Form>
-			{loading && <SpinnerLoadign />}
 		</>
 	)
 }

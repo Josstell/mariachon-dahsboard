@@ -64,6 +64,7 @@ const userById = ({ data }) => {
 				...dataForm,
 				_id: data._id,
 				categorySet: data?.categorySet || "",
+				modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 			})
 		)
 		setLoading(false)

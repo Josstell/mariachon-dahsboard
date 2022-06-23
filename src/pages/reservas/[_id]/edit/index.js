@@ -5,7 +5,7 @@ import { groq } from "next-sanity"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 import BookingCard from "src/components/Cards/BookingCard"
 import BookingForm from "src/components/Forms/BookingForm"
@@ -14,8 +14,17 @@ import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import BookingTa from "src/components/Tabs/ReservaTabs"
 import { wrapper } from "store"
+import {
+	selectError,
+	selectStatus,
+	setStatusBooking,
+	updateBooking,
+} from "store/features/bookings/bookingSlice"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { selectUserAdmin } from "store/features/users/userSlice"
+
+import toast, { Toaster } from "react-hot-toast"
+import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 
 const deserva = {
 	dateAndTime: "2022-05-28T18:00:00.000Z",
@@ -66,8 +75,9 @@ const deserva = {
 }
 
 const reservaById = ({ data }) => {
-	console.log("datos!!!!!!:", data)
 	const router = useRouter()
+	const status = useSelector(selectStatus)
+	const error = useSelector(selectError)
 
 	const userAdmin = useSelector(selectUserAdmin)
 
@@ -85,6 +95,9 @@ const reservaById = ({ data }) => {
 	const [mariachibyId, setMariachibyId] = useState(
 		reservaData.orderItems.mariachi
 	)
+
+	const dispatch = useDispatch()
+
 	//use form
 	const methods = useForm()
 
@@ -258,14 +271,7 @@ const reservaById = ({ data }) => {
 	// }
 
 	useEffect(() => {
-		console.log("dentro")
-
 		if (mariachiSelected?.service?.hora) {
-			console.log(
-				"mas dentro",
-				mariachiSelected.service[dataReservaToCard?.orderItems?.service]
-			)
-
 			setValue("qty", 1)
 			setValue(
 				"price",
@@ -291,6 +297,63 @@ const reservaById = ({ data }) => {
 	// 	})
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
+	const onSubmit = (dataForm) => {
+		const reservaUpdate = {
+			client: { _ref: dataForm.clientId, _type: "reference" },
+			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
+
+			dateAndTime: dataForm.dateAndTime,
+			message: dataForm.message,
+			orderItems: [
+				{
+					mariachi: {
+						_ref: dataForm.idMariachi,
+						_type: "reference",
+					},
+					categorySet: dataForm.category_mariachi,
+					members: dataForm.members,
+					service: dataForm.service,
+					price: dataForm.price * 1,
+					deposit: dataForm.deposit * 1 || 0,
+					qty: dataForm.qty * 1,
+					_key: data.orderItems._key,
+					_type: "orderItem",
+				},
+			],
+			// paymentResult: {
+			// 	_type: "paymentResult",
+			// 	email_address: "xonitg@gmail.com",
+			// },
+			playlist: arrayPlayList,
+			shippingAddress: {
+				address: dataForm.address,
+				city: dataForm.city,
+				cp: dataForm.cp,
+				region: dataForm.region,
+			},
+			//	status: ["PE"],
+			userName: dataForm.nameClient,
+			_id: data._id,
+		}
+
+		dispatch(updateBooking(reservaUpdate))
+	}
+
+	const notifyError = () => toast.error(error)
+	const notifySuccess = () => toast.success("Datos actualizados correctamente")
+
+	useEffect(() => {
+		if (status === "failed") {
+			notifyError()
+			dispatch(setStatusBooking("idle"))
+		}
+		if (status === "succeeded") {
+			notifySuccess()
+			dispatch(setStatusBooking("idle"))
+			router.push("/reservas")
+		}
+	}, [router, status])
+
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
 	}
@@ -303,20 +366,23 @@ const reservaById = ({ data }) => {
 			{userAdmin.isAdmin ? (
 				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
 					<div
-						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-evenly
+						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row  md:justify-evenly
 							 items-center`}
 					>
 						<div className={"w-4/12 h-3/5 "}>
 							<BookingTa>
 								<BookingForm
 									methods={methods}
-									reserva={reservaData === undefined ? deserva : reservaData}
+									//reserva={reservaData === undefined ? deserva : reservaData}
+									onSubmit={onSubmit}
 									arrayPlayList={arrayPlayList}
 									setArrayPlayList={setArrayPlayList}
 									setMariachibyId={setMariachibyId}
 									setUserbyId={setUserbyId}
 								/>
+								<Toaster />
 							</BookingTa>
+							{status !== "idle" && <SpinnerLoadign />}
 						</div>
 						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
 							<BookingCard reserva={reservaData} data={data} />
@@ -393,7 +459,9 @@ members,
 service,
 categorySet,
 region,
-logo
+logo,
+createdBy,
+modifiedBy,
   }
 
   }

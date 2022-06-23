@@ -14,11 +14,9 @@ export default handlerCors().put((req, res) => {
 	// 	service: {
 	// 		hora: req.body.hora.toString() || "",
 	// 		serenata: req.body.serenata.toString() || "",
-	// 		contract: req.body.contract.toString() || "",
+	// 		contrato: req.body.contrato.toString() || "",
 	// 	},
 	// }
-
-	console.log("mutation dta:", req.body)
 
 	client
 		.patch(req.body._id) // Document ID to patch
@@ -29,5 +27,8 @@ export default handlerCors().put((req, res) => {
 		})
 		.catch((err) => {
 			console.error("Oh no, the update failed: ", err.message)
+			res
+				.status(401)
+				.send({ error: { message: "Hubo un error, intentar nuevamente!" } })
 		})
 })

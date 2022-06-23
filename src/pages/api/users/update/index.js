@@ -7,6 +7,7 @@ export default handlerCors().put((req, res) => {
 		tel: req.body.tel,
 		email: req.body.email,
 		region: req.body.region || "",
+		modifiedBy: req.body.modifiedBy,
 	}
 
 	client
@@ -18,5 +19,8 @@ export default handlerCors().put((req, res) => {
 		})
 		.catch((err) => {
 			console.error("Oh no, the update failed: ", err.message)
+			res
+				.status(401)
+				.send({ error: { message: "Hubo un error, intentar nuevamente!" } })
 		})
 })

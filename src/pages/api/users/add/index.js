@@ -23,6 +23,7 @@ export default handlerCors().post(async (req, res) => {
 				uid: req.body.uid || "",
 				provider: req.body.provider || "",
 				slug: { current: urlSlug(req.body.name) },
+				createdBy: req.body.createdBy,
 			},
 		},
 	]

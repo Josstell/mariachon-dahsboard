@@ -1,6 +1,6 @@
-import Image from "next/image"
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+import ImageSlider from "src/components/Slider"
 import AddressIcon from "src/components/SVG/Icons/AddressIcon"
 import CategoriesIcon from "src/components/SVG/Icons/CategoriesIcon"
 import CoordinatorIcon from "src/components/SVG/Icons/CoordinatorIcon"
@@ -9,7 +9,9 @@ import PricesIcon from "src/components/SVG/Icons/PricesIcon"
 //import useCategoryVar from "src/hook/useCategoryVar"
 import { selectAllUsers } from "store/features/users/userSlice"
 
-const MariachiCard = ({ mariachiUp }) => {
+import { VideoCameraIcon, PhotographIcon } from "@heroicons/react/outline"
+
+const MariachiCard = ({ mariachiUp, arrayImages, arrayVideos }) => {
 	const [coordinator, setCoordinator] = useState({})
 
 	const allUser = useSelector(selectAllUsers)
@@ -23,13 +25,14 @@ const MariachiCard = ({ mariachiUp }) => {
 	return (
 		<div className="w-full h-full shadow-[0_0_100px_rgba(0,0,0,0.3)] dark:shadow-[0_0_100px_rgba(50,50,50,0.3)] bg-slate-100 dark:bg-slate-800  rounded-t-lg rounded-b-lg flex flex-col text-slate-300">
 			<div className="relative w-full h-2/5	 ">
-				<Image
+				<ImageSlider slidesS={arrayImages} videos={arrayVideos} />
+				{/* <Image
 					className="rounded-t-lg"
 					src="/images/mariachiTexcalco.png"
 					alt=""
 					layout="fill"
 					objectFit="cover"
-				/>
+				/> */}
 			</div>
 			<div className="px-4">
 				<h3 className="text-3xl my-1 text-slate-900 dark:text-slate-100 font-bold">
@@ -42,7 +45,8 @@ const MariachiCard = ({ mariachiUp }) => {
 					<h5 className="mx-0 font-thin flex">
 						<AddressIcon className="fill-slate-900 dark:fill-slate-100 w-7 h-7" />{" "}
 						<span className="ml-5 text-slate-900 dark:text-slate-100">
-							{mariachiUp?.address}
+							{mariachiUp?.address}, {mariachiUp?.city}, {mariachiUp?.region}{" "}
+							{mariachiUp?.cp}
 						</span>
 					</h5>
 					<h5 className="mx-0 font-thin flex">
@@ -62,13 +66,23 @@ const MariachiCard = ({ mariachiUp }) => {
 								<span>Hora:</span> ${mariachiUp?.service?.hora}
 							</h5>
 							<h5 className="text-xs font-mono text-slate-900 dark:text-slate-100">
-								<span>Contrato:</span> ${mariachiUp?.service?.contract}
+								<span>Contrato:</span> ${mariachiUp?.service?.contrato}
 							</h5>
 						</div>
-						<MembersIcon className="ml-10 fill-slate-900 dark:fill-slate-100 w-7 h-7" />{" "}
-						<h6 className="mx-4  px-2 text-slate-900 dark:text-slate-100">
-							{mariachiUp?.members || "?"}
-						</h6>
+						<div>
+							<div className="mx-4  px-2 text-slate-900 dark:text-slate-100 flex ">
+								<MembersIcon className="ml-10 fill-slate-900 dark:fill-slate-100 w-5 h-5 mr-5" />
+								<span className="text-xs">{mariachiUp?.members || "?"}</span>
+							</div>
+							<div className="mx-4  px-2 text-slate-900 dark:text-slate-100 flex ">
+								<PhotographIcon className="ml-10 fill-slate-900 dark:fill-slate-100 w-5 h-5 mr-5" />
+								<span className="text-xs">{arrayImages?.length || 0}</span>
+							</div>
+							<div className="mx-4  px-2 text-slate-900 dark:text-slate-100 flex ">
+								<VideoCameraIcon className="ml-10 fill-slate-900 dark:fill-slate-100 w-5 h-5 mr-5" />
+								<span className="text-xs">{arrayVideos?.length || 0}</span>
+							</div>
+						</div>
 					</div>
 
 					{/* <div className="relative pt-1">

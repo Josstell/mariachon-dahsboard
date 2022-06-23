@@ -109,7 +109,18 @@ export default {
 			name: "isMade",
 			type: "boolean",
 		},
-
+		{
+			name: "createdBy",
+			title: "Creado Por:",
+			type: "reference",
+			to: { type: "user" },
+		},
+		{
+			name: "modifiedBy",
+			title: "Modificado Por:",
+			type: "reference",
+			to: { type: "user" },
+		},
 		{
 			name: "publishedAt",
 			title: "Publicado en la fecha de :",

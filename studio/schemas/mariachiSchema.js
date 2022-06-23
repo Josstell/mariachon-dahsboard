@@ -26,10 +26,22 @@ export default {
 			title: "Teléfono",
 			type: "number",
 		},
+
 		{
+			title: "Ciudad",
+			name: "city",
+			type: "string",
+		},
+		{
+			title: "Estado",
 			name: "region",
 			type: "string",
-			title: "Estado",
+		},
+
+		{
+			title: "Codigo Postal",
+			name: "cp",
+			type: "string",
 		},
 
 		{
@@ -65,9 +77,9 @@ export default {
 			title: "Servicio y precios",
 			type: "object",
 			fields: [
-				{ name: "serenata", type: "string", title: "Precio por serenata" },
-				{ name: "hora", type: "string", title: "Precio por hora" },
-				{ name: "contract", type: "string", title: "Contrato" },
+				{ name: "serenata", type: "number", title: "Precio por serenata" },
+				{ name: "hora", type: "number", title: "Precio por hora" },
+				{ name: "contrato", type: "number", title: "Contrato" },
 			],
 		},
 		{
@@ -81,6 +93,28 @@ export default {
 					{ title: "Premium", value: "Premium" },
 				],
 			},
+		},
+		{
+			title: "Imagenes",
+			name: "images",
+			type: "array",
+			of: [
+				{
+					title: "Datos de imagenes ",
+					type: "figure",
+				},
+			],
+		},
+		{
+			title: "Videos",
+			name: "videos",
+			type: "array",
+			of: [
+				{
+					title: "Datos de Videos ",
+					type: "video",
+				},
+			],
 		},
 
 		{
@@ -102,6 +136,18 @@ export default {
 				source: "name",
 				maxLength: 96,
 			},
+		},
+		{
+			name: "createdBy",
+			title: "Creado Por:",
+			type: "reference",
+			to: { type: "user" },
+		},
+		{
+			name: "modifiedBy",
+			title: "Modificado Por:",
+			type: "reference",
+			to: { type: "user" },
 		},
 		{
 			name: "publishedAt",

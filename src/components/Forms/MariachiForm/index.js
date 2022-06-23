@@ -1,49 +1,65 @@
-import { useRouter } from "next/router"
-import React, { useEffect, useRef, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
+import Image from "next/image"
+import { useRef, useState } from "react"
+import { useSelector } from "react-redux"
 import { regions } from "src/helpers/dataset"
 import useSearchUserByCategory from "src/hook/useSearchUserByCategory"
-import { updateMariachi } from "store/features/mariachis/mariachiSlice"
-import { selectAllUsers, selectUserAdmin } from "store/features/users/userSlice"
+import { selectAllUsers } from "store/features/users/userSlice"
 import Form from "../Smart/Form"
 import { Button, Input, Select, TextArea, RadioButton } from "../Smart/Inputs"
+import {
+	TrashIcon,
+	PlusIcon,
+	PhotographIcon,
+	VideoCameraIcon,
+} from "@heroicons/react/outline"
 
-export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
+import { nanoid } from "@reduxjs/toolkit"
+import AddNewUserComponent from "../UserForm/AddNewUser"
+
+export default function MariachiForm({
+	methods,
+	activeFormTab,
+	onSubmit,
+	arrayImages,
+	setArrayImages,
+	arrayVideos,
+	setArrayVideos,
+}) {
 	const regionData = regions.response.estado
 
-	const [loading, setloading] = useState(false)
-
-	const router = useRouter()
-
-	const userAdmin = useSelector(selectUserAdmin)
 	const users = useSelector(selectAllUsers)
-	const dispatch = useDispatch()
 
 	const usersByCoordinator = useSearchUserByCategory(users, "Coordinador")
 
-	const { setValue } = methods
+	//const [showEdit, setShowEdit] = useState(false)
+	//const [keyImage, setKeyImage] = useState("")
+	const [showAdd, setShowAdd] = useState(false)
+	const [showAddV, setShowAddV] = useState(false)
 
-	useEffect(() => {
-		if (!userAdmin.exist) {
-			router.push("/")
-		}
-		setValue("name", mariachiData.name)
-		setValue("tel", mariachiData.tel)
-		setValue("description", mariachiData.description)
-		setValue("address", mariachiData.address)
-		setValue("region", mariachiData?.region || "")
-		setValue("members", mariachiData?.members || "No definido")
-		setValue("hora", mariachiData.service.hora)
-		setValue("serenata", mariachiData.service.serenata)
-		setValue("contract", mariachiData.service.contract)
-		setValue("category_mariachi", mariachiData.categorySet[0])
-		setValue("coordinator", mariachiData.coordinator._id)
-		//
-	}, [])
+	// const { setValue } = methods
+
+	// useEffect(() => {
+	// 	if (!userAdmin.exist) {
+	// 		router.push("/")
+	// 	}
+	// 	setValue("name", mariachiData.name)
+	// 	setValue("tel", mariachiData.tel)
+	// 	setValue("description", mariachiData.description)
+	// 	setValue("address", mariachiData.address)
+	// 	setValue("region", mariachiData?.region || "")
+	// 	setValue("members", mariachiData?.members || "No definido")
+	// 	setValue("hora", mariachiData.service.hora)
+	// 	setValue("serenata", mariachiData.service.serenata)
+	// 	setValue("contrato", mariachiData.service.contrato)
+	// 	setValue("category_mariachi", mariachiData.categorySet[0])
+	// 	setValue("coordinator", mariachiData.coordinator._id)
+	// 	//
+	// }, [])
 
 	//const [images, setImages] = useState({ url: "", metadata: {} })
 	//const [videos, setVideos] = useState({ url: "", metadata: {} })
+
+	const [addUser, setAddUser] = useState(true)
 
 	const imageRef = useRef("")
 	const imageAlt = useRef("")
@@ -51,56 +67,83 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 	const videoRef = useRef("")
 	const videoAlt = useRef("")
 
-	const [arrayImages, setArrayImages] = useState([])
-	const [arrayVideos, setArrayVideos] = useState([])
-
-	console.log(arrayImages, arrayVideos)
+	//https://drive.google.com/file/d/1ycckhNleCKvSI3qsng2ikhEDKB_2174Y/view?usp=sharing
+	//https://drive.google.com/uc?export=view&id=1ycckhNleCKvSI3qsng2ikhEDKB_2174Y
 
 	const handleArrayImage = () => {
-		console.log("valor: ", imageRef.current.value)
+		const urlSharedFromDrive = imageRef.current.value
+		const altDes = imageAlt.current.value
+		const urlDrive = "https://drive.google.com/uc?export=view&id="
+		const getId = urlSharedFromDrive.split("/", 6)[5]
+
 		if (!(imageRef.current.value === "")) {
 			setArrayImages((oldArray) => [
 				...oldArray,
 				{
-					url: imageRef.current.value,
-					metadata: { alt: imageAlt.current.value },
+					_key: nanoid(),
+
+					url: urlDrive + getId,
+					metadata: { alt: altDes },
 				},
 			])
 
 			imageRef.current.value = ""
 			imageAlt.current.value = ""
+
+			setShowAdd(false)
 		}
 	}
 
 	const handleArrayVideo = () => {
-		console.log("valor: ", videoRef.current.value)
+		const urlSharedFromDrive = videoRef.current.value
+		const altDes = videoAlt.current.value
+		const urlDrive = "https://drive.google.com/file/d/"
+		const getId = urlSharedFromDrive.split("/", 6)[5]
+
 		if (!(videoRef.current.value === "")) {
 			setArrayVideos((oldArray) => [
 				...oldArray,
 				{
-					url: videoRef.current.value,
-					metadata: { alt: videoAlt.current.value },
+					_key: nanoid(),
+
+					url: urlDrive + getId + "/preview",
+					metadata: { alt: altDes },
 				},
 			])
 
 			videoRef.current.value = ""
 			videoAlt.current.value = ""
+
+			setShowAddV(false)
 		}
 	}
 
-	const onSubmit = (data) => {
-		console.log("form data", data)
-		setloading(!loading)
-		dispatch(
-			updateMariachi({
-				...data,
-				_id: mariachiData._id,
-				coordinator: { _ref: data.coordinator, _type: "reference" },
-			})
-		)
-		setloading(!loading)
+	const handleDeletePhoto = (image) => {
+		const key = image?._key ? image?._key : image.key
 
-		router.push("/mariachis")
+		if (image?._key) {
+			setArrayImages(arrayImages.filter((img) => img._key !== key))
+		} else {
+			setArrayImages(arrayImages.filter((img) => img.key !== key))
+		}
+	}
+
+	const handleDeleteVideo = (video) => {
+		const key = video?._key ? video?._key : video.key
+
+		if (video?._key) {
+			setArrayVideos(arrayVideos.filter((vid) => vid._key !== key))
+		} else {
+			setArrayVideos(arrayVideos.filter((vid) => vid.key !== key))
+		}
+	}
+
+	const handleShowAdd = () => {
+		setShowAdd(!showAdd)
+	}
+
+	const handleShowAddV = () => {
+		setShowAddV(!showAddV)
 	}
 
 	return (
@@ -122,6 +165,11 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 					name="city"
 					label="Ciudad o municipio"
 				/>
+				<Input
+					hidden={activeFormTab.data && true}
+					name="cp"
+					label="Codigo Postal"
+				/>
 				{/* <Input
 					hidden={activeFormTab.data && true}
 					name="region"
@@ -133,6 +181,7 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 					options={regionData}
 					label="Estado"
 				/>
+
 				<Input
 					hidden={activeFormTab.data && true}
 					name="tel"
@@ -149,16 +198,18 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 					name="coordinator"
 					options={usersByCoordinator}
 					label="Coordinador"
+					addUser={addUser}
+					setAddUser={setAddUser}
 				/>
 
 				<Input
-					hidden={activeFormTab.mariachi && true}
+					hidden={activeFormTab.mariachi && addUser}
 					name="members"
 					label="# Elementos"
 					type="number"
 				/>
 				<RadioButton
-					hidden={activeFormTab.mariachi && true}
+					hidden={activeFormTab.mariachi && addUser}
 					name="category_mariachi"
 					label={["Basico", "Normal", "Premium"]}
 					type="radio"
@@ -166,106 +217,179 @@ export default function MariachiForm({ methods, activeFormTab, mariachiData }) {
 				{/**Entradas tercer tab */}
 				<div
 					className={`border-dashed border-t-2 border-t-slate-100   n my-6 relative ${
-						!activeFormTab.gral && "hidden"
+						!(activeFormTab.mariachi && addUser) ? "hidden" : "block"
 					}`}
 				>
 					<h3 className="absolute px-2 left-0 bg-slate-900 -top-3">Precios</h3>
 				</div>
 				<Input
-					hidden={activeFormTab.gral && true}
+					hidden={activeFormTab.mariachi && addUser}
 					name="hora"
 					label="hora"
 					type="text"
 				/>
 				<Input
-					hidden={activeFormTab.gral && true}
+					hidden={activeFormTab.mariachi && addUser}
 					name="serenata"
 					label="serenata"
 					type="text"
 				/>
 				<Input
-					hidden={activeFormTab.gral && true}
-					name="contract"
+					hidden={activeFormTab.mariachi && addUser}
+					name="contrato"
 					label="contrato"
 					type="text"
 				/>
 				<div className={`${!activeFormTab.gral && "hidden"}`}>
 					<div
-						className={`border-dashed border-t-2 border-t-slate-100   n my-6 relative ${
+						className={`flex justify-between items-center   my-6 relative ${
 							!activeFormTab.gral && "hidden"
 						}`}
 					>
-						<h3 className="absolute px-2 left-0 bg-slate-900 -top-3">
-							Fotos y videos
-						</h3>
-					</div>
-
-					<div className="flex justify-between items-center ">
-						<div className="flex flex-col">
-							<div className=" items-center border-b border-teal-500 py-2">
-								<input
-									ref={imageRef}
-									className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-									type="text"
-									placeholder="Agregar url de imagen"
-								/>
-							</div>
-
-							<div className=" items-center border-b border-teal-500 py-2">
-								<input
-									ref={imageAlt}
-									className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-									type="text"
-									placeholder="Breve descripción"
-								/>
-							</div>
+						<h3 className=" ml-5 bg-slate-900 ">Fotos </h3>
+						<div className="inline-flex cursor-pointer">
+							<PhotographIcon className="w-5 h-5 " />
+							<PlusIcon
+								onClick={handleShowAdd}
+								className="font-extrabold w-3 h-3 mx-1"
+							/>
 						</div>
-
-						<button
-							className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
-							type="button"
-							onClick={() => handleArrayImage()}
-						>
-							Agregar
-						</button>
 					</div>
+
+					{arrayImages.length === 0 || showAdd ? (
+						<div className={`flex justify-between items-center `}>
+							<div className="flex flex-col">
+								<div className=" items-center border-b border-teal-500 py-2">
+									<input
+										ref={imageRef}
+										className="appearance-none bg-transparent border-none w-full text-slate-800 dark:text-gray-100 mr-3 py-1 px-2 leading-tight focus:outline-none"
+										type="text"
+										placeholder="Agregar url de imagen"
+									/>
+								</div>
+
+								<div className=" items-center border-b border-teal-500 py-2">
+									<input
+										ref={imageAlt}
+										className="appearance-none bg-transparent border-none w-full text-slate-800 dark:text-gray-100 mr-3 py-1 px-2 leading-tight focus:outline-none"
+										type="text"
+										placeholder="Breve descripción"
+									/>
+								</div>
+							</div>
+
+							<button
+								className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+								type="button"
+								onClick={() => handleArrayImage()}
+							>
+								Agregar
+							</button>
+						</div>
+					) : null}
+
+					{arrayImages.length > 0 &&
+						arrayImages.map((image) => {
+							return (
+								<div className="my-2" key={image._key || image.key}>
+									<div className="flex justify-between items-center">
+										<div className="w-10 h-10 border-2 border-white rounded-full relative flex">
+											<Image
+												className="rounded-full "
+												src={image.url}
+												alt={image.metadata.alt}
+												layout="fill"
+												objectFit="cover"
+											/>
+										</div>
+										<div className="inline-flex	">
+											<TrashIcon
+												className="w-5 h-5"
+												onClick={() => handleDeletePhoto(image)}
+											/>
+										</div>
+									</div>
+								</div>
+							)
+						})}
 
 					{/** videos */}
-
-					<div className="flex justify-between items-center ">
-						<div className="flex flex-col">
-							<div className=" items-center border-b border-teal-500 py-2">
-								<input
-									ref={videoRef}
-									className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-									type="text"
-									placeholder="Agregar url del video"
-								/>
-							</div>
-
-							<div className=" items-center border-b border-teal-500 py-2">
-								<input
-									ref={videoAlt}
-									className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-									type="text"
-									placeholder="Breve descripción"
+					<div className={`${!activeFormTab.gral && "hidden"}`}>
+						<div
+							className={`flex justify-between items-center   my-6 relative ${
+								!activeFormTab.gral && "hidden"
+							}`}
+						>
+							<h3 className=" ml-5 bg-slate-900 ">Videos </h3>
+							<div className="inline-flex cursor-pointer">
+								<VideoCameraIcon className="w-5 h-5 " />
+								<PlusIcon
+									onClick={() => handleShowAddV()}
+									className="font-extrabold w-3 h-3 mx-1"
 								/>
 							</div>
 						</div>
 
-						<button
-							className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
-							type="button"
-							onClick={() => handleArrayVideo()}
-						>
-							Agregar
-						</button>
+						{arrayVideos.length == 0 || showAddV ? (
+							<div className={`flex justify-between items-center  `}>
+								<div className="flex flex-col">
+									<div className=" items-center border-b border-teal-500 py-2">
+										<input
+											ref={videoRef}
+											className="appearance-none bg-transparent border-none w-full text-slate-800 dark:text-gray-100 mr-3 py-1 px-2 leading-tight focus:outline-none"
+											type="text"
+											placeholder="Agregar url del video"
+										/>
+									</div>
+
+									<div className=" items-center border-b border-teal-500 py-2">
+										<input
+											ref={videoAlt}
+											className="appearance-none bg-transparent border-none w-full text-slate-800 dark:text-gray-100 mr-3 py-1 px-2 leading-tight focus:outline-none"
+											type="text"
+											placeholder="Breve descripción"
+										/>
+									</div>
+								</div>
+								<button
+									className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+									type="button"
+									onClick={() => handleArrayVideo()}
+								>
+									Agregar
+								</button>
+							</div>
+						) : null}
+
+						{arrayVideos.length > 0 &&
+							arrayVideos.map((video, index) => {
+								return (
+									<div className="my-2" key={video._key || video.key}>
+										<div className="flex justify-between items-center">
+											<h3 className="text-slate-800 dark:text-slate-50">
+												{index + 1}. {video.metadata.alt}
+											</h3>
+											<div className="inline-flex	">
+												<TrashIcon
+													className="w-5 h-5"
+													onClick={() => handleDeleteVideo(video)}
+												/>
+											</div>
+										</div>
+									</div>
+								)
+							})}
 					</div>
 				</div>
 
-				<Button message="Actualizar" />
+				<Button hidden={addUser} message="Actualizar" />
 			</Form>
-			{loading && <SpinnerLoadign />}
+
+			{!addUser && activeFormTab.mariachi ? (
+				<AddNewUserComponent setAddUser={setAddUser} addUser={addUser} />
+			) : (
+				<div className=""></div>
+			)}
 		</>
 	)
 }

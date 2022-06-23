@@ -1,4 +1,5 @@
-import { ChevronDownIcon } from "@heroicons/react/outline"
+import { ChevronDownIcon, UserAddIcon } from "@heroicons/react/outline"
+import { useState } from "react"
 
 export function Input({
 	register,
@@ -161,44 +162,64 @@ export function TextArea({ register, name, label, hidden, ...rest }) {
 	)
 }
 
-export function Select({ register, options, name, label, hidden, ...rest }) {
+export function Select({
+	register,
+	options,
+	name,
+	label,
+	hidden,
+	addUser,
+	setAddUser,
+	...rest
+}) {
+	const [userAdd] = useState(addUser)
 	return (
 		<div
-			className={`w-full items-center  py-2  my-2 relative ${
+			className={`w-full flex justify-between items-end  py-2  my-2   ${
 				!hidden && "hidden"
 			}`}
 		>
-			<label className="block uppercase tracking-wide text-gray-700 dark:text-slate-50 text-[10px] font-bold mb-2">
-				{label}
-			</label>
-			<select
-				className="block appearance-none w-full bg-slate-400/50 border-none text-gray-700 dark:text-slate-50  border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-				{...register(name)}
-				{...rest}
-			>
-				{options.map((val) => (
-					<option
-						key={val._id || val.clave || val._ref}
-						value={val._id || val.clave || val._ref}
-					>
-						{val.name}
-					</option>
-				))}
-			</select>
-			<div className="pointer-events-none absolute inset-y-0 top-4 right-0 flex items-center   px-1 text-slate-900 dark:text-slate-50">
-				<ChevronDownIcon className="w-5  cursor-pointer" />
+			<div className="w-11/12 relative">
+				<label className="block uppercase tracking-wide text-gray-700 dark:text-slate-50 text-[10px] font-bold mb-2">
+					{label}
+				</label>
+				<select
+					className="block appearance-none w-full bg-slate-400/50 border-none text-gray-700 dark:text-slate-50  border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+					{...register(name)}
+					{...rest}
+				>
+					{options.map((val) => (
+						<option
+							key={val._id || val.clave || val._ref}
+							value={val._id || val.clave || val._ref}
+						>
+							{val.name}
+						</option>
+					))}
+				</select>
+				<div className="pointer-events-none absolute inset-y-0 top-4 right-0 flex items-center   px-1 text-slate-900 dark:text-slate-50">
+					<ChevronDownIcon className="w-5  cursor-pointer" />
+				</div>
 			</div>
+			{userAdd && (
+				<UserAddIcon
+					className="w-5 mb-2 cursor-pointer"
+					onClick={() => setAddUser(!addUser)}
+				/>
+			)}
 		</div>
 	)
 }
 
-export function Button({ message }) {
+export function Button({ message, hidden }) {
 	return (
-		<button
-			className=" my-10 mb:mt-0 w-full bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-2 dark:text-white py-1 px-2 rounded"
-			type="submit"
-		>
-			{message}
-		</button>
+		<div className={`${!hidden && "hidden"} my-10`}>
+			<button
+				className={`first-letter:my-10 mb:mt-0 w-full bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-2 dark:text-white py-1 px-2 rounded `}
+				type="submit"
+			>
+				{message}
+			</button>
+		</div>
 	)
 }

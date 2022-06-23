@@ -14,6 +14,7 @@ import imageSchema from "./imageSchema"
 import orderItem from "./orderItem"
 import paymentResult from "./paymentResult"
 import shippingAddress from "./shippingAddress"
+import videoSchema from "./videoSchema"
 
 // Then we give our schema to the builder and provide the result to Sanity
 export default createSchema({
@@ -28,6 +29,7 @@ export default createSchema({
 		roleSchema,
 		richText,
 		imageSchema,
+		videoSchema,
 		orderItem,
 		paymentResult,
 		shippingAddress,

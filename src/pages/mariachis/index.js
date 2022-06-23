@@ -1,12 +1,16 @@
 import { getSession } from "next-auth/react"
 import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
 
-import { fetchMariachis } from "store/features/mariachis/mariachiSlice"
+import {
+	fetchMariachis,
+	setStatus,
+} from "store/features/mariachis/mariachiSlice"
 import { wrapper } from "../../../store"
 import TableMariachis from "src/components/Tables/TableMariachis"
 import Layout from "../../components/Layout"
 import useFetchUsers from "src/hook/useFetchUsers"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
+import { setStatusUser } from "store/features/users/userSlice"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const mariachis = ({ session }) => {
@@ -48,6 +52,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		}
 
 		await store.dispatch(fetchMariachis(true))
+		await store.dispatch(setStatus("idle"))
+
+		await store.dispatch(setStatusUser("idle"))
+
 		// if (!existAdmin.users.admin) {
 		// 	return {
 		// 		redirect: {
