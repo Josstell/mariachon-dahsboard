@@ -129,6 +129,20 @@ export default function BookingCard({ reserva, data }) {
 					</>
 				) : null}
 
+				<div className="col-span-6" />
+				<div className="col-span-6 flex justify-end -mb-2">
+					<div>
+						{reserva?.status.map((res) => (
+							<span
+								className=" text-slate-50 text-[8px] bg-black px-2 py-[2px] ml-1"
+								key={res}
+							>
+								{res}
+							</span>
+						))}
+					</div>
+				</div>
+
 				{reserva?.playlist !== undefined && reserva?.playlist?.length > 0 ? (
 					<>
 						<div className="col-span-2 place-content-center place-items-center	 fill-slate-900 dark:fill-slate-100">

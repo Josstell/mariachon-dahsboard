@@ -86,11 +86,10 @@ export default {
 			of: [{ type: "string" }],
 			options: {
 				list: [
-					{ title: "Pendiente a enviar", value: "PE" },
-					{ title: "Enviada", value: "E" },
-					{ title: "Realizada NC", value: "RNC" },
-					{ title: "Realizada CC", value: "RCC" },
-					{ title: "Cancelada", value: "C" },
+					{ title: "Agendado", value: "Agendado" },
+					{ title: "Enviada", value: "Enviada" },
+					{ title: "Realizada", value: "Realizada" },
+					{ title: "Cancelada", value: "Cancelada" },
 				],
 			},
 		},

@@ -6,11 +6,20 @@ import Link from "next/link"
 import React from "react"
 import { useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
-import useTruncatedIdOrTel from "src/hook/useTruncatedId"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 
 const TableMariachis = () => {
 	const mariachisData = useSelector(selectAllMariachis)
+
+	const getServices = (services) => {
+		const servi = []
+
+		Object.getOwnPropertyNames(services).forEach(function (val) {
+			servi.push(val)
+		})
+
+		return servi
+	}
 
 	return (
 		<div className="px-2 md:px1 w-full h-full">
@@ -75,6 +84,27 @@ const TableMariachis = () => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
+									Servicios
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Categoria
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Elementos
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
 									Vinculos
 								</th>
 								{/* <th
@@ -133,12 +163,24 @@ const TableMariachis = () => {
 										{mariachi?.coordinator?.name}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{mariachi?.tel
-											? useTruncatedIdOrTel(mariachi.tel)
-											: "no disponible"}{" "}
+										{mariachi?.tel ? mariachi.tel : "no disponible"}{" "}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{mariachi.region}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{getServices(mariachi.service).map((ser) => (
+											<div className="text-[8px] uppercase" key={ser}>
+												{ser}
+												{` ->`} ${mariachi.service[ser]}
+											</div>
+										))}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{mariachi.categorySet}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{mariachi.members}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex ">

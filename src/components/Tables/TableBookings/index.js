@@ -5,11 +5,23 @@ import Link from "next/link"
 import React from "react"
 import { useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
-import useTruncatedIdOrTel from "src/hook/useTruncatedId"
 import { selectAllBookings } from "store/features/bookings/bookingSlice"
 
 const TableBookings = () => {
 	const BookingsData = useSelector(selectAllBookings)
+
+	const options = {
+		weekday: "short",
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+	}
+
+	const getDateAndTime = (dateAndTime) => {
+		const date = new Date(dateAndTime)
+		return date.toLocaleDateString("es-MX", options)
+	}
+
 	return (
 		<div className="px-2 md:px1 w-full h-full">
 			<div
@@ -45,6 +57,28 @@ const TableBookings = () => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
+									Cliente
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Fecha y hora
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Lugar del Evento
+								</th>
+
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
 									Mariachi
 								</th>
 								<th
@@ -52,7 +86,28 @@ const TableBookings = () => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Servicio y precio
+									Servicio
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Precio
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Deposito
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Comisión
 								</th>
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
@@ -61,13 +116,7 @@ const TableBookings = () => {
 								>
 									Coordinador
 								</th>
-								<th
-									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
-											bg-slate-50 text-slate-500 border-slate-100
-											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
-								>
-									Lugar
-								</th>
+
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
 											bg-slate-50 text-slate-500 border-slate-100
@@ -99,10 +148,21 @@ const TableBookings = () => {
 													text-slate-600
 													dark:text-white"
 											>
-												{useTruncatedIdOrTel(booking?._id)}
+												{booking?._id}
 											</span>
 										</Link>
 									</th>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{booking?.client?.name}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{getDateAndTime(booking.dateAndTime)}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{booking?.shippingAddress.address},{" "}
+										{booking?.shippingAddress.city},
+										{booking?.shippingAddress.region}
+									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{booking?.orderItems?.mariachi?.logo ? (
 											<div className="w-8 h-8 flex flex-col  relative cursor-pointer">
@@ -115,24 +175,34 @@ const TableBookings = () => {
 												/>
 											</div>
 										) : booking?.orderItems?.mariachi?.name ? (
+											<div className="uppercase">
+												{booking?.orderItems?.mariachi?.name}{" "}
+											</div>
+										) : (
 											<GetLogoWithName
 												text={booking?.orderItems?.mariachi?.name}
 												numberLetter={9}
 											/>
-										) : null}
+										)}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.orderItems?.service} en{" "}
-										{booking?.orderItems?.price}
+										{booking?.orderItems?.service} x {booking.orderItems.qty}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{booking?.orderItems?.price * booking.orderItems.qty}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{booking?.orderItems?.deposit}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{booking?.orderItems?.fee}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{booking?.orderItems?.mariachi?.coordinator?.name}
 									</td>
+
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.shippingAddress.city}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.status}
+										{booking?.status[booking?.status.length - 1]}
 									</td>
 									{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex items-center">

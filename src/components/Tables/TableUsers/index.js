@@ -3,13 +3,13 @@ import Link from "next/link"
 import React from "react"
 import { useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
-import useTruncatedIdOrTel from "src/hook/useTruncatedId"
 import { selectAllUsers } from "store/features/users/userSlice"
 
 import { ViewGridAddIcon } from "@heroicons/react/outline"
 
 const TableUser = () => {
 	const usersData = useSelector(selectAllUsers)
+
 	return (
 		<div className="px-2 md:px1 w-full h-full">
 			<div
@@ -38,14 +38,14 @@ const TableUser = () => {
 										bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Id
+									Nomrbre completo
 								</th>
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Nombre
+									username
 								</th>
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
@@ -73,15 +73,23 @@ const TableUser = () => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Editar
+									Estado
 								</th>
-								{/* <th
+								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Borrar
-								</th> */}
+									Vinculos
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Editar
+								</th>
+
 								{/* <th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
 											bg-slate-50 text-slate-500 border-slate-100
@@ -98,29 +106,36 @@ const TableUser = () => {
 													text-slate-600
 													dark:text-white"
 										>
-											{useTruncatedIdOrTel(user._id)}
+											{/* //{useTruncatedIdOrTel(user._id)} */}
+											{user.name}
 										</span>
 									</th>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{user.name}
+										{user.username}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{user.email}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{user?.tel
-											? useTruncatedIdOrTel(user.tel)
-											: "no disponible"}
+										{user?.tel ? user.tel : "no disponible"}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{user?.categorySet &&
 											user?.categorySet.map((category, index) => (
 												<span key={index}>
-													{!(index === user.categorySet.length - 1)
+													{!(index === user.categorySet.length - 1) &&
+													!(category === null)
 														? `${category}, `
 														: category}
 												</span>
 											))}
+									</td>
+
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{user.region}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										otros{" "}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex ">
@@ -160,20 +175,8 @@ const TableUser = () => {
 											</Link>
 										</div>
 									</td>
-									{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										<div className="flex items-center">
-											<span className="mr-2">60%</span>
-											<div className="relative w-full">
-												<div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
-													<div
-														style={{ width: "60%" }}
-														className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
-													></div>
-												</div>
-											</div>
-										</div>
-									</td> 
-									 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
+
+									{/*} <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
 										{/* <className />
 									</td> 
 									*/}

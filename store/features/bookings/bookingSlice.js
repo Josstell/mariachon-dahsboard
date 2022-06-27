@@ -31,8 +31,9 @@ const query = groq`
 },
 dateAndTime,
 orderItems[0]{
-  desposit,
+  deposit,
   price,
+  qty,
   service,
   fee,
   mariachi->{
