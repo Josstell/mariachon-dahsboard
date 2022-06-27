@@ -1,9 +1,16 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import Image from "next/image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import GetLogoWithNameV from "src/components/GetLogoWithName/GetLogoWithNameV"
 
 const UserCard = ({ userUpdat }) => {
-	const userUpdate = userUpdat
+	const [userUpdate, setUserUpdate] = useState(userUpdat)
+	console.log("use!!!", userUpdate)
+
+	useEffect(() => {
+		setUserUpdate(userUpdat)
+	}, [userUpdat])
+
 	return (
 		<div className="w-full h-full flex flex-col justify-center items-center">
 			<div className="w-full h-1/3 bg-gradient-to-r from-slate-700 to-slate-900 rounded-t-md shadow-xl "></div>
@@ -32,16 +39,25 @@ const UserCard = ({ userUpdat }) => {
 					/>
 				) : (
 					<GetLogoWithNameV
-						text={userUpdate.name || "Mariachon"}
+						text={userUpdate?.name || "Mariachon"}
 						numberLetter={0}
 					/>
 				)}
 			</div>
 			<div className="w-full h-2/3 text-slate-50 dark:text-slate-900 bg-slate-50 rounded-b-lg flex flex-col justify-center items-center ">
 				<h3 className="text-xl font-semibold ">{userUpdate?.name}</h3>
-				<h3 className="text-base font-light ">
-					{userUpdate?.categorySet[0] || "user"}
-				</h3>
+				<h3 className="text-lg font-semibold ">{userUpdate?.username}</h3>
+
+				<div className="text-base font-light ">
+					{userUpdate?.categorySet}
+					{/* {userUpdate?.categorySet === []
+						? "user"
+						: userUpdate?.categorySet.map((cat) => (
+								<ul key={cat}>
+									<li>{cat}</li>
+								</ul>
+						  ))} */}
+				</div>
 				<h3 className="text-sm font-light ">
 					{userUpdate?.region || "no disponible"}
 				</h3>

@@ -8,7 +8,7 @@ import axios from "axios"
 
 const initialState = {
 	bookings: [],
-	status: "idle",
+	statusBook: "idle",
 	error: null,
 	bookingTabActive: {
 		client: true,
@@ -120,6 +120,37 @@ export const updateBooking = createAsyncThunk(
 	}
 )
 
+export const addBooking = createAsyncThunk(
+	"bookings/addBooking",
+	async (booking, { getState }) => {
+		// We send the initial data to the fake API server
+		const {
+			users: { users },
+		} = getState()
+		try {
+			const { data } = await axios.post("/api/reservas/add", booking)
+
+			if (data) {
+				const clientAdded = users.find((user) => user._id === data.client._ref)
+
+				return {
+					...data,
+					client: clientAdded,
+				}
+			}
+		} catch (error) {
+			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
+
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
+
+			return errorData
+		}
+		// The response includes the complete post object, including unique ID
+	}
+)
+
 const bookingsSlice = createSlice({
 	name: "bookings",
 	initialState,
@@ -131,31 +162,40 @@ const bookingsSlice = createSlice({
 			state.bookingTabActive = action.payload
 		},
 		setStatusBooking: (state, action) => {
-			state.status = action.payload
+			state.statusBook = action.payload
 		},
 	},
 
 	extraReducers: {
 		[fetchBookings.pending]: (state) => {
-			state.status = "loading"
+			state.statusBook = "loading"
 		},
 		[fetchBookings.fulfilled]: (state, action) => {
-			state.status = "succeeded"
+			state.statusBook = "succeeded"
 			state.bookings = action.payload
 		},
 		[fetchBookings.rejected]: (state) => {
-			state.status = "failed"
+			state.statusBook = "failed"
 		},
 		[updateBooking.fulfilled]: (state, action) => {
 			if (action.payload.data) {
-				state.status = "failed"
+				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
 			} else {
-				state.status = "succeeded"
+				state.statusBook = "succeeded"
 				const bookingUp = action.payload
 				state.bookings = state.bookings.map((booking) =>
 					booking._id === bookingUp._id ? bookingUp : booking
 				)
+			}
+		},
+		[addBooking.fulfilled]: (state, action) => {
+			if (action.payload.data) {
+				state.statusBook = "failed"
+				state.error = "Algo paso, por favor intentelo nuevamente."
+			} else {
+				state.statusBook = "succeeded"
+				state.bookings.push(action.payload)
 			}
 		},
 
@@ -172,7 +212,7 @@ const bookingsSlice = createSlice({
 			}
 
 			state.bookings = action.payload.bookings.bookings
-			state.status = action.payload.bookings.status
+			state.statusBook = action.payload.bookings.statusBook
 			state.error = action.payload.bookings.error
 		},
 	},
@@ -187,5 +227,5 @@ export const { setDispBookingTabActive, setStatusBooking } =
 // export const { setAdminUser } = bookingsSlice.actions
 
 export const selectAllBookings = (state) => state.bookings.bookings
-export const selectStatus = (state) => state.bookings.status
+export const selectStatusBook = (state) => state.bookings.statusBook
 export const selectError = (state) => state.bookings.error

@@ -55,6 +55,7 @@ const UserForm = ({ methods, onSubmit, loading, data }) => {
 					label="Nombre completo"
 					params={params}
 				/>
+				<Input hidden={true} name="username" label="Nombre de usuario" />
 
 				<Input hidden={true} name="tel" label="Teléfono" params={paramsTel} />
 
@@ -78,7 +79,10 @@ const UserForm = ({ methods, onSubmit, loading, data }) => {
 					options={regionData}
 					label="Estado"
 				/>
-				<Button message={data?.button ? data?.button : "Actualizar"} />
+				<Button
+					hidden={true}
+					message={data?.button ? data?.button : "Actualizar"}
+				/>
 			</Form>
 			{loading && <SpinnerLoadign />}
 		</div>

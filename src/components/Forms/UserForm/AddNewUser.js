@@ -16,7 +16,7 @@ import {
 import Form from "../Smart/Form"
 import { Button, Checkbox, Input, Select } from "../Smart/Inputs"
 
-const AddNewUserComponent = ({ setAddUser, addUser }) => {
+const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 	const regionData = regions.response.estado
 	//const router = useRouter()
 	const userAdmin = useSelector(selectUserAdmin)
@@ -36,10 +36,22 @@ const AddNewUserComponent = ({ setAddUser, addUser }) => {
 	useEffect(() => {
 		dispatch(setStatusUser("idle"))
 		setValue("region", "PUE")
-		setValue("Cliente", false)
-		setValue("Mariachi", false)
-		setValue("Coordinador", "Coordinador")
-		setValue("Admin", false)
+		setValue(
+			"Cliente",
+			role.find((rol) => rol === "Cliente")
+		)
+		setValue(
+			"Mariachi",
+			role.find((rol) => rol === "Mariachi")
+		)
+		setValue(
+			"Coordinador",
+			role.find((rol) => rol === "Coordinador")
+		)
+		setValue(
+			"Admin",
+			role.find((rol) => rol === "Admin")
+		)
 	}, [])
 
 	useEffect(() => {
@@ -116,7 +128,7 @@ const AddNewUserComponent = ({ setAddUser, addUser }) => {
 		return <SpinnerLoadign />
 	}
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col -mt-10">
 			<Form onSubmit={onSubmit} methods={methods}>
 				<Input
 					hidden={true}
@@ -124,6 +136,7 @@ const AddNewUserComponent = ({ setAddUser, addUser }) => {
 					label="Nombre completo"
 					params={params}
 				/>
+				<Input hidden={true} name="username" label="Nombre de usuario" />
 
 				<Input hidden={true} name="tel" label="Teléfono" params={paramsTel} />
 

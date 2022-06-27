@@ -11,6 +11,7 @@ import Layout from "../../components/Layout"
 import useFetchUsers from "src/hook/useFetchUsers"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import { setStatusUser } from "store/features/users/userSlice"
+import { setStatusBooking } from "store/features/bookings/bookingSlice"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const mariachis = ({ session }) => {
@@ -52,9 +53,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		}
 
 		await store.dispatch(fetchMariachis(true))
-		await store.dispatch(setStatus("idle"))
 
 		await store.dispatch(setStatusUser("idle"))
+		await store.dispatch(setStatus("idle"))
+		await store.dispatch(setStatusBooking("idle"))
 
 		// if (!existAdmin.users.admin) {
 		// 	return {

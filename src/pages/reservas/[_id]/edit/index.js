@@ -16,7 +16,7 @@ import BookingTa from "src/components/Tabs/ReservaTabs"
 import { wrapper } from "store"
 import {
 	selectError,
-	selectStatus,
+	selectStatusBook,
 	setStatusBooking,
 	updateBooking,
 } from "store/features/bookings/bookingSlice"
@@ -76,7 +76,7 @@ const deserva = {
 
 const reservaById = ({ data }) => {
 	const router = useRouter()
-	const status = useSelector(selectStatus)
+	const status = useSelector(selectStatusBook)
 	const error = useSelector(selectError)
 
 	const userAdmin = useSelector(selectUserAdmin)
@@ -178,8 +178,6 @@ const reservaById = ({ data }) => {
 		//if (mariachiSelected._id !== dataReservaToCard.orderItems.mariachi._id)
 
 		if (dataReservaToCard.orderItems.mariachi._id === undefined) {
-			console.log("id1", dataReservaToCard.orderItems.mariachi._id)
-
 			const marSeleected = dataMariachi.find(
 				(dat) => dat._id === data.orderItems.mariachi._id
 			)
@@ -187,7 +185,6 @@ const reservaById = ({ data }) => {
 			setValue("members", marSeleected?.members)
 			setValue("category_mariachi", marSeleected?.categorySet)
 		} else {
-			console.log("id2", dataReservaToCard.orderItems.mariachi._id)
 			const marSeleected = dataMariachi.find(
 				(dat) => dat._id === dataReservaToCard.orderItems.mariachi._id
 			)

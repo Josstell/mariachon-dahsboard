@@ -1,5 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import useSearchUserByCategory from "src/hook/useSearchUserByCategory"
 import { selectAllUsers } from "store/features/users/userSlice"
 import Form from "../Smart/Form"
@@ -10,6 +10,8 @@ import { TrashIcon } from "@heroicons/react/outline"
 import { regions } from "../../../helpers/dataset"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { useSelector } from "react-redux"
+import AddNewUserComponent from "../UserForm/AddNewUser"
+//import { setDispBookingTabActive } from "store/features/bookings/bookingSlice"
 
 const BookingForm = ({
 	methods,
@@ -21,12 +23,31 @@ const BookingForm = ({
 }) => {
 	const regionData = regions.response.estado
 
+	const [addUser, setAddUser] = useState(true)
+
 	const activeFormTab = useSelector((state) => state.bookings.bookingTabActive)
+
+	//const dispatch = useDispatch()
 
 	const users = useSelector(selectAllUsers)
 	const mariachis = useSelector(selectAllMariachis)
 
-	const usersByClient = useSearchUserByCategory(users, "Client")
+	const usersByClient = useSearchUserByCategory(users, "Cliente")
+
+	// useEffect(() => {
+	// 	if (!addUser) {
+	// 		const tabOnlyClientActive = {
+	// 			client: true,
+	// 			address: false,
+	// 			mariachi: false,
+	// 			parameters: false,
+	// 		}
+
+	// 		dispatch(setDispBookingTabActive(tabOnlyClientActive))
+	// 	} else {
+	// 		dispatch(setDispBookingTabActive(activeFormTab))
+	// 	}
+	// }, [dispatch, addUser])
 
 	// //use form
 	// const { setValue } = methods
@@ -138,6 +159,8 @@ const BookingForm = ({
 
 	//
 
+	console.log("Datos bnuevo usuarios: ", addUser)
+	console.log("Users:", users, usersByClient)
 	return (
 		<>
 			<Form onSubmit={onSubmit} methods={methods}>
@@ -147,21 +170,23 @@ const BookingForm = ({
 					hidden={activeFormTab.client}
 					name="clientId"
 					options={usersByClient}
-					label="Cambiar cliente"
+					label="Cliente"
 					onChange={(e) => hangleGetClient(e)}
+					addUser={addUser}
+					setAddUser={setAddUser}
 				/>
 				<Input
-					hidden={activeFormTab.client}
+					hidden={activeFormTab.client && addUser}
 					name="nameClient"
 					label=" Nombe del cliente"
 				/>
 				<Input
-					hidden={activeFormTab.client}
+					hidden={activeFormTab.client && addUser}
 					name="telClient"
 					label="Teléfono"
 				/>
 				<Input
-					hidden={activeFormTab.client}
+					hidden={activeFormTab.client && addUser}
 					name="emailClient"
 					label="Correo electrónico"
 				/>
@@ -310,8 +335,17 @@ const BookingForm = ({
 					</div>
 				</div>
 
-				<Button message="Actualizar" />
+				<Button message="Actualizar" hidden={addUser} />
 			</Form>
+			{!addUser && activeFormTab.client ? (
+				<AddNewUserComponent
+					setAddUser={setAddUser}
+					addUser={addUser}
+					role={["Cliente"]}
+				/>
+			) : (
+				<div className=""></div>
+			)}
 		</>
 	)
 }

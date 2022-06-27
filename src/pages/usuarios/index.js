@@ -13,6 +13,8 @@ import {
 import TableUser from "src/components/Tables/TableUsers"
 import Layout from "src/components/Layout"
 import SpinnerGral from "src/components/Spinners/SpinnerGral"
+import { setStatus } from "store/features/mariachis/mariachiSlice"
+import { setStatusBooking } from "store/features/bookings/bookingSlice"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const usuarios = ({ session }) => {
@@ -58,7 +60,7 @@ const usuarios = ({ session }) => {
 export default usuarios
 
 export const getServerSideProps = wrapper.getServerSideProps(
-	() => async (ctx) => {
+	(store) => async (ctx) => {
 		const session = await getSession(ctx)
 
 		if (!session) {
@@ -69,6 +71,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 				},
 			}
 		}
+
+		await store.dispatch(setStatusUser("idle"))
+		await store.dispatch(setStatus("idle"))
+		await store.dispatch(setStatusBooking("idle"))
 
 		// if (!(existAdmin.users.admin.name !== undefined)) {
 		// 	console.log("Existe dentro: ", existAdmin.users.admin.name)

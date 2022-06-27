@@ -10,7 +10,6 @@ import {
 	addNewUser,
 	fetchUsersNew,
 	selectUserAdmin,
-	selectUserUpdate,
 } from "../../store/features/users/userSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchMariachis } from "store/features/mariachis/mariachiSlice"
@@ -18,24 +17,14 @@ import { fetchBookings } from "store/features/bookings/bookingSlice"
 
 export default function Home() {
 	const userAdmin = useSelector(selectUserAdmin)
-	const userUpdate = useSelector(selectUserUpdate)
+	//const userUpdate = useSelector(selectUserUpdate)
 	const dispatch = useDispatch()
 
-	console.log("update", userUpdate)
+	console.log("update", userAdmin)
 
 	useEffect(() => {
 		if (!userAdmin.exist) {
-			console.log("Entro para guardar el user:")
-			const dataRegister = async () => {
-				await dispatch(addNewUser(userAdmin))
-				// try {
-				// 	await axios.post("/api/users/add", userAdmin)
-				// } catch (error) {
-				// 	console.log(error)
-				// }
-			}
-
-			dataRegister()
+			dispatch(addNewUser(userAdmin))
 		}
 	}, [])
 
@@ -62,15 +51,17 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 		const session = await getSession(ctx)
 
+		console.log("session!!", session)
+
 		//store.dispatch(setUsers(users))
-		if (!session)
+		if (!session) {
 			return {
 				redirect: {
 					destination: "/signin",
 					permanent: false,
 				},
 			}
-
+		}
 		await store.dispatch(fetchUsersNew(session))
 
 		await store.dispatch(fetchMariachis(true))

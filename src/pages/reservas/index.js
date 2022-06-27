@@ -9,6 +9,8 @@ import Layout from "../../components/Layout"
 import TableBookings from "src/components/Tables/TableBookings"
 import useFetchUsers from "src/hook/useFetchUsers"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
+import { setStatusUser } from "store/features/users/userSlice"
+import { setStatus } from "store/features/mariachis/mariachiSlice"
 // import HbookingCard from "src/components/Cards/BookingCard/HbookingCard"
 // import BookingCard from "src/components/Cards/BookingCard"
 
@@ -54,8 +56,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 		await store.dispatch(fetchBookings(true))
 
+		await store.dispatch(setStatusUser("idle"))
+		await store.dispatch(setStatus("idle"))
 		await store.dispatch(setStatusBooking("idle"))
-
 		// if (!existAdmin.users.admin) {
 		// 	return {
 		// 		redirect: {

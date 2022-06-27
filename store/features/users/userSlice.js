@@ -14,7 +14,7 @@ const initialState = {
 	error: null,
 }
 const query = groq`
-*[_type == "user"]
+*[_type == "user" && !(_id in path('drafts.**'))]
 `
 
 // get all users
@@ -23,8 +23,8 @@ export const fetchUsersNew = createAsyncThunk(
 	async (session) => {
 		try {
 			const users = await client.fetch(query)
-			console.log("si entra!!!!!!", users)
-			if (users.length > 0) {
+			if (!(users.length === 0)) {
+				console.log("si entra!!!!!!", users.length)
 				const userAdmin = users.find(
 					(user) => user.email === session.user.email
 				)
@@ -52,8 +52,10 @@ export const fetchUsersNew = createAsyncThunk(
 					}
 				}
 			} else {
+				const sesuser = session.user
+				console.log("Session", session)
 				return {
-					users: users,
+					users: [sesuser],
 					admin: { ...session.user, exist: false, isAdmin: false },
 				}
 			}
@@ -161,9 +163,11 @@ const usersSlice = createSlice({
 			state.status = "loading"
 		},
 		[fetchUsersNew.fulfilled]: (state, action) => {
+			const adminUsr = action.payload?.admin
+			console.log("Exito", adminUsr)
+			state.admin = { ...adminUsr }
 			state.status = "succeeded"
-			state.users = action.payload.users
-			state.admin = action.payload.admin
+			state.users = action.payload?.users
 		},
 		[fetchUsersNew.rejected]: (state) => {
 			state.status = "failed"
@@ -180,6 +184,10 @@ const usersSlice = createSlice({
 				state.status = "succeeded"
 				state.users.push(action.payload)
 			}
+		},
+
+		[updateUser.pending]: (state) => {
+			state.status = "loading"
 		},
 
 		[updateUser.fulfilled]: (state, action) => {
@@ -208,6 +216,8 @@ const usersSlice = createSlice({
 				return {
 					...state,
 					users: action.payload.users.users,
+					admin: action.payload.users.admin,
+					status: action.payload.users.status,
 				}
 			}
 

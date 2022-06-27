@@ -4,15 +4,20 @@ import { groq } from "next-sanity"
 import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import toast, { Toaster } from "react-hot-toast"
 import { useDispatch, useSelector } from "react-redux"
 import UserCard from "src/components/Cards/UserCard"
 import UserForm from "src/components/Forms/UserForm"
 import Layout from "src/components/Layout"
+import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import { wrapper } from "store"
 import {
+	selectError,
+	selectStatusUser,
 	selectUserAdmin,
+	setStatusUser,
 	setUserUpdate,
 	updateUser,
 } from "store/features/users/userSlice"
@@ -27,6 +32,9 @@ const userById = ({ data }) => {
 
 	const userAdmin = useSelector(selectUserAdmin)
 
+	const status = useSelector(selectStatusUser)
+	const error = useSelector(selectError)
+
 	const methods = useForm()
 
 	const { setValue, watch } = methods
@@ -39,16 +47,33 @@ const userById = ({ data }) => {
 			router.push("/")
 		}
 		setValue("name", data.name)
+		setValue("username", data.username)
+
 		setValue("tel", data.tel)
 		setValue("email", data.email)
 		setValue("region", data?.region || "")
+
+		setValue(
+			"Cliente",
+			data.categorySet.find((cat) => cat === "Cliente")
+		)
+		setValue(
+			"Mariachi",
+			data.categorySet.find((cat) => cat === "Mariachi")
+		)
+		setValue(
+			"Coordinador",
+			data.categorySet.find((cat) => cat === "Coordinador")
+		)
+		setValue(
+			"Admin",
+			data.categorySet.find((cat) => cat === "Admin")
+		)
 		// 		//
 	}, [])
 
 	const onSubmit = (dataForm) => {
 		setLoading(true)
-
-		console.log(dataForm)
 
 		//Creando variable session para recargar datos
 
@@ -67,17 +92,31 @@ const userById = ({ data }) => {
 				modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 			})
 		)
-		setLoading(false)
-
-		router.push("/usuarios")
 	}
+
+	const notifyError = () => toast.error(error)
+	const notifySuccess = () => toast.success("Datos actualizados correctamente")
+
+	useEffect(() => {
+		if (status === "failed") {
+			notifyError()
+			dispatch(setStatusUser("idle"))
+		}
+		if (status === "succeeded") {
+			dispatch(setStatusUser("idle"))
+			notifySuccess()
+
+			setTimeout(() => router.push("/usuarios"), 1000)
+		}
+	}, [status, error, notifyError, dispatch, router])
 
 	const userUpdat = {
 		name: watch("name"),
+		username: watch("username"),
 		tel: watch("tel"),
 		email: watch("email"),
 		region: watch("region"),
-		categorySet: data?.categorySet || "",
+		categorySet: data?.categorySet[0] || "",
 	}
 
 	if (!userAdmin.exist || router.isFallback) {
@@ -97,12 +136,18 @@ const userById = ({ data }) => {
 						>
 							{/* <UserForm />  Formulario */}
 
-							<UserForm
-								methods={methods}
-								data={data}
-								onSubmit={onSubmit}
-								loading={loading}
-							/>
+							{!(status === "idle") ? (
+								<SpinnerLoadign />
+							) : (
+								<UserForm
+									methods={methods}
+									data={data}
+									onSubmit={onSubmit}
+									loading={loading}
+								/>
+							)}
+
+							<Toaster />
 						</div>
 						<div className={"md:w-5/12 h-3/5"}>
 							<UserCard
@@ -149,6 +194,7 @@ export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
 	const query = groq`*[_type == "user" && _id == $id][0]{
   _id,
   categorySet,
+  username,
   email,
   name,
   tel,

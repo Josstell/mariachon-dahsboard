@@ -46,6 +46,8 @@ const AdminCard = ({ editCard, setEditCard, userUpdate }) => {
 			</div>
 			<div className="w-full h-2/3  text-slate-50 dark:text-slate-900 bg-slate-800 dark:bg-slate-50 rounded-b-lg flex flex-col justify-center items-center ">
 				<h3 className="text-xl font-semibold ">{userUpdate?.name}</h3>
+				<h3 className="text-lg font-semibold ">{userUpdate?.username}</h3>
+
 				<h3 className="text-base font-light ">
 					{userAdmin?.categorySet || "user"}
 				</h3>

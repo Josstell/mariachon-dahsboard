@@ -18,6 +18,7 @@ import {
 
 import { nanoid } from "@reduxjs/toolkit"
 import { useRouter } from "next/router"
+import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 
 const addnewuser = () => {
 	const [loading, setLoading] = useState(false)
@@ -43,6 +44,7 @@ const addnewuser = () => {
 	useEffect(() => {
 		dispatch(setStatusUser("idle"))
 		setValue("name", "")
+		setValue("username", "")
 		setValue("tel", "")
 		setValue("email", "")
 		setValue("region", "")
@@ -58,7 +60,7 @@ const addnewuser = () => {
 			setLoading(false)
 			notifySuccess()
 			//dispatch(setStatus("idle"))
-			router.push("/usuarios")
+			setTimeout(() => router.push("/usuarios"), 1000)
 		}
 	}, [router, status])
 
@@ -91,6 +93,7 @@ const addnewuser = () => {
 
 	const userUpdat = {
 		name: watch("name"),
+		username: watch("username"),
 		tel: watch("tel"),
 		email: watch("email"),
 		region: watch("region"),
@@ -114,13 +117,17 @@ const addnewuser = () => {
 							className={`no-scrollbar md:w-2/4	w-5/12 h-fit md:h-full mb-5 md:mb-0 flex flex-col justify-center items-center`}
 						>
 							{/* <UserForm />  Formulario */}
+							{!(status === "idle") ? (
+								<SpinnerLoadign />
+							) : (
+								<UserForm
+									methods={methods}
+									data={{ ...data, button: "Crear nuevo" }}
+									onSubmit={onSubmit}
+									loading={loading}
+								/>
+							)}
 
-							<UserForm
-								methods={methods}
-								data={{ ...data, button: "Crear nuevo" }}
-								onSubmit={onSubmit}
-								loading={loading}
-							/>
 							<Toaster />
 						</div>
 						<div className={"md:w-5/12 h-3/5"}>

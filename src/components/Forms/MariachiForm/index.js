@@ -386,7 +386,11 @@ export default function MariachiForm({
 			</Form>
 
 			{!addUser && activeFormTab.mariachi ? (
-				<AddNewUserComponent setAddUser={setAddUser} addUser={addUser} />
+				<AddNewUserComponent
+					setAddUser={setAddUser}
+					addUser={addUser}
+					role={["Coordinador"]}
+				/>
 			) : (
 				<div className=""></div>
 			)}
