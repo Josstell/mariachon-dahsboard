@@ -172,26 +172,27 @@ const userById = ({ data }) => {
 
 export default userById
 
-export async function getStaticPaths() {
-	const query = groq`
-*[_type == "user"]{
-	_id,
-	slug,
-}
-`
-	const users = await client.fetch(query)
+// export async function getStaticPaths() {
+// 	const query = groq`
+// *[_type == "user"]{
+// 	_id,
+// 	slug,
+// }
+// `
+// 	const users = await client.fetch(query)
 
-	const paths = users.map((path) => ({
-		params: { slug: path._id.toString() },
-	}))
+// 	const paths = users.map((path) => ({
+// 		params: { slug: path._id.toString() },
+// 	}))
 
-	console.log("links: ", paths)
+// 	console.log("links: ", paths)
 
-	return { paths: paths, fallback: true }
-}
+// 	return { paths: paths, fallback: true }
+// }
 
-export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
-	const query = groq`*[_type == "user" && _id == $id][0]{
+export const getServerSideProps = wrapper.getServerSideProps(
+	() => async (ctx) => {
+		const query = groq`*[_type == "user" && _id == $id][0]{
   _id,
   categorySet,
   username,
@@ -203,24 +204,25 @@ export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
 }
 	`
 
-	const session = await getSession(ctx)
+		const session = await getSession(ctx)
 
-	const users = await client.fetch(query, {
-		id: ctx.params.slug,
-	})
+		const users = await client.fetch(query, {
+			id: ctx.params.slug,
+		})
 
-	// const data = users.filter((est) => est._id.toString() === ctx.params.slug)
+		// const data = users.filter((est) => est._id.toString() === ctx.params.slug)
 
-	// const data = await store
-	// 	.dispatch(selectAllUsers())
-	// 	.filter((est) => est.slug.toString() === params.slug)
+		// const data = await store
+		// 	.dispatch(selectAllUsers())
+		// 	.filter((est) => est.slug.toString() === params.slug)
 
-	return {
-		props: {
-			data: users,
-			session: session,
-		},
+		return {
+			props: {
+				data: users,
+				session: session,
+			},
 
-		//	props: { data: data[0] }, // will be passed to the page component as props
+			//	props: { data: data[0] }, // will be passed to the page component as props
+		}
 	}
-})
+)
