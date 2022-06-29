@@ -38,6 +38,8 @@ export async function getStaticPaths() {
 export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
 	const query = groq`*[_type == "booking" && _id == $id][0]{
  _id,
+  reserva,
+
 client->{
   _id,
   name,
@@ -53,13 +55,17 @@ dateAndTime,
   status,
   shippingAddress,
   paymentResult,
+
   orderItems[0]{
     _key,
     deposit,
     price,
     qty,
     service,
+	  members,
+categorySet,
     mariachi->{
+		_id,
     name,
 tel,
 coordinator->{
@@ -71,8 +77,11 @@ members,
 service,
 categorySet,
 region,
-logo
+logo,
+createdBy,
+modifiedBy,
   }
+
   }
     }
 `

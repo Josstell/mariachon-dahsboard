@@ -22,9 +22,10 @@ import {
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import toast, { Toaster } from "react-hot-toast"
 
-const mariachiById = ({ data }) => {
-	const [arrayImages, setArrayImages] = useState(data?.images || [])
-	const [arrayVideos, setArrayVideos] = useState(data?.videos || [])
+const mariachiById = ({ slug }) => {
+	const data = useSelector((state) =>
+		state.mariachis.mariachis.find((mar) => mar.slug.current === slug)
+	)
 
 	const router = useRouter()
 	const [loading, setLoading] = useState(false)
@@ -34,6 +35,8 @@ const mariachiById = ({ data }) => {
 	const error = useSelector(selectError)
 	const dispatch = useDispatch()
 
+	const [arrayImages, setArrayImages] = useState(data?.images || [])
+	const [arrayVideos, setArrayVideos] = useState(data?.videos || [])
 	//Activar Tab
 	const activeFormTab = useSelector(
 		(state) => state.mariachis.mariachiTabActive
@@ -42,6 +45,16 @@ const mariachiById = ({ data }) => {
 	const methods = useForm()
 
 	const { watch, setValue } = methods
+
+	useEffect(() => {
+		if (data === undefined) {
+			router.push("/mariachis")
+		}
+	}, [])
+
+	if (data === undefined) {
+		return <SpinnerLogo />
+	}
 
 	useEffect(() => {
 		if (!userAdmin.exist) {
@@ -177,71 +190,73 @@ const mariachiById = ({ data }) => {
 
 export default mariachiById
 
-export async function getStaticPaths() {
-	const query = groq`
-*[_type == "mariachi"]{
-  _id,
-  slug
-}
-`
-	const mariachis = await client.fetch(query)
+// export async function getStaticPaths() {
+// 	const query = groq`
+// *[_type == "mariachi"]{
+//   _id,
+//   slug
+// }
+// `
+// 	const mariachis = await client.fetch(query)
 
-	const paths = mariachis.map((path) => ({
-		params: { slug: path.slug.current.toString() },
-	}))
+// 	const paths = mariachis.map((path) => ({
+// 		params: { slug: path.slug.current.toString() },
+// 	}))
 
-	console.log("links: ", paths)
+// 	console.log("links: ", paths)
 
-	return { paths: paths, fallback: true }
-}
+// 	return { paths: paths, fallback: true }
+// }
 
-export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
-	const query = groq`*[_type == "mariachi" && slug.current == $slug][0]{
-  _id,
-  slug{
-  current
-},
-name,
-description,
-address,
-city,
-region,
-cp,
-tel,
-coordinator->{
-  _id,
-  name,
-  tel
-},
-crew,
-members,
-service,
-categorySet,
-logo, 
-images,
-videos,
-createdBy,
-modifiedBy,
-}`
+export const getServerSideProps = wrapper.getServerSideProps(
+	() => async (ctx) => {
+		// 	const query = groq`*[_type == "mariachi" && slug.current == $slug][0]{
+		//   _id,
+		//   slug{
+		//   current
+		// },
+		// name,
+		// description,
+		// address,
+		// city,
+		// region,
+		// cp,
+		// tel,
+		// coordinator->{
+		//   _id,
+		//   name,
+		//   tel
+		// },
+		// crew,
+		// members,
+		// service,
+		// categorySet,
+		// logo,
+		// images,
+		// videos,
+		// createdBy,
+		// modifiedBy,
+		// }`
 
-	const mariachi = await client.fetch(query, {
-		slug: ctx.params.slug,
-	})
+		// 		const mariachi = await client.fetch(query, {
+		// 			slug: ctx.params.slug,
+		// 		})
 
-	const session = await getSession(ctx)
+		const session = await getSession(ctx)
 
-	// const data = users.filter((est) => est._id.toString() === ctx.params.slug)
+		// const data = users.filter((est) => est._id.toString() === ctx.params.slug)
 
-	// const data = await store
-	// 	.dispatch(selectAllUsers())
-	// 	.filter((est) => est.slug.toString() === params.slug)
+		// const data = await store
+		// 	.dispatch(selectAllUsers())
+		// 	.filter((est) => est.slug.toString() === params.slug)
 
-	return {
-		props: {
-			data: mariachi,
-			session: session,
-		},
+		return {
+			props: {
+				slug: ctx.params.slug,
+				session: session,
+			},
 
-		//	props: { data: data[0] }, // will be passed to the page component as props
+			//	props: { data: data[0] }, // will be passed to the page component as props
+		}
 	}
-})
+)

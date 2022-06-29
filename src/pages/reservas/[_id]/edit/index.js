@@ -1,7 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import client from "@lib/sanity"
 import { getSession } from "next-auth/react"
-import { groq } from "next-sanity"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -21,7 +19,7 @@ import {
 	updateBooking,
 } from "store/features/bookings/bookingSlice"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
-import { selectUserAdmin } from "store/features/users/userSlice"
+import { fetchUsersNew, selectUserAdmin } from "store/features/users/userSlice"
 
 import toast, { Toaster } from "react-hot-toast"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
@@ -74,7 +72,11 @@ const deserva = {
 	_id: "082d1427-b8fb-4be2-9ade-b7fd8cc1dc98",
 }
 
-const reservaById = ({ data }) => {
+const reservaById = ({ session, id }) => {
+	const data = useSelector((state) =>
+		state.bookings.bookings.find((booking) => booking._id === id)
+	)
+
 	const router = useRouter()
 	const status = useSelector(selectStatusBook)
 	const error = useSelector(selectError)
@@ -102,6 +104,16 @@ const reservaById = ({ data }) => {
 	const methods = useForm()
 
 	const { setValue, watch } = methods
+
+	useEffect(() => {
+		if (data === undefined) {
+			router.push("/reservas")
+		}
+	}, [])
+
+	if (data === undefined) {
+		return <SpinnerLogo />
+	}
 
 	useEffect(() => {
 		setValue("nameClient", userbyId?.name || data?.client?.name)
@@ -400,94 +412,96 @@ const reservaById = ({ data }) => {
 	)
 }
 
-export async function getStaticPaths() {
-	const query = groq`
-*[_type == "booking" && !(_id in path('drafts.**')) ]{
-    _id
-}
+// export async function getStaticPaths() {
+// 	const query = groq`
+// *[_type == "booking" && !(_id in path('drafts.**')) ]{
+//     _id
+// }
 
-`
-	const booking = await client.fetch(query)
+// `
+// 	const booking = await client.fetch(query)
 
-	const paths = booking.map((path) => ({
-		params: { _id: path._id.toString() },
-	}))
+// 	const paths = booking.map((path) => ({
+// 		params: { _id: path._id.toString() },
+// 	}))
 
-	console.log("links: ", paths)
+// 	console.log("links: ", paths)
 
-	return { paths: paths, fallback: true }
-}
+// 	return { paths: paths, fallback: true }
+// }
 
-export const getStaticProps = wrapper.getStaticProps(() => async (ctx) => {
-	const query = groq`*[_type == "booking" && _id == $id][0]{
- _id,
-client->{
-  _id,
-  name,
-  tel,
-  email,
-},
-dateAndTime,
-  message,
-  playlist,
-  price,
-  qty,
-  userName,
-  status,
-  shippingAddress,
-  paymentResult,
+export const getServerSideProps = wrapper.getServerSideProps(
+	() => async (ctx) => {
+		// 		const query = groq`*[_type == "booking" && _id == $id][0]{
+		//  _id,
+		// client->{
+		//   _id,
+		//   name,
+		//   tel,
+		//   email,
+		// },
+		// dateAndTime,
+		//   message,
+		//   playlist,
+		//   price,
+		//   qty,
+		//   userName,
+		//   status,
+		//   shippingAddress,
+		//   paymentResult,
 
-  orderItems[0]{
-    _key,
-    deposit,
-    price,
-    qty,
-    service,
-	  members,
-categorySet,
-    mariachi->{
-		_id,
-    name,
-tel,
-coordinator->{
-  _id,
-  name,
-  tel
-},
-members,
-service,
-categorySet,
-region,
-logo,
-createdBy,
-modifiedBy,
-  }
+		//   orderItems[0]{
+		//     _key,
+		//     deposit,
+		//     price,
+		//     qty,
+		//     service,
+		// 	  members,
+		// categorySet,
+		//     mariachi->{
+		// 		_id,
+		//     name,
+		// tel,
+		// coordinator->{
+		//   _id,
+		//   name,
+		//   tel
+		// },
+		// members,
+		// service,
+		// categorySet,
+		// region,
+		// logo,
+		// createdBy,
+		// modifiedBy,
+		//   }
 
-  }
-    }
-	`
+		//   }
+		//     }
+		// 	`
 
-	const session = await getSession(ctx)
+		const session = await getSession(ctx)
 
-	const booking = await client.fetch(query, {
-		id: ctx.params._id,
-	})
+		// const booking = await client.fetch(query, {
+		// 	id: ctx.params._id,
+		// })
 
-	console.log(booking)
-	// const data = users.filter((est) => est._id.toString() === ctx.params.slug)
+		// console.log(booking)
+		// const data = users.filter((est) => est._id.toString() === ctx.params.slug)
 
-	// const data = await store
-	// 	.dispatch(selectAllUsers())
-	// 	.filter((est) => est.slug.toString() === params.slug)
+		// const data = await store
+		// 	.dispatch(selectAllUsers())
+		// 	.filter((est) => est.slug.toString() === params.slug)
 
-	return {
-		props: {
-			data: booking,
-			session: session,
-		},
+		return {
+			props: {
+				id: ctx.params._id,
+				session: session,
+			},
 
-		//	props: { data: data[0] }, // will be passed to the page component as props
+			//	props: { data: data[0] }, // will be passed to the page component as props
+		}
 	}
-})
+)
 
 export default reservaById

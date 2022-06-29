@@ -1,6 +1,6 @@
-import client from "@lib/sanity"
+//import client from "@lib/sanity"
+//import { groq } from "next-sanity"
 import { getSession } from "next-auth/react"
-import { groq } from "next-sanity"
 import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -14,6 +14,7 @@ import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import { wrapper } from "store"
 import {
+	selectAllUsers,
 	selectError,
 	selectStatusUser,
 	selectUserAdmin,
@@ -22,13 +23,14 @@ import {
 	updateUser,
 } from "store/features/users/userSlice"
 
-const userById = ({ data }) => {
+const userById = ({ id }) => {
+	const users = useSelector(selectAllUsers)
 	const [loading, setLoading] = useState(false)
+	const [editCard, setEditCard] = useState(false)
+	const [dataUser] = useState(users.find((user) => user._id === id))
 
 	const router = useRouter()
 	const dispatch = useDispatch()
-
-	const [editCard, setEditCard] = useState(false)
 
 	const userAdmin = useSelector(selectUserAdmin)
 
@@ -40,34 +42,44 @@ const userById = ({ data }) => {
 	const { setValue, watch } = methods
 
 	useEffect(() => {
-		if (data) {
-			dispatch(setUserUpdate(data))
+		if (dataUser === undefined) {
+			router.push("/usuarios")
+		}
+	}, [])
+
+	if (dataUser === undefined) {
+		return <SpinnerLogo />
+	}
+
+	useEffect(() => {
+		if (dataUser) {
+			dispatch(setUserUpdate(dataUser))
 		}
 		if (!userAdmin.exist) {
 			router.push("/")
 		}
-		setValue("name", data.name)
-		setValue("username", data.username)
+		setValue("name", dataUser.name)
+		setValue("username", dataUser.username)
 
-		setValue("tel", data.tel)
-		setValue("email", data.email)
-		setValue("region", data?.region || "")
+		setValue("tel", dataUser.tel)
+		setValue("email", dataUser.email)
+		setValue("region", dataUser?.region || "")
 
 		setValue(
 			"Cliente",
-			data.categorySet.find((cat) => cat === "Cliente")
+			dataUser.categorySet.find((cat) => cat === "Cliente")
 		)
 		setValue(
 			"Mariachi",
-			data.categorySet.find((cat) => cat === "Mariachi")
+			dataUser.categorySet.find((cat) => cat === "Mariachi")
 		)
 		setValue(
 			"Coordinador",
-			data.categorySet.find((cat) => cat === "Coordinador")
+			dataUser.categorySet.find((cat) => cat === "Coordinador")
 		)
 		setValue(
 			"Admin",
-			data.categorySet.find((cat) => cat === "Admin")
+			dataUser.categorySet.find((cat) => cat === "Admin")
 		)
 		// 		//
 	}, [])
@@ -80,15 +92,15 @@ const userById = ({ data }) => {
 		dispatch(
 			setUserUpdate({
 				...dataForm,
-				_id: data._id,
-				categorySet: data?.categorySet || "",
+				_id: dataUser._id,
+				categorySet: dataUser?.categorySet || "",
 			})
 		)
 		dispatch(
 			updateUser({
 				...dataForm,
-				_id: data._id,
-				categorySet: data?.categorySet || "",
+				_id: dataUser._id,
+				categorySet: dataUser?.categorySet || "",
 				modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 			})
 		)
@@ -116,7 +128,7 @@ const userById = ({ data }) => {
 		tel: watch("tel"),
 		email: watch("email"),
 		region: watch("region"),
-		categorySet: data?.categorySet[0] || "",
+		categorySet: dataUser?.categorySet[0] || "",
 	}
 
 	if (!userAdmin.exist || router.isFallback) {
@@ -141,7 +153,7 @@ const userById = ({ data }) => {
 							) : (
 								<UserForm
 									methods={methods}
-									data={data}
+									data={dataUser}
 									onSubmit={onSubmit}
 									loading={loading}
 								/>
@@ -192,23 +204,23 @@ export default userById
 
 export const getServerSideProps = wrapper.getServerSideProps(
 	() => async (ctx) => {
-		const query = groq`*[_type == "user" && _id == $id][0]{
-  _id,
-  categorySet,
-  username,
-  email,
-  name,
-  tel,
-  city,
-  region
-}
-	`
+		// 		const query = groq`*[_type == "user" && _id == $id][0]{
+		//   _id,
+		//   categorySet,
+		//   username,
+		//   email,
+		//   name,
+		//   tel,
+		//   city,
+		//   region
+		// }
+		// 	`
 
 		const session = await getSession(ctx)
 
-		const users = await client.fetch(query, {
-			id: ctx.params.slug,
-		})
+		// const users = await client.fetch(query, {
+		// 	id: ctx.params.slug,
+		// })
 
 		// const data = users.filter((est) => est._id.toString() === ctx.params.slug)
 
@@ -218,7 +230,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 		return {
 			props: {
-				data: users,
+				//	data: users,
+				id: ctx.params.slug,
 				session: session,
 			},
 

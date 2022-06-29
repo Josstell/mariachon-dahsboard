@@ -18,29 +18,30 @@ const initialState = {
 const query = groq`
 *[_type == "mariachi" && !(_id in path('drafts.**')) ]{
   _id,
-  name,
-  description,
-address,
-tel,
-service,
-members,
-slug{
+  slug{
   current
 },
+name,
+description,
+address,
+city,
 region,
-logo,
-categorySet,
-createdBy,
-modifiedBy,
+cp,
+tel,
 coordinator->{
   _id,
   name,
-  tel,
- email,
-  slug{
-  current
-}
-}  
+  tel
+},
+crew,
+members,
+service,
+categorySet,
+logo, 
+images,
+videos,
+createdBy,
+modifiedBy,
 }
 `
 
@@ -210,3 +211,6 @@ export const { setDispMariachiTabActive, setStatus } = mariachisSlice.actions
 export const selectAllMariachis = (state) => state.mariachis.mariachis
 export const selectStatus = (state) => state.mariachis.status
 export const selectError = (state) => state.mariachis.error
+
+export const selectMariachiBySlug = (state, slug) =>
+	state.mariachis.mariachis.find((mar) => mar.slug === slug)

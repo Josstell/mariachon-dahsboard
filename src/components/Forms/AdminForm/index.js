@@ -85,7 +85,7 @@ const AdminForm = ({ register, handleSubmit, onSubmit, errors, loading }) => {
 					{...register("city", { required: false })}
 					className="appearance-none bg-transparent border-none w-full text-gray-700 dark:text-slate-50 mr-3 py-1 px-2 leading-tight focus:outline-none"
 					type="text"
-					placeholder="Ciudad o estado"
+					placeholder="Ciudad o municipio"
 				/>
 			</div>
 			<button

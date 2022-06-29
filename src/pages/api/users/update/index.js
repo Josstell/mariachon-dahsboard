@@ -7,6 +7,7 @@ export default handlerCors().put((req, res) => {
 		tel: req.body.tel,
 		email: req.body.email,
 		region: req.body.region || "",
+		city: req.body.city || "",
 		username: req.body.username || "",
 		modifiedBy: req.body.modifiedBy,
 	}

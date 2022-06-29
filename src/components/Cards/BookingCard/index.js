@@ -16,7 +16,7 @@ export default function BookingCard({ reserva, data }) {
 		day: "numeric",
 	}
 
-	const date = new Date(reserva.dateAndTime || data.dateAndTime)
+	const date = new Date(reserva?.dateAndTime || data?.dateAndTime)
 	const fecha = date.toLocaleDateString("es-MX", options)
 
 	return (
@@ -24,7 +24,11 @@ export default function BookingCard({ reserva, data }) {
 			<div className="flex  px-2 my-2 ">
 				<TicketIcon className="fill-slate-900 dark:fill-slate-100 w-5 h-5 " />
 				<p className="ml-2">
-					{reserva._id === undefined ? data._id : reserva._id}
+					{reserva?.reserva
+						? reserva?.reserva
+						: reserva?._id === undefined
+						? data?._id
+						: reserva._id}
 				</p>
 			</div>
 			<div className="flex item-center justify-evenly h-1/4	">
@@ -70,7 +74,7 @@ export default function BookingCard({ reserva, data }) {
 				<div className="col-span-10 ">
 					<h4>
 						{reserva?.shippingAddress?.address === undefined
-							? data.shippingAddress.address
+							? data?.shippingAddress?.address
 							: reserva?.shippingAddress?.address}
 						{reserva?.shippingAddress?.city === undefined
 							? ", " + data?.shippingAddress?.city
@@ -91,16 +95,16 @@ export default function BookingCard({ reserva, data }) {
 					<div className="flex flex-col">
 						<h4 className="text-lg text-slate-900 dark:text-slate-100">
 							{reserva?.client?.name === undefined
-								? data.client.name
+								? data?.client?.name
 								: reserva?.client?.name}
 						</h4>
 						<h5 className="text-sm text-slate-900/50 dark:text-slate-100/50 ">
 							{reserva?.client?.tel === undefined
-								? data.client.tel
+								? data?.client?.tel
 								: reserva?.client?.tel}
 							,
 							{reserva?.client?.email === undefined
-								? data.client.email
+								? data?.client?.email
 								: reserva?.client?.email}
 						</h5>
 					</div>
@@ -132,14 +136,16 @@ export default function BookingCard({ reserva, data }) {
 				<div className="col-span-6" />
 				<div className="col-span-6 flex justify-end -mb-2">
 					<div>
-						{reserva?.status.map((res) => (
-							<span
-								className=" text-slate-50 text-[8px] bg-black px-2 py-[2px] ml-1"
-								key={res}
-							>
-								{res}
-							</span>
-						))}
+						{reserva?.status === undefined
+							? null
+							: reserva?.status.map((res) => (
+									<span
+										className=" text-slate-50 text-[8px] bg-black px-2 py-[2px] ml-1"
+										key={res}
+									>
+										{res}
+									</span>
+							  ))}
 					</div>
 				</div>
 
@@ -153,7 +159,7 @@ export default function BookingCard({ reserva, data }) {
 						<div className="col-span-4 ">
 							<div className="flex flex-col ">
 								<ol className="text-xs list-decimal list-inside">
-									{reserva.playlist.map((list, index) => (
+									{reserva?.playlist.map((list, index) => (
 										<li key={index}>{list}</li>
 									))}
 								</ol>

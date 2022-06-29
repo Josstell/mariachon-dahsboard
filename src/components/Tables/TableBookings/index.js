@@ -148,7 +148,7 @@ const TableBookings = () => {
 													text-slate-600
 													dark:text-white"
 											>
-												{booking?._id}
+												{booking?.reserva || booking?._id}
 											</span>
 										</Link>
 									</th>

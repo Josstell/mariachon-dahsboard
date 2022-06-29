@@ -1,10 +1,12 @@
 import handlerCors from "src/helpers/api/allowCors"
 import client from "@lib/sanity"
+import { nanoid } from "@reduxjs/toolkit"
 
 export default handlerCors().post((req, res) => {
 	const doc = {
 		...req.body,
 		_type: "booking",
+		reserva: nanoid(),
 	}
 
 	client

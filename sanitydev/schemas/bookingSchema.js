@@ -18,6 +18,11 @@ export default {
 			title: "Nombre del cliente",
 			type: "string",
 		},
+		{
+			name: "reserva",
+			title: "Clave de reservación",
+			type: "string",
+		},
 
 		{
 			name: "dateAndTime",

@@ -19,48 +19,52 @@ const initialState = {
 }
 const query = groq`
 *[_type == "booking"  && !(_id in path('drafts.**'))]{
-  _id,
-  client->{
+ _id,
+ reserva,
+client->{
   _id,
   name,
   tel,
- email,
-  slug{
-  current
-}
+  email,
 },
 dateAndTime,
-orderItems[0]{
-  deposit,
+  message,
+  playlist,
   price,
   qty,
-  service,
-  fee,
-  mariachi->{
+  userName,
+  status,
+  shippingAddress,
+  paymentResult,
+
+  orderItems[0]{
+    _key,
+    deposit,
+    price,
+    qty,
+    service,
+	  members,
+categorySet,
+    mariachi->{
+		_id,
+    name,
+tel,
+coordinator->{
   _id,
   name,
-  logo,
-  coordinator->{
-  _id,
-  name,
-  tel,
- email,
-}
-}
+  tel
 },
-shippingAddress,
-paymentResult,
-qty,
-price,
-message,
-playlist,
-status,
-isPaid,
-paidAt,
-isMade,
+members,
+service,
+categorySet,
+region,
+logo,
 createdBy,
 modifiedBy,
-}
+  }
+
+  }
+    }
 `
 export const fetchBookings = createAsyncThunk(
 	"bookings/fetchBookings",

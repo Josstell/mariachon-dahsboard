@@ -20,6 +20,12 @@ export default {
 		},
 
 		{
+			name: "reserva",
+			title: "Clave de reservación",
+			type: "string",
+		},
+
+		{
 			name: "dateAndTime",
 			title: "Fecha y Hora del evento",
 			type: "datetime",

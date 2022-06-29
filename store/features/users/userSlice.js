@@ -239,7 +239,8 @@ const usersSlice = createSlice({
 //export const { setUsers } = usersSlice.actions
 
 export default usersSlice.reducer
-export const { setAdminUser, setUserUpdate, setStatusUser } = usersSlice.actions
+export const { setAdminUser, setUserUpdate, setStatusUser, getUserById } =
+	usersSlice.actions
 
 export const selectAllUsers = (state) => state.users.users
 
