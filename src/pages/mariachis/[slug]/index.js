@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react"
-import client from "@lib/sanity"
 import { getSession } from "next-auth/react"
-import { groq } from "next-sanity"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"

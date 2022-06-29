@@ -19,7 +19,7 @@ import {
 	updateBooking,
 } from "store/features/bookings/bookingSlice"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
-import { fetchUsersNew, selectUserAdmin } from "store/features/users/userSlice"
+import { selectUserAdmin } from "store/features/users/userSlice"
 
 import toast, { Toaster } from "react-hot-toast"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
@@ -72,7 +72,7 @@ const deserva = {
 	_id: "082d1427-b8fb-4be2-9ade-b7fd8cc1dc98",
 }
 
-const reservaById = ({ session, id }) => {
+const reservaById = ({ id }) => {
 	const data = useSelector((state) =>
 		state.bookings.bookings.find((booking) => booking._id === id)
 	)
