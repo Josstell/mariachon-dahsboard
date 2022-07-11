@@ -146,7 +146,7 @@ const mariachiById = ({ slug }) => {
 						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-around
 							 items-center`}
 					>
-						<div className={"w-4/12 h-3/5 "}>
+						<div className={"w-4/12 h-3/5 min-w-[370px] min-h-[860px] "}>
 							<MariachiTab>
 								<MariachiForm
 									methods={methods}
@@ -163,7 +163,7 @@ const mariachiById = ({ slug }) => {
 						</div>
 						<div
 							className={
-								"w-full h-full md:w-5/12 max-w-[400px] min-w-[350px] md:h-5/6	 "
+								"w-full h-full md:w-5/12 md:h-5/6 max-w-[400px] min-w-[370px] min-h-[660px] flex justify-start md:items-center items-start md:mt-0 -mt-10  "
 							}
 						>
 							<MariachiCard

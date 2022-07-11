@@ -12,7 +12,7 @@ const UserCard = ({ userUpdat }) => {
 	}, [userUpdat])
 
 	return (
-		<div className="w-full h-full flex flex-col justify-center items-center">
+		<div className="w-full h-[345px] flex flex-col justify-center items-center">
 			<div className="w-full h-1/3 bg-gradient-to-r from-slate-700 to-slate-900 rounded-t-md shadow-xl "></div>
 			<div
 				className={`w-24 h-24 relative  align-middle ${

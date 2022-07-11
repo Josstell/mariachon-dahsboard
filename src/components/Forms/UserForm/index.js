@@ -47,7 +47,7 @@ const UserForm = ({ methods, onSubmit, loading, data }) => {
 		pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i,
 	}
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col w-full h-full">
 			<Form onSubmit={onSubmit} methods={methods}>
 				<Input
 					hidden={true}

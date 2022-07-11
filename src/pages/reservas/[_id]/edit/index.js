@@ -380,7 +380,7 @@ const reservaById = ({ id }) => {
 						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row  md:justify-evenly
 							 items-center`}
 					>
-						<div className={"w-4/12 h-3/5 "}>
+						<div className={"w-4/12 h-5/6 min-w-[370px] min-h-[860px]"}>
 							<BookingTa>
 								<BookingForm
 									methods={methods}

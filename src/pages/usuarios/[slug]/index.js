@@ -138,13 +138,13 @@ const userById = ({ id }) => {
 	return (
 		<Layout>
 			{userAdmin.isAdmin ? (
-				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
+				<div className={`no-scrollbar overflow-auto w-full  h-full  `}>
 					<div
-						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row 
+						className={`no-scrollbar overflow-auto h-[1024px] md:h-fit flex flex-col md:flex-row 
 							justify-evenly items-center`}
 					>
 						<div
-							className={`no-scrollbar md:w-5/12 h-fit md:h-full mb-5 md:mb-0 flex justify-center items-center`}
+							className={`no-scrollbar  md:w-5/12 min-w-[370px] min-h-[660px]  mb-5 md:mb-0`}
 						>
 							{/* <UserForm />  Formulario */}
 
@@ -161,7 +161,11 @@ const userById = ({ id }) => {
 
 							<Toaster />
 						</div>
-						<div className={"md:w-5/12 h-3/5"}>
+						<div
+							className={
+								" no-scrollbar md:w-5/12 h-fit  min-w-[370px] flex justify-center items-center"
+							}
+						>
 							<UserCard
 								setEditCard={setEditCard}
 								editCard={editCard}
