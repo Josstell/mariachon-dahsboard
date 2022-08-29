@@ -1,27 +1,17 @@
-import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { signOut } from "next-auth/react"
 
-import { useTheme } from "next-themes"
 import { MenuIcon, XIcon } from "@heroicons/react/solid"
 
 import LogoMariachon from "../../SVG/Icons/LogoMariachon"
-import Search from "../../Search"
+// import Search from "../../Search"
 import { useSelector } from "react-redux"
 import { selectUserAdmin } from "store/features/users/userSlice"
+import ButtonDM from "src/components/ButtonDM"
 
 const Nav = ({ open, setOpen }) => {
 	const userAdmin = useSelector(selectUserAdmin)
-
-	const { theme, setTheme } = useTheme()
-	const [darkMode, setDarkMode] = useState(false)
-
-	const handleDarkMode = (e) => {
-		e.preventDefault()
-		setDarkMode(!darkMode)
-		setTheme(theme === "dark" ? "light" : "dark")
-	}
 
 	return (
 		<div className="shadow-md  w-full fixed top-0 left-0">
@@ -38,62 +28,50 @@ const Nav = ({ open, setOpen }) => {
 					</a>
 				</Link>
 
-				<Search />
+				{/* <Search /> */}
 
-				<div className="mr-5">
-					<input
-						type="checkbox"
-						name="darkMode"
-						id="checkbox"
-						className="hidden"
-						value={darkMode}
-						onClick={handleDarkMode}
-					/>
-					<label htmlFor="checkbox" className="cursor-pointer">
-						<div className="w-9 h-5 flex items-center bg-gray-300 rounded-full p2">
-							<div className="w-4 h-4 bg-white rounded-full shadow"></div>
+				<div className="flex flex-row justify-center items-center cursor-pointer">
+					<ButtonDM />
+
+					<div className="flex justify-center items-center ">
+						{/* <CogIcon className="w-10 mx-2" /> */}
+
+						<div className="flex flex-col justify-center items-center">
+							<div
+								className="w-8 h-8 flex flex-col  relative cursor-pointer"
+								onClick={signOut}
+							>
+								{userAdmin?.image ? (
+									<Image
+										className="rounded-full"
+										src={userAdmin?.image}
+										layout="fill"
+										objectFit="cover"
+										alt=""
+									/>
+								) : userAdmin?.profileImage?.url ? (
+									<Image
+										className="rounded-full"
+										src={userAdmin?.profileImage?.url}
+										layout="fill"
+										objectFit="cover"
+										alt=""
+									/>
+								) : (
+									<Image
+										className="rounded-full"
+										src="/images/icons/logoMariachon.png"
+										layout="fill"
+										objectFit="cover"
+										alt=""
+									/>
+								)}
+							</div>
+
+							<p className="text-xs text-center pt-1 text-slate-500">
+								{userAdmin?.isAdmin ? "admin" : "user"}
+							</p>
 						</div>
-					</label>
-				</div>
-
-				<div className="flex justify-center items-center ">
-					{/* <CogIcon className="w-10 mx-2" /> */}
-
-					<div className="flex flex-col justify-center items-center">
-						<div
-							className="w-8 h-8 flex flex-col  relative cursor-pointer"
-							onClick={signOut}
-						>
-							{userAdmin?.image ? (
-								<Image
-									className="rounded-full"
-									src={userAdmin?.image}
-									layout="fill"
-									objectFit="cover"
-									alt=""
-								/>
-							) : userAdmin?.profileImage?.url ? (
-								<Image
-									className="rounded-full"
-									src={userAdmin?.profileImage?.url}
-									layout="fill"
-									objectFit="cover"
-									alt=""
-								/>
-							) : (
-								<Image
-									className="rounded-full"
-									src="/images/icons/logoMariachon.png"
-									layout="fill"
-									objectFit="cover"
-									alt=""
-								/>
-							)}
-						</div>
-
-						<p className="text-xs text-center pt-1 text-slate-500">
-							{userAdmin?.isAdmin ? "admin" : "user"}
-						</p>
 					</div>
 				</div>
 

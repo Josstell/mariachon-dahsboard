@@ -6,6 +6,7 @@ import GetLogoWithName from "src/components/GetLogoWithName"
 import { selectAllUsers } from "store/features/users/userSlice"
 
 import { ViewGridAddIcon } from "@heroicons/react/outline"
+import Search from "src/components/Search"
 
 const TableUser = () => {
 	const usersData = useSelector(selectAllUsers)
@@ -16,6 +17,7 @@ const TableUser = () => {
 				className="relative  flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded sm:mt-0 sm:mb-auto
 					 bg-white  dark:bg-slate-700 dark:text-white"
 			>
+				<Search />
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
 						<div className="relative w-full px-4 max-w-full flex flex-row justify-between">

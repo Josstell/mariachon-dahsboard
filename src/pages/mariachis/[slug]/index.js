@@ -12,9 +12,12 @@ import { wrapper } from "store"
 import { selectUserAdmin } from "store/features/users/userSlice"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import {
+	addMariachiToGoogleSheet,
 	selectError,
 	selectStatus,
+	selectStatusGS,
 	setStatus,
+	setStatusGS,
 	updateMariachi,
 } from "store/features/mariachis/mariachiSlice"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
@@ -30,6 +33,7 @@ const mariachiById = ({ slug }) => {
 
 	const userAdmin = useSelector(selectUserAdmin)
 	const status = useSelector(selectStatus)
+	const statusGS = useSelector(selectStatusGS)
 	const error = useSelector(selectError)
 	const dispatch = useDispatch()
 
@@ -95,25 +99,26 @@ const mariachiById = ({ slug }) => {
 
 	const onSubmit = (dataForm) => {
 		setLoading(true)
-		dispatch(
-			updateMariachi({
-				...dataForm,
-				_id: data._id,
-				modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 
-				coordinator: { _ref: dataForm.coordinator, _type: "reference" },
-				categorySet: [dataForm.category_mariachi],
-				city: dataForm.city,
-				cp: dataForm.cp,
-				images: arrayImages,
-				videos: arrayVideos,
-				service: {
-					hora: dataForm.hora,
-					serenata: dataForm.serenata,
-					contrato: dataForm.contrato,
-				},
-			})
-		)
+		const dataMariachiToSend = {
+			...dataForm,
+			_id: data._id,
+			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
+
+			coordinator: { _ref: dataForm.coordinator, _type: "reference" },
+			categorySet: [dataForm.category_mariachi],
+			city: dataForm.city,
+			cp: dataForm.cp,
+			images: arrayImages,
+			videos: arrayVideos,
+			service: {
+				hora: dataForm.hora,
+				serenata: dataForm.serenata,
+				contrato: dataForm.contrato,
+			},
+		}
+		dispatch(updateMariachi(dataMariachiToSend))
+		dispatch(addMariachiToGoogleSheet(dataMariachiToSend))
 	}
 
 	const notifyError = () => toast.error(error)
@@ -125,19 +130,22 @@ const mariachiById = ({ slug }) => {
 			notifyError()
 			dispatch(setStatus("idle"))
 		}
-		if (status === "succeeded") {
+		if (status === "succeeded" && statusGS === "succeeded") {
 			dispatch(setStatus("idle"))
+			dispatch(setStatusGS("idle"))
+
 			notifySuccess()
 			setLoading(false)
 
 			//dispatch(setStatus("idle"))
 			router.push("/mariachis")
 		}
-	}, [status, error])
+	}, [status, error, statusGS])
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
 	}
+
 	return (
 		<Layout>
 			{userAdmin.isAdmin ? (

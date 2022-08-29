@@ -5,10 +5,14 @@ import client from "@lib/sanity"
 import { groq } from "next-sanity"
 import axios from "axios"
 
+const { NEXT_PUBLIC_URL_API } = process.env
+
 const initialState = {
 	mariachis: [],
 	status: "idle",
+	statusGS: "idle",
 	error: null,
+	messageAPIS: "",
 	mariachiTabActive: {
 		data: true,
 		mariachi: false,
@@ -110,7 +114,6 @@ export const addMariachi = createAsyncThunk(
 		try {
 			const { data } = await axios.post("/api/mariachis/add", mariachi)
 
-			console.log("Datos agregados:!!!!", data)
 			if (data) {
 				const coordinatorUpdated = users.find(
 					(user) => user._id === data.coordinator._ref
@@ -134,6 +137,42 @@ export const addMariachi = createAsyncThunk(
 	}
 )
 
+// add update  mariachi to GoogleSheet
+
+export const addMariachiToGoogleSheet = createAsyncThunk(
+	"mariachis/addMariachiToGoogleSheet",
+	async (mariachi) => {
+		console.log("NEXT_PUBLIC_URL_API", mariachi.name)
+
+		//  const headers = {
+		// 		headers: {
+		// 			Authorization: varToken,
+		// 		},
+		// 	}
+		try {
+			const { data } = await axios.post(
+				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/mariachi`,
+				mariachi
+			)
+			console.log(data)
+
+			return {
+				...data,
+			}
+		} catch (error) {
+			const text = {
+				message: "Algo paso! No se guardaron datos en Google Sheet.",
+			}
+
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
+
+			return errorData
+		}
+	}
+)
+
 ///
 
 const mariachisSlice = createSlice({
@@ -148,6 +187,9 @@ const mariachisSlice = createSlice({
 		},
 		setStatus: (state, action) => {
 			state.status = action.payload
+		},
+		setStatusGS: (state, action) => {
+			state.statusGS = action.payload
 		},
 	},
 
@@ -172,6 +214,16 @@ const mariachisSlice = createSlice({
 				state.mariachis = state.mariachis.map((mariachi) =>
 					mariachi._id === mariachiUp._id ? mariachiUp : mariachi
 				)
+			}
+		},
+		[addMariachiToGoogleSheet.fulfilled]: (state, action) => {
+			if (action.payload.data) {
+				console.log("aqui:  ", action.payload)
+				state.statusGS = "failed"
+				state.error = "Error en la carga de google sheet"
+			} else {
+				state.statusGS = "succeeded"
+				state.messageAPIS = action.payload
 			}
 		},
 		[addMariachi.fulfilled]: (state, action) => {
@@ -206,10 +258,13 @@ const mariachisSlice = createSlice({
 //export const { setUsers } = mariachisSlice.actions
 
 export default mariachisSlice.reducer
-export const { setDispMariachiTabActive, setStatus } = mariachisSlice.actions
+export const { setDispMariachiTabActive, setStatus, setStatusGS } =
+	mariachisSlice.actions
 
 export const selectAllMariachis = (state) => state.mariachis.mariachis
 export const selectStatus = (state) => state.mariachis.status
+export const selectStatusGS = (state) => state.mariachis.statusGS
+
 export const selectError = (state) => state.mariachis.error
 
 export const selectMariachiBySlug = (state, slug) =>

@@ -19,12 +19,12 @@ const Search = () => {
 					}`}
 					placeholder="Buscar..."
 				/>
-				<button
+				<a
 					onClick={() => setOpenInput(!openInput)}
 					className="flex items-center justify-center px-1 md:px-2 border-0 md:border-l "
 				>
 					<SearchIcon className="w-7" />
-				</button>
+				</a>
 			</div>
 		</div>
 	)

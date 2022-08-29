@@ -28,8 +28,6 @@ export default handlerCors().put((req, res) => {
 		.set(setMutation) // Shallow merge
 		.commit() // Perform the patch and return a promise
 		.then((updatedUser) => {
-			console.log("Hurray, the bike is updated! New document:")
-
 			res.send({ ...updatedUser })
 		})
 		.catch((err) => {
