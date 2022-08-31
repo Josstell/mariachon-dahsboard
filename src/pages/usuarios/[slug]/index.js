@@ -12,6 +12,7 @@ import Layout from "src/components/Layout"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
+import { dateGral, optionsDate } from "src/helpers/utils"
 import { wrapper } from "store"
 import {
 	selectAllUsers,
@@ -102,6 +103,7 @@ const userById = ({ id }) => {
 				_id: dataUser._id,
 				categorySet: dataUser?.categorySet || "",
 				modifiedBy: { _ref: userAdmin._id, _type: "reference" },
+				dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
 			})
 		)
 	}

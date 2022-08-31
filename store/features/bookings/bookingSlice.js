@@ -6,9 +6,13 @@ import { groq } from "next-sanity"
 
 import axios from "axios"
 
+const { NEXT_PUBLIC_URL_API } = process.env
+
 const initialState = {
 	bookings: [],
 	statusBook: "idle",
+	statusBookGS: "idle",
+
 	error: null,
 	bookingTabActive: {
 		client: true,
@@ -21,6 +25,10 @@ const query = groq`
 *[_type == "booking"  && !(_id in path('drafts.**'))]{
  _id,
  reserva,
+ dateCreated,
+dateModified,
+createdBy,
+modifiedBy,
 client->{
   _id,
   name,
@@ -59,8 +67,7 @@ service,
 categorySet,
 region,
 logo,
-createdBy,
-modifiedBy,
+
   }
 
   }
@@ -83,7 +90,7 @@ export const fetchBookings = createAsyncThunk(
 
 export const updateBooking = createAsyncThunk(
 	"bookings/updateUser",
-	async (booking, { getState }) => {
+	async (booking, { getState, dispatch }) => {
 		const {
 			mariachis: { mariachis },
 			users: { users },
@@ -103,7 +110,7 @@ export const updateBooking = createAsyncThunk(
 				)
 				const items = data.orderItems[0]
 
-				return {
+				const dataReserva = {
 					...data,
 					client: clientUpdated,
 					orderItems: {
@@ -111,6 +118,9 @@ export const updateBooking = createAsyncThunk(
 						mariachi: mariachiUpdated,
 					},
 				}
+				dispatch(addBookingToGoogleSheet(dataReserva))
+
+				return dataReserva
 			}
 		} catch (error) {
 			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
@@ -127,21 +137,33 @@ export const updateBooking = createAsyncThunk(
 
 export const addBooking = createAsyncThunk(
 	"bookings/addBooking",
-	async (booking, { getState }) => {
+	async (booking, { getState, dispatch }) => {
 		// We send the initial data to the fake API server
 		const {
 			users: { users },
+			mariachis: { mariachis },
 		} = getState()
 		try {
 			const { data } = await axios.post("/api/reservas/add", booking)
 
 			if (data) {
 				const clientAdded = users.find((user) => user._id === data.client._ref)
+				const mariachiUpdated = mariachis.find(
+					(mar) => mar._id === data.orderItems[0].mariachi._ref
+				)
+				const items = data.orderItems[0]
 
-				return {
+				const dataReserva = {
 					...data,
 					client: clientAdded,
+					orderItems: {
+						...items,
+						mariachi: mariachiUpdated,
+					},
 				}
+				dispatch(addBookingToGoogleSheet(dataReserva))
+
+				return dataReserva
 			}
 		} catch (error) {
 			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
@@ -153,6 +175,34 @@ export const addBooking = createAsyncThunk(
 			return errorData
 		}
 		// The response includes the complete post object, including unique ID
+	}
+)
+
+//
+
+export const addBookingToGoogleSheet = createAsyncThunk(
+	"bookings/addBookingToGoogleSheet",
+	async (reserva) => {
+		try {
+			const { data } = await axios.post(
+				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
+				reserva
+			)
+
+			return {
+				...data,
+			}
+		} catch (error) {
+			const text = {
+				message: "Algo paso! No se guardaron datos en Google Sheet.",
+			}
+
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
+
+			return errorData
+		}
 	}
 )
 
@@ -168,6 +218,9 @@ const bookingsSlice = createSlice({
 		},
 		setStatusBooking: (state, action) => {
 			state.statusBook = action.payload
+		},
+		setStatusBookingGS: (state, action) => {
+			state.statusBookGS = action.payload
 		},
 	},
 
@@ -203,6 +256,14 @@ const bookingsSlice = createSlice({
 				state.bookings.push(action.payload)
 			}
 		},
+		[addBookingToGoogleSheet.fulfilled]: (state, action) => {
+			if (action.payload.data) {
+				state.statusGS = "failed"
+				state.error = "Error en la carga de la reserva en google sheet"
+			} else {
+				state.statusBookGS = "succeeded"
+			}
+		},
 
 		[HYDRATE]: (state, action) => {
 			if (
@@ -226,11 +287,13 @@ const bookingsSlice = createSlice({
 //export const { setUsers } = mariachisSlice.actions
 
 export default bookingsSlice.reducer
-export const { setDispBookingTabActive, setStatusBooking } =
+export const { setDispBookingTabActive, setStatusBooking, setStatusBookingGS } =
 	bookingsSlice.actions
 
 // export const { setAdminUser } = bookingsSlice.actions
 
 export const selectAllBookings = (state) => state.bookings.bookings
 export const selectStatusBook = (state) => state.bookings.statusBook
+export const selectStatusBookGS = (state) => state.bookings.statusBookGS
+
 export const selectError = (state) => state.bookings.error

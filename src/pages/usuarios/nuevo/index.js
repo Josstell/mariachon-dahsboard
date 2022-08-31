@@ -19,6 +19,7 @@ import {
 import { nanoid } from "@reduxjs/toolkit"
 import { useRouter } from "next/router"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
+import { dateGral, optionsDate } from "src/helpers/utils"
 
 const addnewuser = () => {
 	const [loading, setLoading] = useState(false)
@@ -76,6 +77,7 @@ const addnewuser = () => {
 				dataFormUser.Admin,
 			],
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
+			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 		}
 
 		const dataNew = {

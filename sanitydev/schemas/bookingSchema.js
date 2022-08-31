@@ -120,10 +120,20 @@ export default {
 			to: { type: "user" },
 		},
 		{
+			name: "dateCreated",
+			title: "Creado el:",
+			type: "string",
+		},
+		{
 			name: "modifiedBy",
 			title: "Modificado Por:",
 			type: "reference",
 			to: { type: "user" },
+		},
+		{
+			name: "dateModified",
+			title: "Modificado el:",
+			type: "string",
 		},
 		{
 			name: "publishedAt",

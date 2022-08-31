@@ -22,6 +22,7 @@ import {
 } from "store/features/mariachis/mariachiSlice"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import toast, { Toaster } from "react-hot-toast"
+import { dateGral, optionsDate } from "src/helpers/utils"
 
 const mariachiById = ({ slug }) => {
 	const data = useSelector((state) =>
@@ -104,7 +105,7 @@ const mariachiById = ({ slug }) => {
 			...dataForm,
 			_id: data._id,
 			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
-
+			dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
 			coordinator: { _ref: dataForm.coordinator, _type: "reference" },
 			categorySet: [dataForm.category_mariachi],
 			city: dataForm.city,
@@ -154,7 +155,11 @@ const mariachiById = ({ slug }) => {
 						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-around
 							 items-center`}
 					>
-						<div className={"w-4/12 h-3/5 min-w-[370px] min-h-[860px] "}>
+						<div
+							className={
+								"w-4/12 h-3/5 min-w-[370px] min-h-[860px] md:min-h-full"
+							}
+						>
 							<MariachiTab>
 								<MariachiForm
 									methods={methods}

@@ -211,12 +211,17 @@ export function Select({
 	)
 }
 
-export function Button({ message, hidden }) {
+export function Button({ message, hidden, disabledBtn }) {
 	return (
 		<div className={`${!hidden && "hidden"} my-10`}>
 			<button
-				className={`first-letter:my-10 mb:mt-0 w-full bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-2 dark:text-white py-1 px-2 rounded `}
+				className={`first-letter:my-10 mb:mt-0 w-full  ${
+					!disabledBtn
+						? "bg-teal-500  border-teal-500 hover:border-teal-700 hover:bg-teal-700 dark:text-white"
+						: "bg-teal-300  border-teal-300 dark:text-gray"
+				}text-sm border-2  py-1 px-2 rounded `}
 				type="submit"
+				disabled={disabledBtn}
 			>
 				{message}
 			</button>

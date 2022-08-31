@@ -17,10 +17,13 @@ import {
 	addMariachi,
 	selectError,
 	selectStatus,
+	selectStatusGS,
 	setStatus,
+	setStatusGS,
 } from "store/features/mariachis/mariachiSlice"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import toast, { Toaster } from "react-hot-toast"
+import { dateGral, optionsDate } from "src/helpers/utils"
 
 const addNewMariachi = () => {
 	const [arrayImages, setArrayImages] = useState([])
@@ -29,6 +32,8 @@ const addNewMariachi = () => {
 
 	const userAdmin = useSelector(selectUserAdmin)
 	const status = useSelector(selectStatus)
+	const statusGS = useSelector(selectStatusGS)
+
 	const statusUser = useSelector(selectStatusUser)
 	const error = useSelector(selectError)
 	const dispatch = useDispatch()
@@ -94,7 +99,7 @@ const addNewMariachi = () => {
 		const dataMariachiToCard = {
 			name: dataForm.name,
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
-
+			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 			categorySet: [dataForm.category_mariachi],
 			tel: dataForm.tel * 1,
 			description: dataForm.description,
@@ -118,6 +123,7 @@ const addNewMariachi = () => {
 				...dataMariachiToCard,
 			})
 		)
+		//dispatch(addMariachiToGoogleSheet(dataMariachiToCard))
 	}
 
 	const notifyError = () => toast.error(error)
@@ -128,14 +134,16 @@ const addNewMariachi = () => {
 			notifyError()
 			dispatch(setStatus("idle"))
 		}
-		if (status === "succeeded") {
-			notifySuccess()
+		if (status === "succeeded" && statusGS === "succeeded") {
 			dispatch(setStatus("idle"))
+			dispatch(setStatusGS("idle"))
+
+			notifySuccess()
 
 			//dispatch(setStatus("idle"))
 			router.push("/mariachis")
 		}
-	}, [status, error])
+	}, [status, statusGS, error])
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
@@ -158,6 +166,7 @@ const addNewMariachi = () => {
 									setArrayImages={setArrayImages}
 									arrayVideos={arrayVideos}
 									setArrayVideos={setArrayVideos}
+									isSaving
 								/>
 								<Toaster />
 							</MariachiTab>

@@ -2,6 +2,7 @@ import handlerCors from "src/helpers/api/allowCors"
 import axios from "axios"
 import client from "@lib/sanity"
 import * as urlSlug from "url-slug"
+import { dateGral, optionsDate } from "src/helpers/utils"
 
 export default handlerCors().post(async (req, res) => {
 	const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
@@ -25,19 +26,26 @@ export default handlerCors().post(async (req, res) => {
 				provider: req.body?.provider || "",
 				slug: { current: urlSlug(req.body.name) },
 				createdBy: req.body?.createdBy,
+				dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 			},
 		},
 	]
-	const existUser = await client.fetch(
-		`*[_type == "user" && email == $email][0]`,
-		{
-			email: req.body.email,
-		}
-	)
 
-	if (existUser) {
-		return res.status(401).send({ message: "Email o usuario ya existe!" })
-	} else {
+	const queryExist = `*[_type == "user" && (email == $emailE || tel == $telE)  ][0]`
+	//`*[_type == "user" && email == $email][0]`,
+	const existUser = await client.fetch(queryExist, {
+		emailE: req.body?.email,
+		telE: req.body?.tel,
+	})
+
+	// const existUser2 = await client.fetch(
+	// 	`*[_type == "user" && tel == $tel][0]`,
+	// 	{
+	// 		tel: req.body.tel,
+	// 	}
+	// )
+
+	if (existUser === null) {
 		try {
 			const { data } = await axios.post(
 				`https://${projectId}.api.sanity.io/v1/data/mutate/${dataset}?returnIds=true`,
@@ -65,5 +73,20 @@ export default handlerCors().post(async (req, res) => {
 		} catch (error) {
 			return res.status(401).send({ message: "Algo paso!" })
 		}
+	} else if (
+		existUser?.email === req.body.email &&
+		existUser.tel !== req.body.tel
+	) {
+		return res.status(401).send({ message: "Email ya existe!" })
+	} else if (
+		existUser?.email !== req.body.email &&
+		existUser?.tel === req.body.tel
+	) {
+		return res.status(401).send({ message: "Teléfono ya existen!" })
+	} else if (
+		existUser?.email === req.body.email &&
+		existUser?.tel === req.body.tel
+	) {
+		return res.status(401).send({ message: "Email y teléfono ya existen!" })
 	}
 })

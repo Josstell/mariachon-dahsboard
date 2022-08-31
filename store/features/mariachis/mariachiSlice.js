@@ -22,6 +22,10 @@ const initialState = {
 const query = groq`
 *[_type == "mariachi" && !(_id in path('drafts.**')) ]{
   _id,
+  createdBy,
+modifiedBy,
+dateCreated,
+dateModified,
   slug{
   current
 },
@@ -44,8 +48,7 @@ categorySet,
 logo, 
 images,
 videos,
-createdBy,
-modifiedBy,
+
 }
 `
 
@@ -106,7 +109,7 @@ export const updateMariachi = createAsyncThunk(
 
 export const addMariachi = createAsyncThunk(
 	"mariachis/addMariachi",
-	async (mariachi, { getState }) => {
+	async (mariachi, { getState, dispatch }) => {
 		// We send the initial data to the fake API server
 		const {
 			users: { users },
@@ -115,6 +118,7 @@ export const addMariachi = createAsyncThunk(
 			const { data } = await axios.post("/api/mariachis/add", mariachi)
 
 			if (data) {
+				dispatch(addMariachiToGoogleSheet({ ...mariachi, _id: data._id }))
 				const coordinatorUpdated = users.find(
 					(user) => user._id === data.coordinator._ref
 				)
@@ -142,19 +146,11 @@ export const addMariachi = createAsyncThunk(
 export const addMariachiToGoogleSheet = createAsyncThunk(
 	"mariachis/addMariachiToGoogleSheet",
 	async (mariachi) => {
-		console.log("NEXT_PUBLIC_URL_API", mariachi.name)
-
-		//  const headers = {
-		// 		headers: {
-		// 			Authorization: varToken,
-		// 		},
-		// 	}
 		try {
 			const { data } = await axios.post(
 				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/mariachi`,
 				mariachi
 			)
-			console.log(data)
 
 			return {
 				...data,

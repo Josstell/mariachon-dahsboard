@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 //import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import { regions } from "src/helpers/dataset"
+import { dateGral, optionsDate } from "src/helpers/utils"
 import {
 	addNewUser,
 	selectError,
@@ -79,6 +80,7 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 				dataFormUser.Admin,
 			],
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
+			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 		}
 
 		const dataUpdate = {

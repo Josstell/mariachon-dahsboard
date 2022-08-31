@@ -20,6 +20,7 @@ const BookingForm = ({
 	setUserbyId,
 	setMariachibyId,
 	onSubmit,
+	isSaving,
 }) => {
 	const regionData = regions.response.estado
 
@@ -159,8 +160,6 @@ const BookingForm = ({
 
 	//
 
-	console.log("Datos bnuevo usuarios: ", addUser)
-	console.log("Users:", users, usersByClient)
 	return (
 		<>
 			<Form onSubmit={onSubmit} methods={methods}>
@@ -335,7 +334,11 @@ const BookingForm = ({
 					</div>
 				</div>
 
-				<Button message="Actualizar" hidden={addUser} />
+				<Button
+					message={isSaving ? "Guardar" : "Actualizar"}
+					hidden={addUser}
+					disabledBtn={!activeFormTab.parameters}
+				/>
 			</Form>
 			{!addUser && activeFormTab.client ? (
 				<AddNewUserComponent

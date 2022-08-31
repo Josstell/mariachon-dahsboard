@@ -15,7 +15,9 @@ import { wrapper } from "store"
 import {
 	selectError,
 	selectStatusBook,
+	selectStatusBookGS,
 	setStatusBooking,
+	setStatusBookingGS,
 	updateBooking,
 } from "store/features/bookings/bookingSlice"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
@@ -23,6 +25,7 @@ import { selectUserAdmin } from "store/features/users/userSlice"
 
 import toast, { Toaster } from "react-hot-toast"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
+import { dateGral, optionsDate } from "src/helpers/utils"
 
 const deserva = {
 	dateAndTime: "2022-05-28T18:00:00.000Z",
@@ -79,6 +82,8 @@ const reservaById = ({ id }) => {
 
 	const router = useRouter()
 	const status = useSelector(selectStatusBook)
+	const statusBookGS = useSelector(selectStatusBookGS)
+
 	const error = useSelector(selectError)
 
 	const userAdmin = useSelector(selectUserAdmin)
@@ -310,6 +315,7 @@ const reservaById = ({ id }) => {
 		const reservaUpdate = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
 			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
+			dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
 
 			dateAndTime: dataForm.dateAndTime,
 			message: dataForm.message,
@@ -348,6 +354,7 @@ const reservaById = ({ id }) => {
 		}
 
 		dispatch(updateBooking(reservaUpdate))
+		//	dispatch(addBookingToGoogleSheet(reservaUpdate))
 	}
 
 	const notifyError = () => toast.error(error)
@@ -358,29 +365,32 @@ const reservaById = ({ id }) => {
 			notifyError()
 			dispatch(setStatusBooking("idle"))
 		}
-		if (status === "succeeded") {
+		if (status === "succeeded" && statusBookGS === "succeeded") {
 			notifySuccess()
 			dispatch(setStatusBooking("idle"))
+			dispatch(setStatusBookingGS("idle"))
+
 			router.push("/reservas")
 		}
-	}, [router, status])
+	}, [router, status, statusBookGS])
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
 	}
-
-	console.log("data real del mariachi", mariachiSelected)
-	console.log("Hola", reservaData)
 
 	return (
 		<Layout>
 			{userAdmin.isAdmin ? (
 				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
 					<div
-						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row  md:justify-evenly
+						className={`no-scrollbar overflow-auto   h-full  flex flex-col md:flex-row  md:justify-evenly
 							 items-center`}
 					>
-						<div className={"w-4/12 h-5/6 min-w-[370px] min-h-[860px]"}>
+						<div
+							className={
+								"w-4/12 h-5/6 min-w-[370px] min-h-[870px] md:min-h-full"
+							}
+						>
 							<BookingTa>
 								<BookingForm
 									methods={methods}

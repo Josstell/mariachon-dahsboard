@@ -138,10 +138,20 @@ export default {
 			},
 		},
 		{
+			name: "dateCreated",
+			title: "Creado el:",
+			type: "string",
+		},
+		{
 			name: "createdBy",
 			title: "Creado Por:",
 			type: "reference",
 			to: { type: "user" },
+		},
+		{
+			name: "dateModified",
+			title: "Modificado el:",
+			type: "string",
 		},
 		{
 			name: "modifiedBy",

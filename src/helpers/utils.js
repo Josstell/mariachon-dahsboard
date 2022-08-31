@@ -13,3 +13,12 @@ export const userExist = async (email) => {
 
 	return false
 }
+
+export const optionsDate = {
+	weekday: "long",
+	year: "numeric",
+	month: "long",
+	day: "numeric",
+}
+
+export const dateGral = new Date()

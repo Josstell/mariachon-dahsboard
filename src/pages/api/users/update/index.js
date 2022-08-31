@@ -1,5 +1,6 @@
 import handlerCors from "src/helpers/api/allowCors"
 import client from "@lib/sanity"
+import { dateGral, optionsDate } from "src/helpers/utils"
 
 export default handlerCors().put((req, res) => {
 	const setMutation = {
@@ -10,6 +11,7 @@ export default handlerCors().put((req, res) => {
 		city: req.body.city || "",
 		username: req.body.username || "",
 		modifiedBy: req.body.modifiedBy,
+		dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
 	}
 
 	client

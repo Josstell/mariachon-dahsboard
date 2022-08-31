@@ -24,6 +24,7 @@ export default function MariachiForm({
 	setArrayImages,
 	arrayVideos,
 	setArrayVideos,
+	isSaving,
 }) {
 	const regionData = regions.response.estado
 
@@ -382,7 +383,11 @@ export default function MariachiForm({
 					</div>
 				</div>
 
-				<Button hidden={addUser} message="Actualizar" />
+				<Button
+					hidden={addUser}
+					message={isSaving ? "Guardar" : "Actualizar"}
+					disabledBtn={!activeFormTab.gral}
+				/>
 			</Form>
 
 			{!addUser && activeFormTab.mariachi ? (

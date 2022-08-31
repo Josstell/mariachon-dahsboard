@@ -15,7 +15,9 @@ import {
 	addBooking,
 	selectError,
 	selectStatusBook,
+	selectStatusBookGS,
 	setStatusBooking,
+	setStatusBookingGS,
 } from "store/features/bookings/bookingSlice"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { selectUserAdmin } from "store/features/users/userSlice"
@@ -23,6 +25,7 @@ import { selectUserAdmin } from "store/features/users/userSlice"
 import toast, { Toaster } from "react-hot-toast"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import { nanoid } from "@reduxjs/toolkit"
+import { dateGral, optionsDate } from "src/helpers/utils"
 
 const data = {
 	dateAndTime: new Date(),
@@ -67,6 +70,8 @@ const data = {
 const newBooking = () => {
 	const router = useRouter()
 	const status = useSelector(selectStatusBook)
+	const statusBookGS = useSelector(selectStatusBookGS)
+
 	const error = useSelector(selectError)
 
 	const userAdmin = useSelector(selectUserAdmin)
@@ -290,7 +295,8 @@ const newBooking = () => {
 
 		const reservaUpdate = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
-			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
+			createdBy: { _ref: userAdmin._id, _type: "reference" },
+			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 
 			dateAndTime: dataForm.dateAndTime,
 			message: dataForm.message,
@@ -338,12 +344,14 @@ const newBooking = () => {
 			notifyError()
 			dispatch(setStatusBooking("idle"))
 		}
-		if (status === "succeeded") {
+		if (status === "succeeded" && statusBookGS === "succeeded") {
 			notifySuccess()
 			dispatch(setStatusBooking("idle"))
+			dispatch(setStatusBookingGS("idle"))
+
 			router.push("/reservas")
 		}
-	}, [router, status])
+	}, [router, status, statusBookGS])
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
@@ -360,7 +368,11 @@ const newBooking = () => {
 						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row  md:justify-evenly
 							 items-center`}
 					>
-						<div className={"w-4/12 h-3/5 "}>
+						<div
+							className={
+								"w-4/12 h-3/5 min-w-[370px] min-h-[870px] md:min-h-full"
+							}
+						>
 							<BookingTa>
 								{!(status === "idle") ? (
 									<SpinnerLoadign />
@@ -373,6 +385,7 @@ const newBooking = () => {
 										setArrayPlayList={setArrayPlayList}
 										setMariachibyId={setMariachibyId}
 										setUserbyId={setUserbyId}
+										isSaving
 									/>
 								)}
 
