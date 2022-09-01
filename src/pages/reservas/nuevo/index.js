@@ -14,9 +14,11 @@ import BookingTa from "src/components/Tabs/ReservaTabs"
 import {
 	addBooking,
 	selectError,
+	selectStatusBEmail,
 	selectStatusBook,
 	selectStatusBookGS,
 	setStatusBooking,
+	setStatusBookingEmail,
 	setStatusBookingGS,
 } from "store/features/bookings/bookingSlice"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
@@ -71,6 +73,7 @@ const newBooking = () => {
 	const router = useRouter()
 	const status = useSelector(selectStatusBook)
 	const statusBookGS = useSelector(selectStatusBookGS)
+	const statusBEmail = useSelector(selectStatusBEmail)
 
 	const error = useSelector(selectError)
 
@@ -344,14 +347,19 @@ const newBooking = () => {
 			notifyError()
 			dispatch(setStatusBooking("idle"))
 		}
-		if (status === "succeeded" && statusBookGS === "succeeded") {
+		if (
+			status === "succeeded" &&
+			statusBookGS === "succeeded" &&
+			statusBEmail === "succeeded"
+		) {
 			notifySuccess()
 			dispatch(setStatusBooking("idle"))
 			dispatch(setStatusBookingGS("idle"))
+			dispatch(setStatusBookingEmail("idle"))
 
 			router.push("/reservas")
 		}
-	}, [router, status, statusBookGS])
+	}, [router, status, statusBookGS, statusBEmail])
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />

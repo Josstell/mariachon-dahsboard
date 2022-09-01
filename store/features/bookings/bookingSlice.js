@@ -12,6 +12,7 @@ const initialState = {
 	bookings: [],
 	statusBook: "idle",
 	statusBookGS: "idle",
+	statusBEmail: "idle",
 
 	error: null,
 	bookingTabActive: {
@@ -182,10 +183,39 @@ export const addBooking = createAsyncThunk(
 
 export const addBookingToGoogleSheet = createAsyncThunk(
 	"bookings/addBookingToGoogleSheet",
-	async (reserva) => {
+	async (reserva, { dispatch }) => {
 		try {
 			const { data } = await axios.post(
 				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
+				reserva
+			)
+
+			if (data) {
+				dispatch(sendBooking(reserva))
+				return {
+					...data,
+				}
+			}
+		} catch (error) {
+			const text = {
+				message: "Algo paso! No se guardaron datos en Google Sheet.",
+			}
+
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
+
+			return errorData
+		}
+	}
+)
+
+export const sendBooking = createAsyncThunk(
+	"bookings/sendBooking",
+	async (reserva) => {
+		try {
+			const { data } = await axios.post(
+				`${NEXT_PUBLIC_URL_API}/api/email/reservation`,
 				reserva
 			)
 
@@ -193,8 +223,9 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 				...data,
 			}
 		} catch (error) {
+			console.log(error)
 			const text = {
-				message: "Algo paso! No se guardaron datos en Google Sheet.",
+				message: "Algo paso! No se pudo enviar el correo.",
 			}
 
 			const errorData = {
@@ -221,6 +252,9 @@ const bookingsSlice = createSlice({
 		},
 		setStatusBookingGS: (state, action) => {
 			state.statusBookGS = action.payload
+		},
+		setStatusBookingEmail: (state, action) => {
+			state.statusBEmail = action.payload
 		},
 	},
 
@@ -264,6 +298,14 @@ const bookingsSlice = createSlice({
 				state.statusBookGS = "succeeded"
 			}
 		},
+		[sendBooking.fulfilled]: (state, action) => {
+			if (action.payload.data) {
+				state.statusBEmail = "failed"
+				state.error = "Error en el envio del correo"
+			} else {
+				state.statusBEmail = "succeeded"
+			}
+		},
 
 		[HYDRATE]: (state, action) => {
 			if (
@@ -287,13 +329,18 @@ const bookingsSlice = createSlice({
 //export const { setUsers } = mariachisSlice.actions
 
 export default bookingsSlice.reducer
-export const { setDispBookingTabActive, setStatusBooking, setStatusBookingGS } =
-	bookingsSlice.actions
+export const {
+	setDispBookingTabActive,
+	setStatusBooking,
+	setStatusBookingGS,
+	setStatusBookingEmail,
+} = bookingsSlice.actions
 
 // export const { setAdminUser } = bookingsSlice.actions
 
 export const selectAllBookings = (state) => state.bookings.bookings
 export const selectStatusBook = (state) => state.bookings.statusBook
 export const selectStatusBookGS = (state) => state.bookings.statusBookGS
+export const selectStatusBEmail = (state) => state.bookings.statusBEmail
 
 export const selectError = (state) => state.bookings.error
