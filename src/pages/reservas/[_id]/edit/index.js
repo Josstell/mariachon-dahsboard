@@ -348,7 +348,7 @@ const reservaById = ({ id }) => {
 				cp: dataForm.cp,
 				region: dataForm.region,
 			},
-			//	status: ["PE"],
+			status: ["Actualizada"],
 			userName: dataForm.nameClient,
 			_id: data._id,
 		}

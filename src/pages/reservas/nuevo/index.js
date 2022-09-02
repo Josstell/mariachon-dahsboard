@@ -294,9 +294,7 @@ const newBooking = () => {
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
 	const onSubmit = (dataForm) => {
-		console.log("Dtoa form", dataForm)
-
-		const reservaUpdate = {
+		const reservaAdd = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
 			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
@@ -336,7 +334,7 @@ const newBooking = () => {
 			//_id: data._id,
 		}
 
-		dispatch(addBooking(reservaUpdate))
+		dispatch(addBooking(reservaAdd))
 	}
 
 	const notifyError = () => toast.error(error)

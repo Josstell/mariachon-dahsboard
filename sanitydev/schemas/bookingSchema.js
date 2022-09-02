@@ -95,6 +95,7 @@ export default {
 					{ title: "Enviada", value: "Enviada" },
 					{ title: "Realizada", value: "Realizada" },
 					{ title: "Cancelada", value: "Cancelada" },
+					{ title: "Actualizada", value: "Actualizada" },
 				],
 			},
 		},

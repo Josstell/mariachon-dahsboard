@@ -3,11 +3,16 @@ import { ViewGridAddIcon } from "@heroicons/react/outline"
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
-import { selectAllBookings } from "store/features/bookings/bookingSlice"
+import { createUrlWhatsApp, dateGral, optionsDate } from "src/helpers/utils"
+import {
+	selectAllBookings,
+	updateBooking,
+} from "store/features/bookings/bookingSlice"
 
-const TableBookings = () => {
+const TableBookings = ({ userAdmin }) => {
+	const dispatch = useDispatch()
 	const BookingsData = useSelector(selectAllBookings)
 
 	const options = {
@@ -20,6 +25,40 @@ const TableBookings = () => {
 	const getDateAndTime = (dateAndTime) => {
 		const date = new Date(dateAndTime)
 		return date.toLocaleDateString("es-MX", options)
+	}
+
+	const handleWhatsApp = (reservationData) => {
+		createUrlWhatsApp(reservationData)
+
+		const reservaUpdate = {
+			...reservationData,
+			client: { _ref: reservationData?.client._id, _type: "reference" },
+			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
+			dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
+			orderItems: [
+				{
+					mariachi: {
+						_ref: reservationData?.orderItems?.mariachi?._id,
+						_type: "reference",
+					},
+					categorySet: reservationData?.orderItems?.categorySet,
+					members: reservationData?.orderItems?.members,
+					service: reservationData?.orderItems?.service,
+					price: (reservationData?.orderItems?.price || 0) * 1,
+					deposit: (reservationData?.orderItems?.deposit || 0) * 1,
+					fee: (reservationData?.orderItems?.fee || 0) * 1,
+
+					qty: (reservationData?.orderItems?.qty || 0) * 1,
+					_key: reservationData?.orderItems._key,
+					_type: "orderItem",
+				},
+			],
+			status: ["Enviada"],
+		}
+
+		console.log(reservaUpdate)
+
+		dispatch(updateBooking(reservaUpdate))
 	}
 
 	return (
@@ -180,16 +219,16 @@ const TableBookings = () => {
 											</div>
 										) : (
 											<GetLogoWithName
-												text={booking?.orderItems?.mariachi?.name}
+												text={booking?.orderItems?.mariachi?.name || "m"}
 												numberLetter={9}
 											/>
 										)}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.orderItems?.service} x {booking.orderItems.qty}
+										{booking?.orderItems?.service} x {booking?.orderItems?.qty}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.orderItems?.price * booking.orderItems.qty}
+										{booking?.orderItems?.price * booking?.orderItems?.qty}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{booking?.orderItems?.deposit}
@@ -198,11 +237,24 @@ const TableBookings = () => {
 										{booking?.orderItems?.fee}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.orderItems?.mariachi?.coordinator?.name}
+										<a onClick={() => handleWhatsApp(booking)}>
+											{booking?.orderItems?.mariachi?.coordinator?.name}{" "}
+										</a>
 									</td>
 
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.status[booking?.status.length - 1]}
+									<td
+										className={`border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 `}
+									>
+										<span
+											className={`text-red-500 font-extrabold ${
+												booking?.status[booking?.status.length - 1] ===
+													"Enviada" && "text-green-400"
+											}`}
+										>
+											{booking?.status[
+												booking?.status.length - 1
+											].toUpperCase()}
+										</span>
 									</td>
 									{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex items-center">

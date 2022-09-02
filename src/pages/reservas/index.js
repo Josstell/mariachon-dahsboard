@@ -25,7 +25,7 @@ const reservas = ({ session }) => {
 		<Layout>
 			{userAdmin?.isAdmin ? (
 				<div className="flex  justify-center items-center">
-					<TableBookings />
+					<TableBookings userAdmin={userAdmin} />
 					{/* <HbookingCard /> */}
 					{/* <BookingCard /> */}
 				</div>
