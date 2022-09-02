@@ -1,7 +1,7 @@
 import handlerCors from "src/helpers/api/allowCors"
 import client from "@lib/sanity"
 
-export default handlerCors().post((req, res) => {
+export default handlerCors().post(() => {
 	console.log("entro!!!")
 	client
 		.delete({ query: '*[_type == "booking"][0...999]' })
