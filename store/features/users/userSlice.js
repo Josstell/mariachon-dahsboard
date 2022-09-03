@@ -129,7 +129,10 @@ export const addClientToGoogleSheet = createAsyncThunk(
 		try {
 			const { data } = await axios.post(
 				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`,
-				client
+				{
+					...client,
+					
+				}
 			)
 
 			return {
