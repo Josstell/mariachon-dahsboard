@@ -35,8 +35,7 @@ export const createUrlWhatsApp = (reservationData) => {
 		day: "numeric",
 	}
 
-	const mariachiCoordinatorPhone =
-		"52" + reservationData?.orderItems?.mariachi?.coordinator?.tel
+	const mariachiCoordinatorPhone = "52" + reservationData?.coordinator?.tel
 	const date = new Date(reservationData?.dateAndTime)
 	const remainder =
 		reservationData?.orderItems?.price - reservationData?.orderItems?.deposit

@@ -21,6 +21,8 @@ export default handlerCors().put((req, res) => {
 		images: req.body.images || [],
 		videos: req.body.videos || [],
 		modifiedBy: req.body.modifiedBy,
+		stage: req.body.stage,
+		crew: req.body.crew || [],
 	}
 
 	client

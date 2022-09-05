@@ -66,10 +66,18 @@ export default {
 			type: "string",
 		},
 		{
-			name: "provider",
-			title: "Proveedor de autentificación",
-			type: "string",
+			title: "Etapa del contacto:",
+			name: "stage",
+			type: "array",
+			of: [{ type: "string" }],
+			options: {
+				list: [
+					{ title: "PROSPECTO", value: "PROSPECTO" },
+					{ title: "CLIENTE", value: "CLIENTE" },
+				],
+			},
 		},
+		//["LEAD", "CLIENT", "PROVEEDOR"]
 		{
 			name: "isAdmin",
 			title: "Es administrador",

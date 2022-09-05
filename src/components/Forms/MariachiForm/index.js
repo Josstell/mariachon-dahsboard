@@ -25,12 +25,15 @@ export default function MariachiForm({
 	arrayVideos,
 	setArrayVideos,
 	isSaving,
+	crewElements,
+	setCrewElements,
 }) {
 	const regionData = regions.response.estado
 
 	const users = useSelector(selectAllUsers)
 
 	const usersByCoordinator = useSearchUserByCategory(users, "Coordinador")
+	const usersByMariachi = useSearchUserByCategory(users, "Mariachi")
 
 	//const [showEdit, setShowEdit] = useState(false)
 	//const [keyImage, setKeyImage] = useState("")
@@ -61,6 +64,7 @@ export default function MariachiForm({
 	//const [videos, setVideos] = useState({ url: "", metadata: {} })
 
 	const [addUser, setAddUser] = useState(true)
+	const [role, setRole] = useState("Coordinador")
 
 	const imageRef = useRef("")
 	const imageAlt = useRef("")
@@ -147,6 +151,8 @@ export default function MariachiForm({
 		setShowAddV(!showAddV)
 	}
 
+	console.log("CREW: ", crewElements)
+
 	return (
 		<>
 			<Form onSubmit={onSubmit} methods={methods}>
@@ -201,7 +207,45 @@ export default function MariachiForm({
 					label="Coordinador"
 					addUser={addUser}
 					setAddUser={setAddUser}
+					setRole={setRole}
 				/>
+
+				<Select
+					hidden={activeFormTab.mariachi && true}
+					name="elements"
+					options={usersByMariachi}
+					label="Mariachi"
+					addUser={addUser}
+					setAddUser={setAddUser}
+					setRole={setRole}
+					//handleAddElement={handleAddElement}
+				/>
+				{crewElements !== [] &&
+					crewElements.map((crew) => {
+						const element = users.find((user) => user._id === crew._ref)
+						return (
+							<div
+								className={`my-2 ${
+									!activeFormTab.mariachi ? "hidden" : "block"
+								}`}
+								key={crew._key}
+							>
+								<div className="flex justify-between items-center px-7">
+									<p className="text-sm   ">{element?.name}</p>
+									<div className="inline-flex	">
+										<TrashIcon
+											className="w-5 h-5"
+											onClick={() =>
+												setCrewElements(
+													crewElements.filter((cre) => cre._key !== crew._key)
+												)
+											}
+										/>
+									</div>
+								</div>
+							</div>
+						)
+					})}
 
 				<Input
 					hidden={activeFormTab.mariachi && addUser}
@@ -209,8 +253,36 @@ export default function MariachiForm({
 					label="# Elementos"
 					type="number"
 				/>
+
+				<div
+					className={`border-dashed border-t-2 border-t-slate-100   n my-6 relative ${
+						!activeFormTab.gral ? "hidden" : "block"
+					}`}
+				>
+					<h3 className="absolute px-2 left-0 bg-slate-900 -top-3">
+						Etapa del Proveedor
+					</h3>
+				</div>
+
 				<RadioButton
-					hidden={activeFormTab.mariachi && addUser}
+					hidden={activeFormTab.gral}
+					name="stage"
+					label={["PROSPECTO", "PROVEEDOR"]}
+					type="radio"
+				/>
+
+				<div
+					className={`border-dashed border-t-2 border-t-slate-100   n my-6 relative ${
+						!activeFormTab.gral ? "hidden" : "block"
+					}`}
+				>
+					<h3 className="absolute px-2 left-0 bg-slate-900 -top-3">
+						Categoria
+					</h3>
+				</div>
+
+				<RadioButton
+					hidden={activeFormTab.gral}
 					name="category_mariachi"
 					label={["Basico", "Normal", "Premium"]}
 					type="radio"
@@ -218,25 +290,25 @@ export default function MariachiForm({
 				{/**Entradas tercer tab */}
 				<div
 					className={`border-dashed border-t-2 border-t-slate-100   n my-6 relative ${
-						!(activeFormTab.mariachi && addUser) ? "hidden" : "block"
+						!activeFormTab.gral ? "hidden" : "block"
 					}`}
 				>
 					<h3 className="absolute px-2 left-0 bg-slate-900 -top-3">Precios</h3>
 				</div>
 				<Input
-					hidden={activeFormTab.mariachi && addUser}
+					hidden={activeFormTab.gral}
 					name="hora"
 					label="hora"
 					type="text"
 				/>
 				<Input
-					hidden={activeFormTab.mariachi && addUser}
+					hidden={activeFormTab.gral}
 					name="serenata"
 					label="serenata"
 					type="text"
 				/>
 				<Input
-					hidden={activeFormTab.mariachi && addUser}
+					hidden={activeFormTab.gral}
 					name="contrato"
 					label="contrato"
 					type="text"
@@ -394,7 +466,7 @@ export default function MariachiForm({
 				<AddNewUserComponent
 					setAddUser={setAddUser}
 					addUser={addUser}
-					role={["Coordinador"]}
+					role={[role]}
 				/>
 			) : (
 				<div className=""></div>

@@ -48,6 +48,7 @@ categorySet,
 logo, 
 images,
 videos,
+stage
 
 }
 `

@@ -127,6 +127,19 @@ export default {
 			title: "Calificación",
 			type: "number",
 		},
+		{
+			title: "Etapa del mariachi:",
+			name: "stage",
+			type: "array",
+			of: [{ type: "string" }],
+			options: {
+				list: [
+					{ title: "PROSPECTO", value: "PROSPECTO" },
+					{ title: "PROVEEDOR", value: "PROVEEDOR" },
+				],
+			},
+		},
+		//["PROSPECTO", "PROVEEDOR"]
 
 		{
 			name: "slug",

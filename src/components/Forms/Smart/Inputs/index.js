@@ -84,7 +84,9 @@ export function Checkbox({ register, name, hidden, ...rest }) {
 
 export function RadioButton({ register, name, label, hidden, ...rest }) {
 	return (
-		<div className={`flex justify-center items-center ${!hidden && "hidden"}`}>
+		<div
+			className={`flex mt-5 justify-center items-center ${!hidden && "hidden"}`}
+		>
 			<div className="bg-gray-200 rounded-lg ">
 				{label.map((labe, i) => (
 					<div key={i} className={`inline-flex rounded-lg `}>
@@ -170,9 +172,14 @@ export function Select({
 	hidden,
 	addUser,
 	setAddUser,
+	setRole,
 	...rest
 }) {
 	const [userAdd] = useState(addUser)
+	const handleAddUser = () => {
+		setRole(label)
+		setAddUser(!addUser)
+	}
 	return (
 		<div
 			className={`w-full flex justify-between items-end  py-2  my-2   ${
@@ -204,7 +211,7 @@ export function Select({
 			{userAdd && (
 				<UserAddIcon
 					className="w-5 mb-2 cursor-pointer"
-					onClick={() => setAddUser(!addUser)}
+					onClick={() => handleAddUser()}
 				/>
 			)}
 		</div>
@@ -225,6 +232,37 @@ export function Button({ message, hidden, disabledBtn }) {
 			>
 				{message}
 			</button>
+		</div>
+	)
+}
+
+export function SelectSimple({
+	name,
+	hidden,
+	options,
+	booking,
+	handleWhatsApp,
+}) {
+	return (
+		<div
+			className={`w-full flex justify-between items-end  py-1  my-1   ${
+				!hidden && "hidden"
+			}`}
+		>
+			<select
+				className="block appearance-none w-full bg-slate-400/50 border-none text-gray-700 dark:text-slate-50  border-gray-400 hover:border-gray-500 px-1 py-1 pr-1 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+				name={name}
+				onChange={(e) => handleWhatsApp(booking, e.target.value)}
+			>
+				{options.map((val) => (
+					<option
+						key={val._id || val.clave || val._ref}
+						value={val._id || val.clave || val._ref}
+					>
+						{val.name}
+					</option>
+				))}
+			</select>
 		</div>
 	)
 }

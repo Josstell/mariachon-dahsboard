@@ -24,11 +24,14 @@ import {
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import toast, { Toaster } from "react-hot-toast"
 import { dateGral, optionsDate } from "src/helpers/utils"
+import { nanoid } from "@reduxjs/toolkit"
 
 const addNewMariachi = () => {
+	const router = useRouter()
+
 	const [arrayImages, setArrayImages] = useState([])
 	const [arrayVideos, setArrayVideos] = useState([])
-	const router = useRouter()
+	const [crewElements, setCrewElements] = useState([])
 
 	const userAdmin = useSelector(selectUserAdmin)
 	const status = useSelector(selectStatus)
@@ -66,12 +69,16 @@ const addNewMariachi = () => {
 		setValue("contrato", 0)
 		setValue("category_mariachi", "")
 		setValue("coordinator", "")
+		setValue("elements", "")
+		setValue("stage", "PROSPECTO")
+
 		//
 	}, [])
 
 	useEffect(() => {
 		if (statusUser === "succeeded") {
 			setValue("coordinator", "")
+			setValue("elements", "")
 		}
 	}, [statusUser])
 
@@ -91,10 +98,42 @@ const addNewMariachi = () => {
 			contrato: watch("contrato"),
 		},
 		coordinator: watch("coordinator"),
+		stage: watch("stage"),
 	}
 
+	// const handleAddElement = () => {
+	// 	const dataElements = watch("coordinator")
+	// 	setCrewElements((elem) => [...elem, dataElements])
+	// }
+
+	useEffect(() => {
+		if (watch("elements") !== "") {
+			const dataElements = {
+				_key: nanoid(),
+				_ref: watch("elements"),
+			}
+			setCrewElements((elem) => [...elem, dataElements])
+			setValue("elements", "")
+		}
+	}, [watch("elements")])
+
+	useEffect(() => {
+		setValue("members", crewElements.length + 1)
+	}, [crewElements])
+
+	console.log("Elementos: ", crewElements)
+
 	const onSubmit = (dataForm) => {
-		//setLoading(true)
+		///setLoading(true)
+
+		let dataElements = []
+		crewElements.forEach((element) => {
+			dataElements.push(element)
+		})
+
+		const coorSelected = { _key: nanoid(), _ref: dataForm.coordinator }
+
+		dataElements.unshift(coorSelected)
 
 		const dataMariachiToCard = {
 			name: dataForm.name,
@@ -114,6 +153,8 @@ const addNewMariachi = () => {
 				contrato: dataForm.contrato * 1,
 			},
 			coordinator: { _ref: dataForm.coordinator },
+			stage: [dataForm.stage],
+			crew: dataElements,
 			images: arrayImages,
 			videos: arrayVideos,
 		}
@@ -123,7 +164,7 @@ const addNewMariachi = () => {
 				...dataMariachiToCard,
 			})
 		)
-		//dispatch(addMariachiToGoogleSheet(dataMariachiToCard))
+		//	dispatch(addMariachiToGoogleSheet(dataMariachiToCard))
 	}
 
 	const notifyError = () => toast.error(error)
@@ -158,7 +199,7 @@ const addNewMariachi = () => {
 					>
 						<div
 							className={
-								"w-4/12 h-3/5 min-w-[370px] min-h-[860px] md:min-h-full"
+								"w-4/12 h-3/5 min-w-[370px] min-h-[890px] md:min-h-full"
 							}
 						>
 							<MariachiTab>
@@ -170,6 +211,8 @@ const addNewMariachi = () => {
 									setArrayImages={setArrayImages}
 									arrayVideos={arrayVideos}
 									setArrayVideos={setArrayVideos}
+									crewElements={crewElements}
+									setCrewElements={setCrewElements}
 									isSaving
 								/>
 								<Toaster />

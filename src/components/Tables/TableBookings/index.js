@@ -4,16 +4,20 @@ import Image from "next/image"
 import Link from "next/link"
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
+import { SelectSimple } from "src/components/Forms/Smart/Inputs"
 import GetLogoWithName from "src/components/GetLogoWithName"
 import { createUrlWhatsApp, dateGral, optionsDate } from "src/helpers/utils"
 import {
 	selectAllBookings,
 	updateBooking,
 } from "store/features/bookings/bookingSlice"
+import { selectAllUsers } from "store/features/users/userSlice"
 
 const TableBookings = ({ userAdmin }) => {
 	const dispatch = useDispatch()
 	const BookingsData = useSelector(selectAllBookings)
+
+	const users = useSelector(selectAllUsers)
 
 	const options = {
 		weekday: "short",
@@ -27,8 +31,10 @@ const TableBookings = ({ userAdmin }) => {
 		return date.toLocaleDateString("es-MX", options)
 	}
 
-	const handleWhatsApp = (reservationData) => {
-		createUrlWhatsApp(reservationData)
+	const handleWhatsApp = (reservationData, sendMariachiValue) => {
+		const coorSelected = users.find((user) => user._id === sendMariachiValue)
+
+		createUrlWhatsApp({ ...reservationData, coordinator: coorSelected })
 
 		const reservaUpdate = {
 			...reservationData,
@@ -55,8 +61,6 @@ const TableBookings = ({ userAdmin }) => {
 			],
 			status: ["Enviada"],
 		}
-
-		console.log(reservaUpdate)
 
 		dispatch(updateBooking(reservaUpdate))
 	}
@@ -178,85 +182,100 @@ const TableBookings = ({ userAdmin }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{BookingsData?.map((booking) => (
-								<tr key={booking._id}>
-									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left ">
-										<Link href={`/reservas/${booking._id}/edit`} passHref>
-											<span
-												className=" font-bold 
+							{BookingsData?.map((booking) => {
+								const crewUserById = users.filter((user) =>
+									booking.orderItems.mariachi.crew.find(
+										(cre) => cre._ref === user._id
+									)
+								)
+								console.log("Hola toos∫", crewUserById)
+								return (
+									<tr key={booking._id}>
+										<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left ">
+											<Link href={`/reservas/${booking._id}/edit`} passHref>
+												<span
+													className=" font-bold 
 													text-slate-600
 													dark:text-white"
-											>
-												{booking?.reserva || booking?._id}
-											</span>
-										</Link>
-									</th>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.client?.name}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{getDateAndTime(booking.dateAndTime)}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.shippingAddress.address},{" "}
-										{booking?.shippingAddress.city},
-										{booking?.shippingAddress.region}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.orderItems?.mariachi?.logo ? (
-											<div className="w-8 h-8 flex flex-col  relative cursor-pointer">
-												<Image
-													className="rounded-full"
-													src={booking?.logo}
-													layout="fill"
-													objectFit="cover"
-													alt=""
+												>
+													{booking?.reserva || booking?._id}
+												</span>
+											</Link>
+										</th>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{booking?.client?.name}
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{getDateAndTime(booking.dateAndTime)}
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{booking?.shippingAddress.address},{" "}
+											{booking?.shippingAddress.city},
+											{booking?.shippingAddress.region}
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{booking?.orderItems?.mariachi?.logo ? (
+												<div className="w-8 h-8 flex flex-col  relative cursor-pointer">
+													<Image
+														className="rounded-full"
+														src={booking?.logo}
+														layout="fill"
+														objectFit="cover"
+														alt=""
+													/>
+												</div>
+											) : booking?.orderItems?.mariachi?.name ? (
+												<div className="uppercase">
+													{booking?.orderItems?.mariachi?.name}{" "}
+												</div>
+											) : (
+												<GetLogoWithName
+													text={booking?.orderItems?.mariachi?.name || "m"}
+													numberLetter={9}
 												/>
-											</div>
-										) : booking?.orderItems?.mariachi?.name ? (
-											<div className="uppercase">
-												{booking?.orderItems?.mariachi?.name}{" "}
-											</div>
-										) : (
-											<GetLogoWithName
-												text={booking?.orderItems?.mariachi?.name || "m"}
-												numberLetter={9}
+											)}
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{booking?.orderItems?.service} x{" "}
+											{booking?.orderItems?.qty}
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{booking?.orderItems?.price * booking?.orderItems?.qty}
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{booking?.orderItems?.deposit}
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{booking?.orderItems?.fee}
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{/* <a onClick={() => handleWhatsApp(booking)}>
+												{booking?.orderItems?.mariachi?.coordinator?.name}{" "}
+											</a> */}
+											<SelectSimple
+												name="sendWhats"
+												options={crewUserById}
+												hidden
+												booking={booking}
+												handleWhatsApp={handleWhatsApp}
 											/>
-										)}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.orderItems?.service} x {booking?.orderItems?.qty}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.orderItems?.price * booking?.orderItems?.qty}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.orderItems?.deposit}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{booking?.orderItems?.fee}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										<a onClick={() => handleWhatsApp(booking)}>
-											{booking?.orderItems?.mariachi?.coordinator?.name}{" "}
-										</a>
-									</td>
+										</td>
 
-									<td
-										className={`border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 `}
-									>
-										<span
-											className={`text-red-500 font-extrabold ${
-												booking?.status[booking?.status.length - 1] ===
-													"Enviada" && "text-green-400"
-											}`}
+										<td
+											className={`border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 `}
 										>
-											{booking?.status[
-												booking?.status.length - 1
-											].toUpperCase()}
-										</span>
-									</td>
-									{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											<span
+												className={`text-red-500 font-extrabold ${
+													booking?.status[booking?.status.length - 1] ===
+														"Enviada" && "text-green-400"
+												}`}
+											>
+												{booking?.status[
+													booking?.status.length - 1
+												].toUpperCase()}
+											</span>
+										</td>
+										{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex items-center">
 											<span className="mr-2">60%</span>
 											<div className="relative w-full">
@@ -273,8 +292,9 @@ const TableBookings = ({ userAdmin }) => {
 										{/* <className />
 									</td> 
 									*/}
-								</tr>
-							))}
+									</tr>
+								)
+							})}
 						</tbody>
 					</table>
 				</div>

@@ -127,6 +127,19 @@ export default {
 			title: "Calificación",
 			type: "number",
 		},
+		{
+			title: "Etapa del mariachi:",
+			name: "stage",
+			type: "array",
+			of: [{ type: "string" }],
+			options: {
+				list: [
+					{ title: "PROSPECTO", value: "PROSPECTO" },
+					{ title: "PROVEEDOR", value: "PROVEEDOR" },
+				],
+			},
+		},
+		//["PROSPECTO", "PROVEEDOR"]
 
 		{
 			name: "slug",
@@ -138,19 +151,14 @@ export default {
 			},
 		},
 		{
-			name: "dateCreated",
-			title: "Creado el:",
-			type: "string",
-		},
-		{
 			name: "createdBy",
 			title: "Creado Por:",
 			type: "reference",
 			to: { type: "user" },
 		},
 		{
-			name: "dateModified",
-			title: "Modificado el:",
+			name: "dateCreated",
+			title: "Creado el:",
 			type: "string",
 		},
 		{
@@ -158,6 +166,11 @@ export default {
 			title: "Modificado Por:",
 			type: "reference",
 			to: { type: "user" },
+		},
+		{
+			name: "dateModified",
+			title: "Modificado el:",
+			type: "string",
 		},
 		{
 			name: "publishedAt",

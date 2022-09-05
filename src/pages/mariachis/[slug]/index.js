@@ -23,12 +23,14 @@ import {
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import toast, { Toaster } from "react-hot-toast"
 import { dateGral, optionsDate } from "src/helpers/utils"
+import { nanoid } from "@reduxjs/toolkit"
 
 const mariachiById = ({ slug }) => {
 	const data = useSelector((state) =>
 		state.mariachis.mariachis.find((mar) => mar.slug.current === slug)
 	)
 
+	console.log("Datos:: ", data)
 	const router = useRouter()
 	const [loading, setLoading] = useState(false)
 
@@ -40,6 +42,11 @@ const mariachiById = ({ slug }) => {
 
 	const [arrayImages, setArrayImages] = useState(data?.images || [])
 	const [arrayVideos, setArrayVideos] = useState(data?.videos || [])
+	const [crewElements, setCrewElements] = useState(
+		data?.crew?.filter((_, index) => index > 0) || []
+	)
+
+	console.log("set cre:", crewElements)
 	//Activar Tab
 	const activeFormTab = useSelector(
 		(state) => state.mariachis.mariachiTabActive
@@ -63,10 +70,11 @@ const mariachiById = ({ slug }) => {
 		if (!userAdmin.exist) {
 			router.push("/")
 		}
-		setValue("name", data.name)
-		setValue("tel", data.tel)
-		setValue("description", data.description)
-		setValue("address", data.address)
+
+		setValue("name", data?.name)
+		setValue("tel", data?.tel)
+		setValue("description", data?.description)
+		setValue("address", data?.address)
 		setValue("region", data?.region || "")
 		setValue("city", data?.city || "")
 		setValue("cp", data?.cp || "")
@@ -75,10 +83,13 @@ const mariachiById = ({ slug }) => {
 		setValue("hora", data?.service?.hora)
 		setValue("serenata", data?.service?.serenata)
 		setValue("contrato", data?.service?.contrato)
-		setValue("category_mariachi", data.categorySet[0])
-		setValue("coordinator", data.coordinator._id)
+		setValue("category_mariachi", data?.categorySet[0])
+		setValue("coordinator", data?.coordinator._id)
+		setValue("elements", "")
+		setValue("stage", data?.stage[0] || "PROSPECTO")
+
 		//
-	}, [])
+	}, [data])
 
 	const dataMariachiToCard = {
 		name: watch("name"),
@@ -96,10 +107,37 @@ const mariachiById = ({ slug }) => {
 			contrato: watch("contrato"),
 		},
 		coordinator: watch("coordinator"),
+		stage: watch("stage"),
 	}
 
+	useEffect(() => {
+		if (watch("elements") !== "") {
+			const dataElements = {
+				_key: nanoid(),
+				_ref: watch("elements"),
+			}
+			setCrewElements((elem) => [...elem, dataElements])
+		}
+	}, [watch("elements")])
+
+	useEffect(() => {
+		if (watch("elements") !== "") {
+			setValue("members", crewElements.length + 1)
+			setValue("elements", "")
+		}
+	}, [crewElements])
+
 	const onSubmit = (dataForm) => {
-		setLoading(true)
+		//setLoading(true)
+
+		let dataElements = []
+		crewElements.forEach((element) => {
+			dataElements.push(element)
+		})
+
+		const coorSelected = { _key: nanoid(), _ref: dataForm.coordinator }
+
+		dataElements.unshift(coorSelected)
 
 		const dataMariachiToSend = {
 			...dataForm,
@@ -117,7 +155,11 @@ const mariachiById = ({ slug }) => {
 				serenata: dataForm.serenata,
 				contrato: dataForm.contrato,
 			},
+			crew: dataElements,
+			stage: [dataForm?.stage],
 		}
+		console.log("Elementos", dataMariachiToSend)
+
 		dispatch(updateMariachi(dataMariachiToSend))
 		dispatch(addMariachiToGoogleSheet(dataMariachiToSend))
 	}
@@ -157,22 +199,27 @@ const mariachiById = ({ slug }) => {
 					>
 						<div
 							className={
-								"w-4/12 h-3/5 min-w-[370px] min-h-[860px] md:min-h-full"
+								"w-4/12 h-3/5 min-w-[370px] min-h-[940px] md:min-h-full"
 							}
 						>
-							<MariachiTab>
-								<MariachiForm
-									methods={methods}
-									onSubmit={onSubmit}
-									activeFormTab={activeFormTab}
-									arrayImages={arrayImages}
-									setArrayImages={setArrayImages}
-									arrayVideos={arrayVideos}
-									setArrayVideos={setArrayVideos}
-								/>
-								<Toaster />
-							</MariachiTab>
-							{loading && <SpinnerLoadign />}
+							{loading ? (
+								<SpinnerLoadign />
+							) : (
+								<MariachiTab>
+									<MariachiForm
+										methods={methods}
+										onSubmit={onSubmit}
+										activeFormTab={activeFormTab}
+										arrayImages={arrayImages}
+										setArrayImages={setArrayImages}
+										arrayVideos={arrayVideos}
+										setArrayVideos={setArrayVideos}
+										crewElements={crewElements}
+										setCrewElements={setCrewElements}
+									/>
+									<Toaster />
+								</MariachiTab>
+							)}
 						</div>
 						<div
 							className={

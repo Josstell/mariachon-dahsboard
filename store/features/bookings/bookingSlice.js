@@ -58,6 +58,7 @@ categorySet,
     mariachi->{
 		_id,
     name,
+	crew,
 tel,
 coordinator->{
   _id,

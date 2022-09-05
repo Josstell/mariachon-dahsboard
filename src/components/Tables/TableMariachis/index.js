@@ -105,6 +105,13 @@ const TableMariachis = () => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
+									Etapa
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
 									Vinculos
 								</th>
 								{/* <th
@@ -181,6 +188,17 @@ const TableMariachis = () => {
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{mariachi.members}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										<p
+											className={`font-bold ${
+												mariachi.stage[0] === "PROSPECTO"
+													? "text-green-400"
+													: "text-red-500"
+											}`}
+										>
+											{mariachi.stage[0]}
+										</p>
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex ">
