@@ -194,30 +194,35 @@ const addNewMariachi = () => {
 			{userAdmin.isAdmin ? (
 				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
 					<div
-						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-around
-							 items-center`}
+						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-around 
+							 items-center `}
 					>
 						<div
-							className={
-								"w-4/12 h-3/5 min-w-[370px] min-h-[890px] md:min-h-full"
-							}
+							className={`w-4/12 h-3/5 min-w-[370px] min-h-[890px] md:min-h-full ${
+								status !== "idle" || statusGS !== "idle"
+									? "flex justify-center items-center mt-20"
+									: null
+							}`}
 						>
 							<MariachiTab>
-								<MariachiForm
-									methods={methods}
-									onSubmit={onSubmit}
-									activeFormTab={activeFormTab}
-									arrayImages={arrayImages}
-									setArrayImages={setArrayImages}
-									arrayVideos={arrayVideos}
-									setArrayVideos={setArrayVideos}
-									crewElements={crewElements}
-									setCrewElements={setCrewElements}
-									isSaving
-								/>
+								{status !== "idle" || statusGS !== "idle" ? (
+									<SpinnerLoadign />
+								) : (
+									<MariachiForm
+										methods={methods}
+										onSubmit={onSubmit}
+										activeFormTab={activeFormTab}
+										arrayImages={arrayImages}
+										setArrayImages={setArrayImages}
+										arrayVideos={arrayVideos}
+										setArrayVideos={setArrayVideos}
+										crewElements={crewElements}
+										setCrewElements={setCrewElements}
+										isSaving
+									/>
+								)}
 								<Toaster />
 							</MariachiTab>
-							{!(status === "idle") && <SpinnerLoadign />}
 						</div>
 						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
 							<MariachiCard

@@ -82,30 +82,44 @@ export function Checkbox({ register, name, hidden, ...rest }) {
 	)
 }
 
-export function RadioButton({ register, name, label, hidden, ...rest }) {
+export function RadioButton({
+	register,
+	name,
+	label,
+	hidden,
+	colorsEtapes,
+	...rest
+}) {
 	return (
 		<div
 			className={`flex mt-5 justify-center items-center ${!hidden && "hidden"}`}
 		>
 			<div className="bg-gray-200 rounded-lg ">
-				{label.map((labe, i) => (
-					<div key={i} className={`inline-flex rounded-lg `}>
-						<input
-							className="peer"
-							{...register(name)}
-							{...rest}
-							id={labe + "Mariachi"}
-							value={labe}
-							hidden
-						/>
-						<label
-							htmlFor={labe + "Mariachi"}
-							className="bg-slate-200 text-slate-900 peer-checked:text-slate-50  peer-checked:bg-green-600  text-center self-center py-2 px-4 rounded-lg cursor-pointer hover:opacity-75"
-						>
-							{labe}
-						</label>
-					</div>
-				))}
+				{label.map((labe, i) => {
+					let colorBlock = colorsEtapes ? colorsEtapes[labe] : null
+
+					let cssColor = `peer-checked:bg-[${colorBlock}]`
+					return (
+						<div key={i} className={`inline-flex rounded-lg `}>
+							<input
+								className="peer "
+								{...register(name)}
+								{...rest}
+								id={labe + "Mariachi"}
+								value={labe}
+								hidden
+							/>
+							<label
+								htmlFor={labe + "Mariachi"}
+								className={`bg-slate-200 text-slate-900 peer-checked:text-slate-50  ${
+									colorsEtapes ? cssColor : "peer-checked:bg-green-600"
+								} text-xs font-bold  text-center self-center py-2 px-2 rounded-lg cursor-pointer hover:opacity-75`}
+							>
+								{labe}
+							</label>
+						</div>
+					)
+				})}
 
 				{/* <div className="inline-flex rounded-lg">
 					<input

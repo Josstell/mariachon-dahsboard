@@ -32,7 +32,6 @@ const mariachiById = ({ slug }) => {
 
 	console.log("Datos:: ", data)
 	const router = useRouter()
-	const [loading, setLoading] = useState(false)
 
 	const userAdmin = useSelector(selectUserAdmin)
 	const status = useSelector(selectStatus)
@@ -169,7 +168,6 @@ const mariachiById = ({ slug }) => {
 
 	useEffect(() => {
 		if (status === "failed") {
-			setLoading(false)
 			notifyError()
 			dispatch(setStatus("idle"))
 		}
@@ -178,7 +176,6 @@ const mariachiById = ({ slug }) => {
 			dispatch(setStatusGS("idle"))
 
 			notifySuccess()
-			setLoading(false)
 
 			//dispatch(setStatus("idle"))
 			router.push("/mariachis")
@@ -198,14 +195,16 @@ const mariachiById = ({ slug }) => {
 							 items-center`}
 					>
 						<div
-							className={
-								"w-4/12 h-3/5 min-w-[370px] min-h-[940px] md:min-h-full"
-							}
+							className={`w-4/12 h-3/5 min-w-[370px] min-h-[890px] md:min-h-full ${
+								status !== "idle" || statusGS !== "idle"
+									? "flex justify-center items-center"
+									: null
+							}`}
 						>
-							{loading ? (
-								<SpinnerLoadign />
-							) : (
-								<MariachiTab>
+							<MariachiTab>
+								{status !== "idle" || statusGS !== "idle" ? (
+									<SpinnerLoadign />
+								) : (
 									<MariachiForm
 										methods={methods}
 										onSubmit={onSubmit}
@@ -217,9 +216,9 @@ const mariachiById = ({ slug }) => {
 										crewElements={crewElements}
 										setCrewElements={setCrewElements}
 									/>
-									<Toaster />
-								</MariachiTab>
-							)}
+								)}
+								<Toaster />
+							</MariachiTab>
 						</div>
 						<div
 							className={

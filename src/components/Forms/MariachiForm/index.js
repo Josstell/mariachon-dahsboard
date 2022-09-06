@@ -15,6 +15,7 @@ import {
 
 import { nanoid } from "@reduxjs/toolkit"
 import AddNewUserComponent from "../UserForm/AddNewUser"
+import { etapesData } from "src/helpers/utils"
 
 export default function MariachiForm({
 	methods,
@@ -267,7 +268,7 @@ export default function MariachiForm({
 				<RadioButton
 					hidden={activeFormTab.gral}
 					name="stage"
-					label={["PROSPECTO", "PROVEEDOR"]}
+					label={etapesData}
 					type="radio"
 				/>
 

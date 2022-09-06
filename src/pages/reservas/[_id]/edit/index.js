@@ -392,18 +392,21 @@ const reservaById = ({ id }) => {
 							}
 						>
 							<BookingTa>
-								<BookingForm
-									methods={methods}
-									//reserva={reservaData === undefined ? deserva : reservaData}
-									onSubmit={onSubmit}
-									arrayPlayList={arrayPlayList}
-									setArrayPlayList={setArrayPlayList}
-									setMariachibyId={setMariachibyId}
-									setUserbyId={setUserbyId}
-								/>
+								{status !== "idle" || statusBookGS !== "idle" ? (
+									<SpinnerLoadign />
+								) : (
+									<BookingForm
+										methods={methods}
+										//reserva={reservaData === undefined ? deserva : reservaData}
+										onSubmit={onSubmit}
+										arrayPlayList={arrayPlayList}
+										setArrayPlayList={setArrayPlayList}
+										setMariachibyId={setMariachibyId}
+										setUserbyId={setUserbyId}
+									/>
+								)}
 								<Toaster />
 							</BookingTa>
-							{status !== "idle" && <SpinnerLoadign />}
 						</div>
 						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
 							<BookingCard reserva={reservaData} data={data} />

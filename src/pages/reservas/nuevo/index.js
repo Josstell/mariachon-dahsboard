@@ -380,7 +380,9 @@ const newBooking = () => {
 							}
 						>
 							<BookingTa>
-								{!(status === "idle") ? (
+								{!(status === "idle") ||
+								!(statusBookGS === "idle") ||
+								!(statusBEmail === "idle") ? (
 									<SpinnerLoadign />
 								) : (
 									<BookingForm

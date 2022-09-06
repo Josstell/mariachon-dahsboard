@@ -192,7 +192,7 @@ const TableMariachis = () => {
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<p
 											className={`font-bold ${
-												mariachi.stage[0] === "PROSPECTO"
+												mariachi.stage[0] === "AFILIADO"
 													? "text-green-400"
 													: "text-red-500"
 											}`}

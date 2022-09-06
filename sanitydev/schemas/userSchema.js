@@ -73,7 +73,9 @@ export default {
 			options: {
 				list: [
 					{ title: "PROSPECTO", value: "PROSPECTO" },
-					{ title: "CLIENTE", value: "CLIENTE" },
+					{ title: "MONITOREO", value: "MONITOREO" },
+					{ title: "AFILIADO", value: "AFILIADO" },
+					{ title: "ANULADO", value: "ANULADO" },
 				],
 			},
 		},

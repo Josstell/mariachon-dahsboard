@@ -23,6 +23,17 @@ export const optionsDate = {
 
 export const dateGral = new Date()
 
+export const etapesData = ["PROSPECTO", "MONITOREO", "AFILIADO", "ANULADO"]
+
+//export const etapesClient = ["PROSPECTO", "MONITOREO", "AFILIADO", "ANULADO"]
+
+export const colorEtapes = {
+	PROSPECTO: "#f00a5e",
+	MONITOREO: "#f99400",
+	AFILIADO: "#b0da09",
+	ANULADO: "#544f51",
+}
+
 /*******************************************************************
  creating WhatsApp
 ********************************************************************/
