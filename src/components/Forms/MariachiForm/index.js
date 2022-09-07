@@ -152,8 +152,6 @@ export default function MariachiForm({
 		setShowAddV(!showAddV)
 	}
 
-	console.log("CREW: ", crewElements)
-
 	return (
 		<>
 			<Form onSubmit={onSubmit} methods={methods}>

@@ -1,15 +1,21 @@
 import Image from "next/image"
 import Link from "next/link"
-import React from "react"
+import React, { useState } from "react"
 import { useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
 import { selectAllUsers } from "store/features/users/userSlice"
 
 import { ViewGridAddIcon } from "@heroicons/react/outline"
-import Search from "src/components/Search"
+//import Search from "src/components/Search"
+import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
+import SearchWithModal from "src/components/Forms/Smart/SearchWithModal"
 
 const TableUser = () => {
 	const usersData = useSelector(selectAllUsers)
+
+	const [usersDataSearch, setUsersDataSearch] = useState(usersData)
+
+	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
 	return (
 		<div className="px-2 md:px1 w-full h-full">
@@ -17,16 +23,30 @@ const TableUser = () => {
 				className="relative  flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded sm:mt-0 sm:mb-auto
 					 bg-white  dark:bg-slate-700 dark:text-white"
 			>
-				<Search />
+				<div className={!hideIconShowSearch && "hidden"}>
+					<SearchWithModal
+						setUsersDataSearch={setUsersDataSearch}
+						setHideIconShowSearch={setHideIconShowSearch}
+						hideIconShowSearch={hideIconShowSearch}
+					/>
+				</div>
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
 						<div className="relative w-full px-4 max-w-full flex flex-row justify-between">
 							<h3 className="font-semibold text-lg text-slate-700 dark:text-white">
 								Lista de usuarios
 							</h3>
-							<Link href={`/usuarios/nuevo`} passHref>
-								<ViewGridAddIcon className="w-5 cursor-pointer" />
-							</Link>
+							<div className="flex flex-row justify-between ">
+								<LupaSearchIcon
+									className={`fill-slate-300 w-5 mr-2 z-100 ${
+										hideIconShowSearch ? "hidden" : null
+									}`}
+									onClick={() => setHideIconShowSearch(true)}
+								/>
+								<Link href={`/usuarios/nuevo`} passHref>
+									<ViewGridAddIcon className="w-5 cursor-pointer" />
+								</Link>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -100,7 +120,7 @@ const TableUser = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{usersData.map((user) => (
+							{usersDataSearch.map((user) => (
 								<tr key={user._id}>
 									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
 										<span
