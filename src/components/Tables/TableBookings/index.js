@@ -6,6 +6,7 @@ import React, { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { SelectSimple } from "src/components/Forms/Smart/Inputs"
 import GetLogoWithName from "src/components/GetLogoWithName"
+import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import { createUrlWhatsApp, dateGral, optionsDate } from "src/helpers/utils"
 import {
@@ -67,6 +68,10 @@ const TableBookings = ({ userAdmin }) => {
 	}
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
+	if (!BookingsData) {
+		return <SpinnerLogo />
+	}
+
 	return (
 		<div className="px-2 md:px1 w-full h-full">
 			<div
@@ -87,7 +92,7 @@ const TableBookings = ({ userAdmin }) => {
 									}`}
 									onClick={() => setHideIconShowSearch(true)}
 								/>
-								<Link href={"reservas/nuevo"} passHref>
+								<Link href={"reservas/nuevo"}>
 									<ViewGridAddIcon className="w-5 cursor-pointer" />
 								</Link>
 							</div>
@@ -195,18 +200,17 @@ const TableBookings = ({ userAdmin }) => {
 						<tbody>
 							{BookingsData?.map((booking) => {
 								const crewUserById = users.filter((user) =>
-									booking.orderItems.mariachi.crew.find(
+									booking?.orderItems?.mariachi?.crew.find(
 										(cre) => cre._ref === user._id
 									)
 								)
-								console.log("Hola toos∫", crewUserById)
 								return (
 									<tr
-										key={booking._id}
+										key={booking?._id}
 										className="transition duration-300 ease-in-out hover:bg-slate-600/95"
 									>
 										<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left ">
-											<Link href={`/reservas/${booking._id}/edit`} passHref>
+											<Link href={`/reservas/${booking?._id}/edit`}>
 												<span
 													className=" font-bold 
 													text-slate-600
@@ -220,12 +224,12 @@ const TableBookings = ({ userAdmin }) => {
 											{booking?.client?.name}
 										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-											{getDateAndTime(booking.dateAndTime)}
+											{getDateAndTime(booking?.dateAndTime)}
 										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-											{booking?.shippingAddress.address},{" "}
-											{booking?.shippingAddress.city},
-											{booking?.shippingAddress.region}
+											{booking?.shippingAddress?.address},{" "}
+											{booking?.shippingAddress?.city},
+											{booking?.shippingAddress?.region}
 										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 											{booking?.orderItems?.mariachi?.logo ? (
@@ -268,7 +272,7 @@ const TableBookings = ({ userAdmin }) => {
 											</a> */}
 											<SelectSimple
 												name="sendWhats"
-												options={crewUserById}
+												options={crewUserById || []}
 												hidden
 												booking={booking}
 												handleWhatsApp={handleWhatsApp}
@@ -285,7 +289,7 @@ const TableBookings = ({ userAdmin }) => {
 												}`}
 											>
 												{booking?.status[
-													booking?.status.length - 1
+													booking?.status?.length - 1
 												].toUpperCase()}
 											</span>
 										</td>

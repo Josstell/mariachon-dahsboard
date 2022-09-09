@@ -8,6 +8,7 @@ import { useSelector } from "react-redux"
 //import { SelectSimple } from "src/components/Forms/Smart/Inputs"
 import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
 import GetLogoWithName from "src/components/GetLogoWithName"
+import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import BookingIcon from "src/components/SVG/Icons/BookingIcon"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
@@ -56,6 +57,9 @@ const TableMariachis = () => {
 	// }
 	// console.log("Estado fuera: ", regionSelected, mariachisDataSearch)
 
+	if (!mariachisDataSearch) {
+		return <SpinnerLogo />
+	}
 	return (
 		<div className="px-2 md:px1 w-full h-full">
 			<div

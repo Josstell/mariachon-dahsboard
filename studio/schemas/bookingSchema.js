@@ -18,7 +18,6 @@ export default {
 			title: "Nombre del cliente",
 			type: "string",
 		},
-
 		{
 			name: "reserva",
 			title: "Clave de reservación",
@@ -96,6 +95,7 @@ export default {
 					{ title: "Enviada", value: "Enviada" },
 					{ title: "Realizada", value: "Realizada" },
 					{ title: "Cancelada", value: "Cancelada" },
+					{ title: "Actualizada", value: "Actualizada" },
 				],
 			},
 		},
@@ -133,7 +133,7 @@ export default {
 		},
 		{
 			name: "dateModified",
-			title: "modificado el:",
+			title: "Modificado el:",
 			type: "string",
 		},
 		{
