@@ -1,5 +1,4 @@
 import { ChevronDownIcon, UserAddIcon } from "@heroicons/react/outline"
-import { useRef } from "react"
 import { useState } from "react"
 
 export function Input({

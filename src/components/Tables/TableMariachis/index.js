@@ -191,7 +191,10 @@ const TableMariachis = () => {
 						</thead>
 						<tbody>
 							{mariachisDataSearch?.map((mariachi) => (
-								<tr key={mariachi._id}>
+								<tr
+									key={mariachi._id}
+									className="transition duration-300 ease-in-out hover:bg-slate-600/95"
+								>
 									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
 										<span
 											className="ml-3 font-bold 

@@ -2,10 +2,11 @@
 import { ViewGridAddIcon } from "@heroicons/react/outline"
 import Image from "next/image"
 import Link from "next/link"
-import React from "react"
+import React, { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { SelectSimple } from "src/components/Forms/Smart/Inputs"
 import GetLogoWithName from "src/components/GetLogoWithName"
+import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import { createUrlWhatsApp, dateGral, optionsDate } from "src/helpers/utils"
 import {
 	selectAllBookings,
@@ -64,6 +65,7 @@ const TableBookings = ({ userAdmin }) => {
 
 		dispatch(updateBooking(reservaUpdate))
 	}
+	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
 	return (
 		<div className="px-2 md:px1 w-full h-full">
@@ -77,9 +79,18 @@ const TableBookings = ({ userAdmin }) => {
 							<h3 className="font-semibold text-lg text-slate-700 dark:text-white">
 								Reservas
 							</h3>
-							<Link href={"reservas/nuevo"} passHref>
-								<ViewGridAddIcon className="w-5 cursor-pointer" />
-							</Link>
+
+							<div className="flex flex-row justify-between ">
+								<LupaSearchIcon
+									className={`fill-slate-300 w-5 mr-2 z-100 ${
+										hideIconShowSearch ? "hidden" : null
+									}`}
+									onClick={() => setHideIconShowSearch(true)}
+								/>
+								<Link href={"reservas/nuevo"} passHref>
+									<ViewGridAddIcon className="w-5 cursor-pointer" />
+								</Link>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -190,7 +201,10 @@ const TableBookings = ({ userAdmin }) => {
 								)
 								console.log("Hola toos∫", crewUserById)
 								return (
-									<tr key={booking._id}>
+									<tr
+										key={booking._id}
+										className="transition duration-300 ease-in-out hover:bg-slate-600/95"
+									>
 										<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left ">
 											<Link href={`/reservas/${booking._id}/edit`} passHref>
 												<span
