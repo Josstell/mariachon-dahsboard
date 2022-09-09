@@ -115,29 +115,31 @@ const addnewuser = () => {
 						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row 
 							justify-evenly items-center`}
 					>
-						<div
-							className={`no-scrollbar md:w-2/4	w-5/12 h-fit md:h-full mb-5 md:mb-0 flex flex-col justify-center items-center`}
-						>
+						<div className="w-4/12 h-fit min-w-[370px]  md:min-h-full">
 							{/* <UserForm />  Formulario */}
-							{!(status === "idle") ? (
-								<SpinnerLoadign />
-							) : (
-								<UserForm
-									methods={methods}
-									data={{ ...data, button: "Crear nuevo" }}
-									onSubmit={onSubmit}
-									loading={loading}
-								/>
-							)}
+							<div className="mt-96 m-auto md:m-0">
+								{!(status === "idle") ? (
+									<SpinnerLoadign />
+								) : (
+									<UserForm
+										methods={methods}
+										data={{ ...data, button: "Crear nuevo" }}
+										onSubmit={onSubmit}
+										loading={loading}
+									/>
+								)}
+							</div>
 
 							<Toaster />
 						</div>
-						<div className={"md:w-5/12 h-3/5"}>
-							<UserCard
-								setEditCard={setEditCard}
-								editCard={editCard}
-								userUpdat={userUpdat}
-							/>
+						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
+							<div className="mb-5 m-auto md:m-0">
+								<UserCard
+									setEditCard={setEditCard}
+									editCard={editCard}
+									userUpdat={userUpdat}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>

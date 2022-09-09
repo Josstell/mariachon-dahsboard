@@ -386,11 +386,7 @@ const reservaById = ({ id }) => {
 						className={`no-scrollbar overflow-auto   h-full  flex flex-col md:flex-row  md:justify-evenly
 							 items-center`}
 					>
-						<div
-							className={
-								"w-4/12 h-5/6 min-w-[370px] min-h-[870px] md:min-h-full"
-							}
-						>
+						<div className={`m-auto px-5 md:mx-0 w-full md:w-2/5  `}>
 							<BookingTa>
 								{status !== "idle" || statusBookGS !== "idle" ? (
 									<SpinnerLoadign />
@@ -408,7 +404,11 @@ const reservaById = ({ id }) => {
 								<Toaster />
 							</BookingTa>
 						</div>
-						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
+						<div
+							className={
+								"w-full h-full m-auto md:w-4/12 md:h-5/6	mb-24 md:mb-10 "
+							}
+						>
 							<BookingCard reserva={reservaData} data={data} />
 						</div>
 					</div>

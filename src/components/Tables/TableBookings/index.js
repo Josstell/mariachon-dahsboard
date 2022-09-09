@@ -77,7 +77,7 @@ const TableBookings = ({ userAdmin }) => {
 							<h3 className="font-semibold text-lg text-slate-700 dark:text-white">
 								Reservas
 							</h3>
-							<Link href={`reservas/nuevo`} passHref>
+							<Link href={"reservas/nuevo"} passHref>
 								<ViewGridAddIcon className="w-5 cursor-pointer" />
 							</Link>
 						</div>

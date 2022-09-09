@@ -22,7 +22,7 @@ import {
 	setStatusBookingGS,
 } from "store/features/bookings/bookingSlice"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
-import { selectUserAdmin } from "store/features/users/userSlice"
+import { selectAllUsers, selectUserAdmin } from "store/features/users/userSlice"
 
 import toast, { Toaster } from "react-hot-toast"
 import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
@@ -80,6 +80,7 @@ const newBooking = () => {
 	const userAdmin = useSelector(selectUserAdmin)
 
 	const dataMariachi = useSelector(selectAllMariachis)
+	const users = useSelector(selectAllUsers)
 
 	const [reservaData, setreservaData] = useState(data)
 
@@ -87,7 +88,11 @@ const newBooking = () => {
 
 	const [arrayPlayList, setArrayPlayList] = useState([])
 
-	const [userbyId, setUserbyId] = useState(reservaData.client)
+	const [userbyId, setUserbyId] = useState(
+		router.query?.client
+			? users.find((user) => user._id === router.query?.client)
+			: { name: "", email: "", tel: "" }
+	)
 	const [mariachibyId, setMariachibyId] = useState(
 		reservaData.orderItems.mariachi
 	)
@@ -103,15 +108,22 @@ const newBooking = () => {
 		setValue("nameClient", userbyId?.name || data?.client?.name)
 		setValue("telClient", userbyId?.tel || data?.client?.tel)
 		setValue("emailClient", userbyId?.email || data?.client?.email)
+		setValue("clientId", userbyId?._id || data?.client?._id)
 	}, [userbyId])
 
 	useEffect(() => {
 		setValue("idMariachi", mariachibyId?._id)
 	}, [mariachibyId])
 
+	console.log(
+		"Id mariachi yclent:!!!",
+		router.query.client,
+		userbyId,
+		router.query.mariachiId
+	)
+
 	useEffect(() => {
-		setValue("idMariachi", reservaData.orderItems.mariachi?._id)
-		setValue("clientId", reservaData.client?._id)
+		setValue("idMariachi", router.query?.mariachiId || "")
 		setValue("address", reservaData.shippingAddress.address)
 		setValue("city", reservaData?.shippingAddress.city || "")
 		setValue("cp", reservaData?.shippingAddress.cp || "")
@@ -143,10 +155,10 @@ const newBooking = () => {
 	const dataReservaToCard = {
 		dateAndTime: watch("dateAndTime") || "",
 		client: {
-			_id: watch("clientId") || reservaData.client?._id,
-			name: watch("nameClient") || reservaData.client?.name,
-			tel: watch("telClient") || reservaData.client?.tel,
-			email: watch("emailClient") || reservaData.client?.email,
+			_id: watch("clientId"),
+			name: watch("nameClient"),
+			tel: watch("telClient"),
+			email: watch("emailClient"),
 		},
 		shippingAddress: {
 			address: watch("address") || "",
@@ -174,8 +186,6 @@ const newBooking = () => {
 		//if (mariachiSelected._id !== dataReservaToCard.orderItems.mariachi._id)
 
 		if (dataReservaToCard.orderItems.mariachi._id === undefined) {
-			console.log("id1", dataReservaToCard.orderItems.mariachi._id)
-
 			const marSeleected = dataMariachi.find(
 				(dat) => dat._id === data.orderItems.mariachi._id
 			)
@@ -183,7 +193,6 @@ const newBooking = () => {
 			setValue("members", marSeleected?.members)
 			setValue("category_mariachi", marSeleected?.categorySet)
 		} else {
-			console.log("id2", dataReservaToCard.orderItems.mariachi._id)
 			const marSeleected = dataMariachi.find(
 				(dat) => dat._id === dataReservaToCard.orderItems.mariachi._id
 			)
@@ -374,11 +383,7 @@ const newBooking = () => {
 						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row  md:justify-evenly
 							 items-center`}
 					>
-						<div
-							className={
-								"w-4/12 h-3/5 min-w-[370px] min-h-[870px] md:min-h-full"
-							}
-						>
+						<div className={`m-auto px-5 md:mx-0 w-full md:w-2/5  `}>
 							<BookingTa>
 								{!(status === "idle") ||
 								!(statusBookGS === "idle") ||
@@ -400,7 +405,11 @@ const newBooking = () => {
 								<Toaster />
 							</BookingTa>
 						</div>
-						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
+						<div
+							className={
+								"w-full h-fit m-auto md:w-4/12 md:h-5/6 mb-24 md:mb-10	 "
+							}
+						>
 							<BookingCard reserva={reservaData} data={data} />
 						</div>
 					</div>

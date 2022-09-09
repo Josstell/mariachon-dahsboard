@@ -9,6 +9,7 @@ import { ViewGridAddIcon } from "@heroicons/react/outline"
 //import Search from "src/components/Search"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import SearchWithModal from "src/components/Forms/Smart/SearchWithModal"
+import BookingIcon from "src/components/SVG/Icons/BookingIcon"
 
 const TableUser = () => {
 	const usersData = useSelector(selectAllUsers)
@@ -112,11 +113,13 @@ const TableUser = () => {
 									Editar
 								</th>
 
-								{/* <th
+								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
-								></th> */}
+								>
+									Reservar
+								</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -198,10 +201,17 @@ const TableUser = () => {
 										</div>
 									</td>
 
-									{/*} <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-										{/* <className />
-									</td> 
-									*/}
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
+										<Link
+											href={{
+												pathname: "reservas/nuevo",
+												query: { client: user._id },
+											}}
+											passHref
+										>
+											<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8" />
+										</Link>
+									</td>
 								</tr>
 							))}
 						</tbody>

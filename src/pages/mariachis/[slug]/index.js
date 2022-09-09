@@ -195,7 +195,8 @@ const mariachiById = ({ slug }) => {
 							 items-center`}
 					>
 						<div
-							className={`w-4/12 h-3/5 min-w-[370px] min-h-[890px] md:min-h-full ${
+							// className={`w-4/12 h-3/5 min-w-[370px] min-h-[890px] md:min-h-full ${
+							className={`m-auto md:mx-0 ${
 								status !== "idle" || statusGS !== "idle"
 									? "flex justify-center items-center"
 									: null
@@ -222,7 +223,7 @@ const mariachiById = ({ slug }) => {
 						</div>
 						<div
 							className={
-								"w-full h-full md:w-5/12 md:h-5/6 max-w-[400px] min-w-[370px] min-h-[660px] flex justify-start md:items-center items-start md:mt-0 -mt-10  "
+								"w-full h-full md:w-5/12 md:h-5/6 max-w-[400px] min-w-[370px] min-h-[660px] flex justify-start md:items-center items-start m-auto mb-24 md:mb-10	 "
 							}
 						>
 							<MariachiCard

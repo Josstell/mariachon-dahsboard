@@ -145,34 +145,31 @@ const userById = ({ id }) => {
 						className={`no-scrollbar overflow-auto h-[1024px] md:h-fit flex flex-col md:flex-row 
 							justify-evenly items-center`}
 					>
-						<div
-							className={`no-scrollbar  md:w-5/12 min-w-[370px] min-h-[660px]  mb-5 md:mb-0`}
-						>
+						<div className="w-4/12 h-fit min-w-[370px]  md:min-h-full">
 							{/* <UserForm />  Formulario */}
+							<div className="m-auto md:m-0">
+								{!(status === "idle") ? (
+									<SpinnerLoadign />
+								) : (
+									<UserForm
+										methods={methods}
+										data={dataUser}
+										onSubmit={onSubmit}
+										loading={loading}
+									/>
+								)}
 
-							{!(status === "idle") ? (
-								<SpinnerLoadign />
-							) : (
-								<UserForm
-									methods={methods}
-									data={dataUser}
-									onSubmit={onSubmit}
-									loading={loading}
-								/>
-							)}
-
-							<Toaster />
+								<Toaster />
+							</div>
 						</div>
-						<div
-							className={
-								" no-scrollbar md:w-5/12 h-fit  min-w-[370px] flex justify-center items-center"
-							}
-						>
-							<UserCard
-								setEditCard={setEditCard}
-								editCard={editCard}
-								userUpdat={userUpdat}
-							/>
+						<div className={"w-full h-full md:w-4/12 md:h-5/6	 "}>
+							<div className="mb-5 m-auto md:m-0">
+								<UserCard
+									setEditCard={setEditCard}
+									editCard={editCard}
+									userUpdat={userUpdat}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>

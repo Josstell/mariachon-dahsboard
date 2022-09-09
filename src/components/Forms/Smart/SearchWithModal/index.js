@@ -9,7 +9,7 @@ const SearchWithModal = ({
 	setHideIconShowSearch,
 }) => {
 	const usersDataSearch = useSelector(selectAllUsers)
-	const [setQuery, filtereDdata] = useSearchByQuery(usersDataSearch)
+	const [setQuery, filtereDdata] = useSearchByQuery(usersDataSearch, "user")
 
 	const handleModalSearch = (e) => {
 		const keyWordSearch = e.target.value

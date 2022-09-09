@@ -1,4 +1,5 @@
 import { ChevronDownIcon, UserAddIcon } from "@heroicons/react/outline"
+import { useRef } from "react"
 import { useState } from "react"
 
 export function Input({
@@ -256,6 +257,7 @@ export function SelectSimple({
 	options,
 	booking,
 	handleWhatsApp,
+	handleGral,
 }) {
 	return (
 		<div
@@ -266,7 +268,11 @@ export function SelectSimple({
 			<select
 				className="block appearance-none w-full bg-slate-400/50 border-none text-gray-700 dark:text-slate-50  border-gray-400 hover:border-gray-500 px-1 py-1 pr-1 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
 				name={name}
-				onChange={(e) => handleWhatsApp(booking, e.target.value)}
+				onChange={
+					handleWhatsApp
+						? (e) => handleWhatsApp(booking, e.target.value)
+						: handleGral
+				}
 			>
 				{options.map((val) => (
 					<option
@@ -277,6 +283,38 @@ export function SelectSimple({
 					</option>
 				))}
 			</select>
+		</div>
+	)
+}
+
+export function RadioButtonSimple({ name, label, hidden, handleServices }) {
+	return (
+		<div
+			className={`flex mt-5 justify-center items-center ${!hidden && "hidden"}`}
+		>
+			<div className="bg-gray-200 rounded-lg ">
+				{label.map((labe, i) => {
+					return (
+						<div key={i} className={`inline-flex rounded-lg `}>
+							<input
+								className="peer "
+								name={name}
+								id={labe + "Mariachi"}
+								value={labe}
+								type="radio"
+								hidden={hidden}
+								onChange={handleServices}
+							/>
+							<label
+								htmlFor={labe + "Mariachi"}
+								className={`bg-slate-200 text-slate-900 peer-checked:text-slate-50 peer-checked:bg-green-600 text-center self-center py-2 px-4 rounded-lg cursor-pointer hover:opacity-75`}
+							>
+								{labe}
+							</label>
+						</div>
+					)
+				})}
+			</div>
 		</div>
 	)
 }

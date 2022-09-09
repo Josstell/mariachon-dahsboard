@@ -3,13 +3,29 @@
 import { ViewGridAddIcon } from "@heroicons/react/outline"
 import Image from "next/image"
 import Link from "next/link"
-import React from "react"
+import { useState } from "react"
 import { useSelector } from "react-redux"
+//import { SelectSimple } from "src/components/Forms/Smart/Inputs"
+import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
 import GetLogoWithName from "src/components/GetLogoWithName"
+import BookingIcon from "src/components/SVG/Icons/BookingIcon"
+import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 
+//import { regions } from "src/helpers/dataset"
+
 const TableMariachis = () => {
+	//const regionData = regions.response.estado
+
 	const mariachisData = useSelector(selectAllMariachis)
+
+	const [mariachisDataSearch, setMariachisDataSearch] = useState(
+		mariachisData || []
+	)
+
+	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
+
+	//const [regionSelected, setreRionSelected] = useState("")
 
 	const getServices = (services) => {
 		const servi = []
@@ -21,21 +37,66 @@ const TableMariachis = () => {
 		return servi
 	}
 
+	// useEffect(() => {
+	// 	if (regionSelected !== "") {
+	// 		const dataByRegion =
+	// 			mariachisDataSearch !== []
+	// 				? mariachisDataSearch.find((mariachi) => {
+	// 						console.log(mariachi.region)
+	// 						return mariachi.region.includes(regionSelected)
+	// 				  })
+	// 				: []
+	// 		setMariachisDataSearch(dataByRegion)
+	// 	}
+	// }, [regionSelected])
+
+	// const handleGetRegion = (e) => {
+	// 	console.log("Estado: ", e.target.value)
+	// 	setreRionSelected(e.target.value)
+	// }
+	// console.log("Estado fuera: ", regionSelected, mariachisDataSearch)
+
 	return (
 		<div className="px-2 md:px1 w-full h-full">
 			<div
 				className="relative  flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded sm:mt-0 sm:mb-auto
 					 bg-white  dark:bg-slate-700 dark:text-white"
 			>
+				<div className={!hideIconShowSearch && "hidden"}>
+					<SearchWithModalMariachis
+						setMariachisDataSearch={setMariachisDataSearch}
+						setHideIconShowSearch={setHideIconShowSearch}
+						hideIconShowSearch={hideIconShowSearch}
+					/>
+					{/* <div className="px-12">
+						<div className="w-2/4">
+							<SelectSimple
+								name="regions"
+								options={regionData}
+								handleGral={handleGetRegion}
+								hidden
+							/>
+						</div>
+						<div className="w-2/4"></div>
+					</div> */}
+				</div>
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
 						<div className="relative w-full px-4 max-w-full flex justify-between">
 							<h3 className="font-semibold text-lg text-slate-700 dark:text-white">
 								Lista de Mariachis
 							</h3>
-							<Link href={`mariachis/nuevo`} passHref>
-								<ViewGridAddIcon className="w-5 cursor-pointer" />
-							</Link>
+							<div className="flex flex-row justify-between ">
+								<LupaSearchIcon
+									className={`fill-slate-300 w-5 mr-2 z-100 ${
+										hideIconShowSearch ? "hidden" : null
+									}`}
+									onClick={() => setHideIconShowSearch(true)}
+								/>
+								<Link href={`mariachis/nuevo`} passHref>
+									<ViewGridAddIcon className="w-5 cursor-pointer" />
+								</Link>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -112,7 +173,7 @@ const TableMariachis = () => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Vinculos
+									Reservar
 								</th>
 								{/* <th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
@@ -129,7 +190,7 @@ const TableMariachis = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{mariachisData.map((mariachi) => (
+							{mariachisDataSearch?.map((mariachi) => (
 								<tr key={mariachi._id}>
 									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
 										<span
@@ -176,12 +237,14 @@ const TableMariachis = () => {
 										{mariachi.region}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{getServices(mariachi.service).map((ser) => (
-											<div className="text-[8px] uppercase" key={ser}>
-												{ser}
-												{` ->`} ${mariachi.service[ser]}
-											</div>
-										))}
+										{mariachi?.service
+											? getServices(mariachi.service).map((ser) => (
+													<div className="text-[8px] uppercase" key={ser}>
+														{ser}
+														{` ->`} ${mariachi.service[ser]}
+													</div>
+											  ))
+											: null}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{mariachi.categorySet}
@@ -192,7 +255,8 @@ const TableMariachis = () => {
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<p
 											className={`font-bold ${
-												mariachi.stage[0] === "AFILIADO"
+												mariachi?.stage[0] === "AFILIADO" &&
+												mariachi?.stage[0] !== undefined
 													? "text-green-400"
 													: "text-red-500"
 											}`}
@@ -201,53 +265,16 @@ const TableMariachis = () => {
 										</p>
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										<div className="flex ">
-											{/* {mariachi?.image ? (
-											<div className="w-10 h-10 rounded-full border-2 border-slate-50 shadow relative">
-													<Image
-														className="rounded-full"
-														src={mariachi?.image}
-														layout="fill"
-														objectFit="cover"
-														alt=""
-													/>
-												) : (
-													<Image
-														className="rounded-full"
-														src={mariachi?.profileImage.url}
-														layout="fill"
-														objectFit="cover"
-														alt=""
-													/>
-											</div>
-												)} */}
-											{/* {mariachi.images.map((img) => (
-												<img
-													key={img.uid}
-													src={img.url}
-													alt="..."
-													className="w-10 h-10 rounded-full border-2 border-slate-50 shadow"
-												></img>
-											))} */}
-										</div>
+										<Link
+											href={{
+												pathname: "reservas/nuevo",
+												query: { mariachiId: mariachi._id },
+											}}
+											passHref
+										>
+											<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8" />
+										</Link>
 									</td>
-									{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										<div className="flex items-center">
-											<span className="mr-2">60%</span>
-											<div className="relative w-full">
-												<div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
-													<div
-														style={{ width: "60%" }}
-														className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
-													></div>
-												</div>
-											</div>
-										</div>
-									</td> 
-									 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-										{/* <className />
-									</td> 
-									*/}
 								</tr>
 							))}
 						</tbody>
