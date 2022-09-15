@@ -6,17 +6,19 @@ export default function Form({ methods, children, onSubmit }) {
 		handleSubmit,
 		register,
 		formState: { errors },
+		control,
 	} = methods
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="mb-20">
 			{React.Children.map(children, (child) => {
-				return child.props.name
+				return child?.props?.name
 					? React.createElement(child.type, {
 							...{
 								...child.props,
 								register,
 								errors,
+								control,
 								key: child.props.name,
 							},
 					  })

@@ -81,6 +81,7 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 			],
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
 			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
+			stage: ["AFILIADO"],
 		}
 
 		const dataUpdate = {

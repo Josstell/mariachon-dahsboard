@@ -60,13 +60,13 @@ const MariachiCard = ({ mariachiUp, arrayImages, arrayVideos }) => {
 						<PricesIcon className="fill-slate-900 dark:fill-slate-100 w-7 h-7" />{" "}
 						<div className="mx-4">
 							<h5 className="text-xs font-mono text-slate-900 dark:text-slate-100 ">
-								<span>Serenata:</span> ${mariachiUp?.service?.serenata}
+								<span>Serenata:</span> ${mariachiUp?.service?.serenata?.regular}
 							</h5>
 							<h5 className="text-xs font-mono text-slate-900 dark:text-slate-100">
-								<span>Hora:</span> ${mariachiUp?.service?.hora}
+								<span>Hora:</span> ${mariachiUp?.service?.hora?.regular}
 							</h5>
 							<h5 className="text-xs font-mono text-slate-900 dark:text-slate-100">
-								<span>Contrato:</span> ${mariachiUp?.service?.contrato}
+								<span>Contrato:</span> ${mariachiUp?.service?.contrato?.regular}
 							</h5>
 						</div>
 						<div>

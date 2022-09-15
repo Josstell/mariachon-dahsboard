@@ -1,6 +1,7 @@
 export const regions = {
 	response: {
 		estado: [
+			{ clave: "All", name: "TODOS ESTADOS" },
 			{ clave: "AGS", name: "AGUASCALIENTES" },
 			{ clave: "BC", name: "BAJA CALIFORNIA" },
 			{ clave: "BCS", name: "BAJA CALIFORNIA SUR" },

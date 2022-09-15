@@ -27,6 +27,14 @@ export const etapesData = ["PROSPECTO", "MONITOREO", "AFILIADO", "ANULADO"]
 
 //export const etapesClient = ["PROSPECTO", "MONITOREO", "AFILIADO", "ANULADO"]
 
+export const statusData = [
+	"Agendado",
+	"Enviada",
+	"Realizada",
+	"Cancelada",
+	"Actualizada",
+]
+
 export const colorEtapes = {
 	PROSPECTO: "#f00a5e",
 	MONITOREO: "#f99400",

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
 import MariachiCard from "src/components/Cards/MariachiCard"
 import MariachiForm from "src/components/Forms/MariachiForm"
@@ -48,7 +48,14 @@ const addNewMariachi = () => {
 
 	const methods = useForm()
 
-	const { watch, setValue } = methods
+	const { watch, setValue, getValues, control } = methods
+
+	const valueServices = useWatch({
+		name: "services",
+		control,
+	})
+
+	console.log("services", valueServices)
 
 	///https://drive.google.com/file/d/1clPxEJd6BLidvRqhRNj9xh5fICix5yFv/view?usp=sharing
 
@@ -71,6 +78,15 @@ const addNewMariachi = () => {
 		setValue("coordinator", "")
 		setValue("elements", "")
 		setValue("stage", "PROSPECTO")
+		// setValue("horaMinimo", 0)
+		// setValue("horaRegular", 0)
+		// setValue("horaFestivo", 0)
+		// setValue("serenataMinimo", 0)
+		// setValue("serenataRegular", 0)
+		// setValue("serenataFestivo", 0)
+		// setValue("contratoMinimo", 0)
+		// setValue("contratoRegular", 0)
+		// setValue("contratoFestivo", 0)
 
 		//
 	}, [])
@@ -82,7 +98,7 @@ const addNewMariachi = () => {
 		}
 	}, [statusUser])
 
-	const dataMariachiToCard = {
+	let dataMariachiToCard = {
 		name: watch("name"),
 		categorySet: watch("category_mariachi"),
 		tel: watch("tel"),
@@ -93,9 +109,21 @@ const addNewMariachi = () => {
 		cp: watch("cp"),
 		members: watch("members"),
 		service: {
-			hora: watch("hora"),
-			serenata: watch("serenata"),
-			contrato: watch("contrato"),
+			hora: {
+				minimo: 0,
+				regular: 0,
+				festivo: 0,
+			},
+			serenata: {
+				minimo: 0,
+				regular: 0,
+				festivo: 0,
+			},
+			contrato: {
+				minimo: 0,
+				regular: 0,
+				festivo: 0,
+			},
 		},
 		coordinator: watch("coordinator"),
 		stage: watch("stage"),
@@ -107,10 +135,10 @@ const addNewMariachi = () => {
 	// }
 
 	useEffect(() => {
-		if (watch("elements") !== "") {
+		if (getValues("elements") !== "") {
 			const dataElements = {
 				_key: nanoid(),
-				_ref: watch("elements"),
+				_ref: getValues("elements"),
 			}
 			setCrewElements((elem) => [...elem, dataElements])
 			setValue("elements", "")
@@ -120,8 +148,6 @@ const addNewMariachi = () => {
 	useEffect(() => {
 		setValue("members", crewElements.length + 1)
 	}, [crewElements])
-
-	console.log("Elementos: ", crewElements)
 
 	const onSubmit = (dataForm) => {
 		///setLoading(true)
@@ -148,9 +174,21 @@ const addNewMariachi = () => {
 			cp: dataForm.cp,
 			members: dataForm.members * 1,
 			service: {
-				hora: dataForm.hora * 1,
-				serenata: dataForm.serenata * 1,
-				contrato: dataForm.contrato * 1,
+				hora: {
+					minimo: dataForm?.services[0]?.minimo * 1 || 0,
+					regular: dataForm?.services[0]?.regular * 1 || 0,
+					festivo: dataForm?.services[0]?.festivo * 1 || 0,
+				},
+				serenata: {
+					minimo: dataForm?.services[1]?.minimo * 1 || 0,
+					regular: dataForm?.services[1]?.regular * 1 || 0,
+					festivo: dataForm?.services[1]?.festivo * 1 || 0,
+				},
+				contrato: {
+					minimo: dataForm?.services[2]?.minimo * 1 || 0,
+					regular: dataForm?.services[2]?.regular * 1 || 0,
+					festivo: dataForm?.services[2]?.festivo * 1 || 0,
+				},
 			},
 			coordinator: { _ref: dataForm.coordinator },
 			stage: [dataForm.stage],
@@ -194,13 +232,13 @@ const addNewMariachi = () => {
 			{userAdmin.isAdmin ? (
 				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
 					<div
-						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-around 
-							 items-center `}
+						className={`no-scrollbar overflow-auto   h-full  flex flex-col items-center md:flex-row   md:justify-center md:items-center
+							 `}
 					>
 						<div
-							className={`m-auto md:mx-0 ${
+							className={`m-auto md:mx-12  ${
 								status !== "idle" || statusGS !== "idle"
-									? "flex justify-center items-center mt-20"
+									? "mt-20 flex justify-center items-center"
 									: null
 							}`}
 						>

@@ -1,23 +1,29 @@
 import { useState } from "react"
-import { useSelector } from "react-redux"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
+import { etapesData, statusData } from "src/helpers/utils"
 import useSearchByQuery from "src/hook/useSearchByQuery"
-import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { RadioButtonSimple } from "../Inputs"
 
 const SearchWithModalMariachis = ({
+	dataOriginal,
+	mariachiDataSearch,
 	setMariachisDataSearch,
-	hideIconShowSearch,
 	setHideIconShowSearch,
+	regionSelected,
+	typeData,
 }) => {
-	const mariachiDataSearch = useSelector(selectAllMariachis)
 	const [porPrecio, setPorPrecio] = useState(false)
 	const [porServicio, setPorServicio] = useState("")
 
+	const [byEtapes, setByEtapes] = useState("")
+
 	const [setQuery, filtereDdata] = useSearchByQuery(
 		mariachiDataSearch,
-		"mariachi",
-		porServicio
+		typeData,
+		porServicio,
+		byEtapes,
+		regionSelected,
+		dataOriginal
 	)
 
 	const handleModalSearch = (e) => {
@@ -35,13 +41,23 @@ const SearchWithModalMariachis = ({
 		setPorServicio(e.target.value)
 	}
 
-	if (hideIconShowSearch) {
-		setMariachisDataSearch(filtereDdata)
-	} else {
-		setMariachisDataSearch(mariachiDataSearch)
+	const handleEtapes = (e) => {
+		console.log("Etapas", e.target.value)
+		setByEtapes(e.target.value)
 	}
+	const handleStatus = (e) => {
+		console.log("Status", e.target.value)
+	}
+
+	setMariachisDataSearch(filtereDdata)
+
+	// if (hideIconShowSearch) {
+	// 	setMariachisDataSearch(filtereDdata)
+	// } else {
+	// 	setMariachisDataSearch(mariachiDataSearch)
+	// }
 	return (
-		<div className="w-full max-w-screen-xl mx-auto px-6">
+		<div className="w-full max-w-screen-xl mx-auto px-4">
 			<div className="flex justify-center p-0 px-3 py-2">
 				<div className="w-full max-w-md">
 					<div className="shadow-md  rounded-lg px-3 py-2 mb-0 flex justify-between">
@@ -61,7 +77,9 @@ const SearchWithModalMariachis = ({
 								onChange={handleModalSearch}
 							/>
 						</div>
-						<div className="w-1/5 ml-3 flex flex-col items-center justify-center">
+						<div
+							className={`w-1/5 ml-3 flex flex-col items-center justify-center `}
+						>
 							<label className="text-[9px] flex flex-row justify-center items-center">
 								<input
 									type="checkbox"
@@ -76,8 +94,25 @@ const SearchWithModalMariachis = ({
 					<RadioButtonSimple
 						name="searchByPrice"
 						label={["Serenata", "Hora", "Contrato"]}
-						hidden={porPrecio}
+						hidden={
+							porPrecio && (typeData === "mariachi" || typeData === "booking")
+						}
 						handleServices={handleServices}
+					/>
+					<RadioButtonSimple
+						name="searchByEtape"
+						label={etapesData}
+						hidden={
+							porPrecio && (typeData === "mariachi" || typeData === "user")
+						}
+						handleServices={handleEtapes}
+					/>
+
+					<RadioButtonSimple
+						name="searchByStatus"
+						label={statusData}
+						hidden={porPrecio && typeData === "booking"}
+						handleServices={handleStatus}
 					/>
 				</div>
 			</div>

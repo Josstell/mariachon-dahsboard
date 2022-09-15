@@ -8,15 +8,26 @@ import { selectAllUsers } from "store/features/users/userSlice"
 import { ViewGridAddIcon } from "@heroicons/react/outline"
 //import Search from "src/components/Search"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
-import SearchWithModal from "src/components/Forms/Smart/SearchWithModal"
 import BookingIcon from "src/components/SVG/Icons/BookingIcon"
+import { SelectSimple } from "src/components/Forms/Smart/Inputs"
+import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
+
+import { regions } from "src/helpers/dataset"
 
 const TableUser = () => {
+	const regionData = regions.response.estado
+
 	const usersData = useSelector(selectAllUsers)
 
 	const [usersDataSearch, setUsersDataSearch] = useState(usersData)
 
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
+
+	const [regionSelected, setRegionSelected] = useState("All")
+
+	const handleGetRegion = (e) => {
+		setRegionSelected(e.target.value)
+	}
 
 	return (
 		<div className="px-2 md:px1 w-full h-full">
@@ -25,19 +36,32 @@ const TableUser = () => {
 					 bg-white  dark:bg-slate-700 dark:text-white"
 			>
 				<div className={!hideIconShowSearch && "hidden"}>
-					<SearchWithModal
-						setUsersDataSearch={setUsersDataSearch}
+					<SearchWithModalMariachis
+						dataOriginal={usersData}
+						mariachiDataSearch={usersDataSearch}
+						setMariachisDataSearch={setUsersDataSearch}
 						setHideIconShowSearch={setHideIconShowSearch}
 						hideIconShowSearch={hideIconShowSearch}
+						regionSelected={regionSelected}
+						typeData="user"
 					/>
 				</div>
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
-						<div className="relative w-full px-4 max-w-full flex flex-row justify-between">
-							<h3 className="font-semibold text-lg text-slate-700 dark:text-white">
-								Lista de usuarios
+						<div className="relative w-full px-4 max-w-full flex flex-row justify-between divide-x-2 md:divide-x-0 pr-2 ">
+							<h3 className="font-semibold text-lg text-slate-700 dark:text-white ">
+								Usuarios
 							</h3>
-							<div className="flex flex-row justify-between ">
+							<div className="flex flex-row justify-between items-center pl-2 ">
+								<div className="mr-2">
+									<SelectSimple
+										name="regions"
+										options={regionData}
+										handleGral={handleGetRegion}
+										hidden
+										tableSize={true}
+									/>
+								</div>
 								<LupaSearchIcon
 									className={`fill-slate-300 w-5 mr-2 z-100 ${
 										hideIconShowSearch ? "hidden" : null
@@ -103,7 +127,7 @@ const TableUser = () => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Vinculos
+									Etapa
 								</th>
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
@@ -163,7 +187,7 @@ const TableUser = () => {
 										{user.region}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										otros{" "}
+										{user?.stage || ""}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex ">

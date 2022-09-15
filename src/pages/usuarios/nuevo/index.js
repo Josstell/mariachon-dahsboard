@@ -78,6 +78,7 @@ const addnewuser = () => {
 			],
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
 			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
+			stage: ["PROSPECTO"],
 		}
 
 		const dataNew = {

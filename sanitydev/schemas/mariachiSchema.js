@@ -77,9 +77,33 @@ export default {
 			title: "Servicio y precios",
 			type: "object",
 			fields: [
-				{ name: "serenata", type: "number", title: "Precio por serenata" },
-				{ name: "hora", type: "number", title: "Precio por hora" },
-				{ name: "contrato", type: "number", title: "Contrato" },
+				{
+					name: "serenata",
+					type: "object",
+					fields: [
+						{ name: "regular", type: "number", title: "Regular" },
+						{ name: "minimo", type: "number", title: "Minimo" },
+						{ name: "festivo", type: "number", title: "Festivo" },
+					],
+				},
+				{
+					name: "hora",
+					type: "object",
+					fields: [
+						{ name: "regular", type: "number", title: "Regular" },
+						{ name: "minimo", type: "number", title: "Minimo" },
+						{ name: "festivo", type: "number", title: "Festivo" },
+					],
+				},
+				{
+					name: "contrato",
+					type: "object",
+					fields: [
+						{ name: "regular", type: "number", title: "Regular" },
+						{ name: "minimo", type: "number", title: "Minimo" },
+						{ name: "festivo", type: "number", title: "Festivo" },
+					],
+				},
 			],
 		},
 		{

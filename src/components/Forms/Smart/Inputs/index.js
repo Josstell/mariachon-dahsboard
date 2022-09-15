@@ -1,5 +1,8 @@
 import { ChevronDownIcon, UserAddIcon } from "@heroicons/react/outline"
+import { PlusIcon, TrashIcon } from "@heroicons/react/solid"
 import { useState } from "react"
+import { Controller, useFieldArray, useWatch } from "react-hook-form"
+import PricesIcon from "src/components/SVG/Icons/PricesIcon"
 
 export function Input({
 	register,
@@ -257,15 +260,17 @@ export function SelectSimple({
 	booking,
 	handleWhatsApp,
 	handleGral,
+	tableSize,
 }) {
 	return (
 		<div
-			className={`w-full flex justify-between items-end  py-1  my-1   ${
+			className={`w-full flex justify-between items-end relative  py-1  my-1   ${
 				!hidden && "hidden"
 			}`}
 		>
 			<select
-				className="block appearance-none w-full bg-slate-400/50 border-none text-gray-700 dark:text-slate-50  border-gray-400 hover:border-gray-500 px-1 py-1 pr-1 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+				className={`block appearance-none w-full bg-slate-400/50 border-none text-gray-700 dark:text-slate-50  border-gray-400 hover:border-gray-500 px-1 py-1 pr-1 rounded shadow leading-tight focus:outline-none focus:shadow-outline 
+					${tableSize ? "text-xs" : null}`}
 				name={name}
 				onChange={
 					handleWhatsApp
@@ -282,6 +287,9 @@ export function SelectSimple({
 					</option>
 				))}
 			</select>
+			<div className="pointer-events-none absolute inset-y-0 top-0 right-0 flex items-center   px-0 text-slate-900 dark:text-slate-50">
+				<ChevronDownIcon className="w-5  cursor-pointer" />
+			</div>
 		</div>
 	)
 }
@@ -289,12 +297,12 @@ export function SelectSimple({
 export function RadioButtonSimple({ name, label, hidden, handleServices }) {
 	return (
 		<div
-			className={`flex mt-5 justify-center items-center ${!hidden && "hidden"}`}
+			className={`flex mt-2 justify-center items-center ${!hidden && "hidden"}`}
 		>
 			<div className="bg-gray-200 rounded-lg ">
 				{label.map((labe, i) => {
 					return (
-						<div key={i} className={`inline-flex rounded-lg `}>
+						<div key={i} className={`inline-flex rounded-lg -my-0`}>
 							<input
 								className="peer "
 								name={name}
@@ -306,10 +314,136 @@ export function RadioButtonSimple({ name, label, hidden, handleServices }) {
 							/>
 							<label
 								htmlFor={labe + "Mariachi"}
-								className={`bg-slate-200 text-slate-900 peer-checked:text-slate-50 peer-checked:bg-green-600 text-center self-center py-2 px-4 rounded-lg cursor-pointer hover:opacity-75`}
+								className={`bg-slate-200 text-[10px] font-bold text-slate-900 peer-checked:text-slate-50 peer-checked:bg-slate-900 text-center self-center py-2 p-1 rounded-lg cursor-pointer hover:opacity-75`}
 							>
 								{labe}
 							</label>
+						</div>
+					)
+				})}
+			</div>
+		</div>
+	)
+}
+
+export function MultipleInput({ register, name, keyNames, hidden, control }) {
+	const value = useWatch({
+		name: "services",
+		control,
+	})
+	const defaulValues = { regular: 0, minimo: 0, festivo: 0 }
+
+	const [countIndex, setcountIndex] = useState(value?.length || 0)
+
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: name,
+	})
+
+	const handleAppend = () => {
+		append(defaulValues)
+		setcountIndex(countIndex === keyNames.length ? countIndex : countIndex + 1)
+	}
+
+	const handleRemove = (index) => {
+		remove(index)
+		setcountIndex(countIndex === 0 ? countIndex : countIndex - 1)
+	}
+
+	return (
+		<div className={`w-11/12	  md:w-full py-2 px-5 ${!hidden && "hidden"}`}>
+			<div className=" w-full flex flex-row justify-between items-center">
+				<p>Precios</p>
+				<div
+					className="w-full flex flex-row justify-end items-center cursor-pointer"
+					onClick={countIndex === keyNames.length ? null : handleAppend}
+				>
+					<PricesIcon className="fill-slate-900 dark:fill-slate-100 w-7 h-7" />
+					<PlusIcon className="font-extrabold w-3 h-3 mx-1" />
+				</div>
+			</div>
+			<ul className={`w-full`}>
+				{fields.map((item, index) => {
+					return (
+						<li key={item.id}>
+							<label className=" uppercase tracking-wide text-gray-700 dark:text-slate-50 text-[10px] font-bold mb-2 ">
+								{keyNames[index]}
+							</label>
+							<div className="  flex flex-row justify-evenly items-center mt-2">
+								<div className=" w-5/6	 flex flex-row justify-around items-center">
+									<div className="w-1/4 relative  border-teal-500  border-b my-2">
+										<span className="absolute -top-3 text-gray-50/50 text-xs left-0">
+											regular
+										</span>
+										<input
+											{...register(`${name}.${index}.regular`)}
+											className="w-full appearance-none bg-transparent border-none  text-gray-700 dark:text-slate-50 mr-0 py-1 px-0 leading-tight focus:outline-none"
+											type="number"
+										/>
+									</div>
+									<div className="w-1/4 relative  border-teal-500  border-b my-2">
+										<span className="absolute -top-3 text-gray-50/50 text-xs left-0">
+											minimo
+										</span>
+										<input
+											{...register(`${name}.${index}.minimo`)}
+											className="w-full appearance-none bg-transparent border-none  text-gray-700 dark:text-slate-50 mr-0 py-1 px-0 leading-tight focus:outline-none"
+											type="number"
+										/>
+									</div>
+
+									<Controller
+										render={({ field }) => (
+											<div className="w-1/4 relative   border-teal-500  border-b my-2">
+												<span className="absolute -top-3 text-gray-50/50 text-xs left-0">
+													festivo
+												</span>
+												<input
+													{...field}
+													className="w-full appearance-none bg-transparent border-none  text-gray-700 dark:text-slate-50 mr-0 py-1 px-0 leading-tight focus:outline-none"
+													type="number"
+												/>
+											</div>
+										)}
+										name={`${name}.${index}.festivo`}
+										control={control}
+									/>
+								</div>
+								<div className="w-1/6 	">
+									<TrashIcon
+										className="w-5 h-5"
+										onClick={() => handleRemove(index)}
+									/>
+								</div>
+							</div>
+						</li>
+					)
+				})}
+			</ul>
+		</div>
+	)
+}
+
+export function MultiInputSimple({ name, refs, label, hidden }) {
+	return (
+		<div className="w-screen md:w-full py-2 px-5">
+			<label className=" uppercase tracking-wide text-gray-700 dark:text-slate-50 text-[10px] font-bold mb-2 ">
+				{name}
+			</label>
+			<div className=" flex flex-row justify-around items-center">
+				{label.map((lab, i) => {
+					return (
+						<div
+							className={`w-1/4   border-teal-500  border-b my-2  ${
+								!hidden && "hidden"
+							} `}
+							key={lab}
+						>
+							<input
+								ref={refs[i]}
+								className="appearance-none bg-transparent border-none  text-gray-700 dark:text-slate-50 mr-0 py-1 px-0 leading-tight focus:outline-none"
+								placeholder={lab}
+							/>
 						</div>
 					)
 				})}

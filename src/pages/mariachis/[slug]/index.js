@@ -30,7 +30,6 @@ const mariachiById = ({ slug }) => {
 		state.mariachis.mariachis.find((mar) => mar.slug.current === slug)
 	)
 
-	console.log("Datos:: ", data)
 	const router = useRouter()
 
 	const userAdmin = useSelector(selectUserAdmin)
@@ -45,13 +44,32 @@ const mariachiById = ({ slug }) => {
 		data?.crew?.filter((_, index) => index > 0) || []
 	)
 
-	console.log("set cre:", crewElements)
 	//Activar Tab
 	const activeFormTab = useSelector(
 		(state) => state.mariachis.mariachiTabActive
 	)
 
-	const methods = useForm()
+	const methods = useForm({
+		defaultValues: {
+			services: [
+				{
+					minimo: data?.service?.hora?.minimo || 0,
+					regular: data?.service?.hora?.regular || 0,
+					festivo: data?.service?.hora?.festivo || 0,
+				},
+				{
+					minimo: data?.service?.serenata?.minimo || 0,
+					regular: data?.service?.serenata?.regular || 0,
+					festivo: data?.service?.serenata?.festivo || 0,
+				},
+				{
+					minimo: data?.service?.contrato?.minimo || 0,
+					regular: data?.service?.contrato?.regular || 0,
+					festivo: data?.service?.contrato?.festivo || 0,
+				},
+			],
+		},
+	})
 
 	const { watch, setValue } = methods
 
@@ -150,9 +168,21 @@ const mariachiById = ({ slug }) => {
 			images: arrayImages,
 			videos: arrayVideos,
 			service: {
-				hora: dataForm.hora,
-				serenata: dataForm.serenata,
-				contrato: dataForm.contrato,
+				hora: {
+					minimo: dataForm?.services[0]?.minimo * 1 || 0,
+					regular: dataForm?.services[0]?.regular * 1 || 0,
+					festivo: dataForm?.services[0]?.festivo * 1 || 0,
+				},
+				serenata: {
+					minimo: dataForm?.services[1]?.minimo * 1 || 0,
+					regular: dataForm?.services[1]?.regular * 1 || 0,
+					festivo: dataForm?.services[1]?.festivo * 1 || 0,
+				},
+				contrato: {
+					minimo: dataForm?.services[2]?.minimo * 1 || 0,
+					regular: dataForm?.services[2]?.regular * 1 || 0,
+					festivo: dataForm?.services[2]?.festivo * 1 || 0,
+				},
 			},
 			crew: dataElements,
 			stage: [dataForm?.stage],
@@ -191,12 +221,12 @@ const mariachiById = ({ slug }) => {
 			{userAdmin.isAdmin ? (
 				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
 					<div
-						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row md:justify-around
-							 items-center`}
+						className={`no-scrollbar overflow-auto   h-full  flex flex-col items-center md:flex-row   md:justify-center md:items-center
+							 `}
 					>
 						<div
 							// className={`w-4/12 h-3/5 min-w-[370px] min-h-[890px] md:min-h-full ${
-							className={`m-auto md:mx-0 ${
+							className={`m-auto md:mx-12 ${
 								status !== "idle" || statusGS !== "idle"
 									? "flex justify-center items-center"
 									: null
@@ -223,7 +253,7 @@ const mariachiById = ({ slug }) => {
 						</div>
 						<div
 							className={
-								"w-full h-full md:w-5/12 md:h-5/6 max-w-[400px] min-w-[370px] min-h-[660px] flex justify-start md:items-center items-start m-auto mb-24 md:mb-10	 "
+								"w-full h-full md:w-4/12 md:h-5/6 m-auto mb-24 md:mb-10	 "
 							}
 						>
 							<MariachiCard

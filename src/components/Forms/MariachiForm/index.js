@@ -5,7 +5,14 @@ import { regions } from "src/helpers/dataset"
 import useSearchUserByCategory from "src/hook/useSearchUserByCategory"
 import { selectAllUsers } from "store/features/users/userSlice"
 import Form from "../Smart/Form"
-import { Button, Input, Select, TextArea, RadioButton } from "../Smart/Inputs"
+import {
+	Button,
+	Input,
+	Select,
+	TextArea,
+	RadioButton,
+	MultipleInput,
+} from "../Smart/Inputs"
 import {
 	TrashIcon,
 	PlusIcon,
@@ -16,6 +23,7 @@ import {
 import { nanoid } from "@reduxjs/toolkit"
 import AddNewUserComponent from "../UserForm/AddNewUser"
 import { etapesData } from "src/helpers/utils"
+import Separator from "../Smart/Utils"
 
 export default function MariachiForm({
 	methods,
@@ -72,6 +80,12 @@ export default function MariachiForm({
 
 	const videoRef = useRef("")
 	const videoAlt = useRef("")
+
+	//Servicios
+
+	// const horaRegular = useRef(0)
+	// const horaMinimo = useRef(0)
+	// const horaFestivo = useRef(0)
 
 	//https://drive.google.com/file/d/1ycckhNleCKvSI3qsng2ikhEDKB_2174Y/view?usp=sharing
 	//https://drive.google.com/uc?export=view&id=1ycckhNleCKvSI3qsng2ikhEDKB_2174Y
@@ -187,7 +201,6 @@ export default function MariachiForm({
 					options={regionData}
 					label="Estado"
 				/>
-
 				<Input
 					hidden={activeFormTab.data && true}
 					name="tel"
@@ -208,7 +221,6 @@ export default function MariachiForm({
 					setAddUser={setAddUser}
 					setRole={setRole}
 				/>
-
 				<Select
 					hidden={activeFormTab.mariachi && true}
 					name="elements"
@@ -245,14 +257,12 @@ export default function MariachiForm({
 							</div>
 						)
 					})}
-
 				<Input
 					hidden={activeFormTab.mariachi && addUser}
 					name="members"
 					label="# Elementos"
 					type="number"
 				/>
-
 				<div
 					className={`border-dashed border-t-2 border-t-slate-100   n my-6 relative ${
 						!activeFormTab.gral ? "hidden" : "block"
@@ -262,14 +272,12 @@ export default function MariachiForm({
 						Etapa del Proveedor
 					</h3>
 				</div>
-
 				<RadioButton
 					hidden={activeFormTab.gral}
 					name="stage"
 					label={etapesData}
 					type="radio"
 				/>
-
 				<div
 					className={`border-dashed border-t-2 border-t-slate-100   n my-6 relative ${
 						!activeFormTab.gral ? "hidden" : "block"
@@ -279,7 +287,6 @@ export default function MariachiForm({
 						Categoria
 					</h3>
 				</div>
-
 				<RadioButton
 					hidden={activeFormTab.gral}
 					name="category_mariachi"
@@ -287,31 +294,21 @@ export default function MariachiForm({
 					type="radio"
 				/>
 				{/**Entradas tercer tab */}
-				<div
+				{/* <div
 					className={`border-dashed border-t-2 border-t-slate-100   n my-6 relative ${
 						!activeFormTab.gral ? "hidden" : "block"
 					}`}
 				>
 					<h3 className="absolute px-2 left-0 bg-slate-900 -top-3">Precios</h3>
-				</div>
-				<Input
+				</div> */}
+				<Separator hidden={activeFormTab.gral} />
+				<MultipleInput
 					hidden={activeFormTab.gral}
-					name="hora"
-					label="hora"
+					name="services"
+					keyNames={["hora", "serenata", "contrato"]}
 					type="text"
 				/>
-				<Input
-					hidden={activeFormTab.gral}
-					name="serenata"
-					label="serenata"
-					type="text"
-				/>
-				<Input
-					hidden={activeFormTab.gral}
-					name="contrato"
-					label="contrato"
-					type="text"
-				/>
+				<Separator hidden={activeFormTab.gral} />
 				<div className={`${!activeFormTab.gral && "hidden"}`}>
 					<div
 						className={`flex justify-between items-center   my-6 relative ${
@@ -385,6 +382,8 @@ export default function MariachiForm({
 							)
 						})}
 
+					<Separator hidden={activeFormTab.gral} />
+
 					{/** videos */}
 					<div className={`${!activeFormTab.gral && "hidden"}`}>
 						<div
@@ -453,7 +452,6 @@ export default function MariachiForm({
 							})}
 					</div>
 				</div>
-
 				<Button
 					hidden={addUser}
 					message={isSaving ? "Guardar" : "Actualizar"}

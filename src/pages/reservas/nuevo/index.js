@@ -276,11 +276,11 @@ const newBooking = () => {
 	// }
 
 	useEffect(() => {
-		if (mariachiSelected?.service?.hora) {
+		if (mariachiSelected?.service) {
 			setValue("qty", 1)
 			setValue(
 				"price",
-				mariachiSelected.service[dataReservaToCard?.orderItems?.service]
+				mariachiSelected.service[dataReservaToCard?.orderItems?.service].regular
 			)
 			setValue("deposit", 0)
 		}

@@ -15,17 +15,34 @@ import {
 } from "store/features/bookings/bookingSlice"
 import { selectAllUsers } from "store/features/users/userSlice"
 
+import { regions } from "src/helpers/dataset"
+import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
+
 const TableBookings = ({ userAdmin }) => {
+	const regionData = regions.response.estado
+
+	const BookingData = useSelector(selectAllBookings)
+
+	const [bookingsDataSearch, setBookingsDataSearch] = useState(
+		BookingData || []
+	)
+
 	const dispatch = useDispatch()
 	const BookingsData = useSelector(selectAllBookings)
 
 	const users = useSelector(selectAllUsers)
+
+	const [regionSelected, setRegionSelected] = useState("All")
 
 	const options = {
 		weekday: "short",
 		year: "numeric",
 		month: "short",
 		day: "numeric",
+	}
+
+	const handleGetRegion = (e) => {
+		setRegionSelected(e.target.value)
 	}
 
 	const getDateAndTime = (dateAndTime) => {
@@ -78,14 +95,34 @@ const TableBookings = ({ userAdmin }) => {
 				className="relative  flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded sm:mt-0 sm:mb-auto
 					 bg-white  dark:bg-slate-700 dark:text-white"
 			>
+				<div className={!hideIconShowSearch && "hidden"}>
+					<SearchWithModalMariachis
+						mariachiDataSearch={bookingsDataSearch}
+						setMariachisDataSearch={setBookingsDataSearch}
+						setHideIconShowSearch={setHideIconShowSearch}
+						hideIconShowSearch={hideIconShowSearch}
+						//setPorServicio={setPorServicio}
+						regionSelected={regionSelected}
+						typeData="booking"
+					/>
+				</div>
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
-						<div className="relative w-full px-4 max-w-full flex justify-between">
+						<div className="relative w-full px-4 max-w-full flex justify-between divide-x-2 md:divide-x-0 pr-2">
 							<h3 className="font-semibold text-lg text-slate-700 dark:text-white">
 								Reservas
 							</h3>
 
-							<div className="flex flex-row justify-between ">
+							<div className="flex flex-row justify-between items-center pl-2 ">
+								<div className="mr-2">
+									<SelectSimple
+										name="regions"
+										options={regionData}
+										handleGral={handleGetRegion}
+										hidden
+										tableSize={true}
+									/>
+								</div>{" "}
 								<LupaSearchIcon
 									className={`fill-slate-300 w-5 mr-2 z-100 ${
 										hideIconShowSearch ? "hidden" : null
@@ -131,6 +168,13 @@ const TableBookings = ({ userAdmin }) => {
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
 									Lugar del Evento
+								</th>
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Región
 								</th>
 
 								<th
@@ -228,7 +272,9 @@ const TableBookings = ({ userAdmin }) => {
 										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 											{booking?.shippingAddress?.address},{" "}
-											{booking?.shippingAddress?.city},
+											{booking?.shippingAddress?.city}
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 											{booking?.shippingAddress?.region}
 										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">

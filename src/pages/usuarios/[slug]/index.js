@@ -104,6 +104,7 @@ const userById = ({ id }) => {
 				categorySet: dataUser?.categorySet || "",
 				modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 				dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
+				stage: ["AFILIADO"],
 			})
 		)
 	}
