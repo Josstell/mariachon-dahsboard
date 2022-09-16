@@ -225,6 +225,8 @@ export const sendBooking = createAsyncThunk(
 				reserva
 			)
 
+			console.log(data)
+
 			return {
 				...data,
 			}
