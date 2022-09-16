@@ -187,32 +187,28 @@ export const addBooking = createAsyncThunk(
 
 export const addBookingToGoogleSheet = createAsyncThunk(
 	"bookings/addBookingToGoogleSheet",
-	async (reserva, { dispatch }) => {
-		try {
-			const { data } = await axios.post(
-				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
-				reserva
-			)
-
-			if (data) {
+	(reserva, { dispatch }) => {
+		axios
+			.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`, reserva)
+			.then(({ data }) => {
 				if (reserva.sendEmail) {
 					dispatch(sendBooking(reserva))
 				}
 				return {
 					...data,
 				}
-			}
-		} catch (error) {
-			const text = {
-				message: "Algo paso! No se guardaron datos en Google Sheet.",
-			}
+			})
+			.catch((error) => {
+				const text = {
+					message: "Algo paso! No se guardaron datos en Google Sheet.",
+				}
 
-			const errorData = {
-				data: error?.response?.data ? error?.response?.data : text,
-			}
+				const errorData = {
+					data: error?.response?.data ? error?.response?.data : text,
+				}
 
-			return errorData
-		}
+				return errorData
+			})
 	}
 )
 
