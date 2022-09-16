@@ -220,15 +220,17 @@ export const sendBooking = createAsyncThunk(
 	"bookings/sendBooking",
 	async (reserva) => {
 		try {
-			const { data } = await axios.post(
+			const { data: dataEmail } = await axios.post(
 				`${NEXT_PUBLIC_URL_API}/api/email/reservation`,
 				reserva
 			)
 
-			console.log(data)
+			if (dataEmail) {
+				console.log("email", dataEmail)
 
-			return {
-				...data,
+				return {
+					...dataEmail,
+				}
 			}
 		} catch (error) {
 			console.log(error)
