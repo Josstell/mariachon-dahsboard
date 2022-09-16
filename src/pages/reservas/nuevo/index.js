@@ -25,7 +25,6 @@ import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { selectAllUsers, selectUserAdmin } from "store/features/users/userSlice"
 
 import toast, { Toaster } from "react-hot-toast"
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import { nanoid } from "@reduxjs/toolkit"
 import { dateGral, optionsDate } from "src/helpers/utils"
 
@@ -97,12 +96,14 @@ const newBooking = () => {
 		reservaData.orderItems.mariachi
 	)
 
+	const [loading, setLoading] = useState(false)
+
 	const dispatch = useDispatch()
 
 	//use form
 	const methods = useForm()
 
-	const { setValue, watch } = methods
+	const { setValue, watch, getValues } = methods
 
 	useEffect(() => {
 		setValue("nameClient", userbyId?.name || data?.client?.name)
@@ -114,13 +115,6 @@ const newBooking = () => {
 	useEffect(() => {
 		setValue("idMariachi", mariachibyId?._id)
 	}, [mariachibyId])
-
-	console.log(
-		"Id mariachi yclent:!!!",
-		router.query.client,
-		userbyId,
-		router.query.mariachiId
-	)
 
 	useEffect(() => {
 		setValue("idMariachi", router.query?.mariachiId || "")
@@ -142,6 +136,7 @@ const newBooking = () => {
 				: reservaData?.orderItems?.service
 		)
 		setValue("message", reservaData.message)
+		setValue("priceOptionSelected", "regular")
 
 		//
 	}, [])
@@ -180,6 +175,7 @@ const newBooking = () => {
 		},
 		message: watch("message") || "",
 		playlist: [],
+		priceOptionSelected: watch("priceOptionSelected"),
 	}
 
 	useEffect(() => {
@@ -280,11 +276,16 @@ const newBooking = () => {
 			setValue("qty", 1)
 			setValue(
 				"price",
-				mariachiSelected.service[dataReservaToCard?.orderItems?.service].regular
+				mariachiSelected.service[dataReservaToCard?.orderItems?.service][
+					getValues("priceOptionSelected")
+				]
 			)
 			setValue("deposit", 0)
 		}
-	}, [dataReservaToCard.orderItems.service])
+	}, [
+		dataReservaToCard.orderItems.service,
+		dataReservaToCard.priceOptionSelected,
+	])
 
 	useEffect(() => {
 		setreservaData({
@@ -303,6 +304,9 @@ const newBooking = () => {
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
 	const onSubmit = (dataForm) => {
+		setLoading(true)
+		toastIdRe = toast.loading("Cargando...")
+
 		const reservaAdd = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
@@ -323,6 +327,7 @@ const newBooking = () => {
 					deposit: (dataForm.deposit || 0) * 1,
 					qty: (dataForm.qty || 0) * 1,
 					fee: (dataForm.fee || 0) * 1,
+					priceOptionSelected: dataForm.priceOptionSelected,
 					_key: nanoid(),
 					_type: "orderItem",
 				},
@@ -346,11 +351,15 @@ const newBooking = () => {
 		dispatch(addBooking(reservaAdd))
 	}
 
-	const notifyError = () => toast.error(error)
-	const notifySuccess = () => toast.success("Datos actualizados correctamente")
+	let toastIdRe
+	const notifyError = () => toast.error(error, { id: toastIdRe })
+	const notifySuccess = () =>
+		toast.success("Reserva creada correctamente", { id: toastIdRe })
 
 	useEffect(() => {
 		if (status === "failed") {
+			toast.dismiss(toastIdRe)
+
 			notifyError()
 			dispatch(setStatusBooking("idle"))
 		}
@@ -359,11 +368,11 @@ const newBooking = () => {
 			statusBookGS === "succeeded" &&
 			statusBEmail === "succeeded"
 		) {
-			notifySuccess()
 			dispatch(setStatusBooking("idle"))
 			dispatch(setStatusBookingGS("idle"))
 			dispatch(setStatusBookingEmail("idle"))
-
+			toast.dismiss(toastIdRe)
+			notifySuccess()
 			router.push("/reservas")
 		}
 	}, [router, status, statusBookGS, statusBEmail])
@@ -371,9 +380,6 @@ const newBooking = () => {
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
 	}
-
-	console.log("data real del mariachi", mariachiSelected)
-	console.log("Hola", reservaData)
 
 	return (
 		<Layout>
@@ -385,22 +391,17 @@ const newBooking = () => {
 					>
 						<div className={`m-auto px-5 md:mx-0 w-full md:w-2/5  `}>
 							<BookingTa>
-								{!(status === "idle") ||
-								!(statusBookGS === "idle") ||
-								!(statusBEmail === "idle") ? (
-									<SpinnerLoadign />
-								) : (
-									<BookingForm
-										methods={methods}
-										//reserva={reservaData === undefined ? deserva : reservaData}
-										onSubmit={onSubmit}
-										arrayPlayList={arrayPlayList}
-										setArrayPlayList={setArrayPlayList}
-										setMariachibyId={setMariachibyId}
-										setUserbyId={setUserbyId}
-										isSaving
-									/>
-								)}
+								<BookingForm
+									methods={methods}
+									//reserva={reservaData === undefined ? deserva : reservaData}
+									onSubmit={onSubmit}
+									arrayPlayList={arrayPlayList}
+									setArrayPlayList={setArrayPlayList}
+									setMariachibyId={setMariachibyId}
+									setUserbyId={setUserbyId}
+									isSaving
+									loading={loading}
+								/>
 
 								<Toaster />
 							</BookingTa>

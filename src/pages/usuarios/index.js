@@ -12,9 +12,9 @@ import {
 } from "../../../store/features/users/userSlice"
 import TableUser from "src/components/Tables/TableUsers"
 import Layout from "src/components/Layout"
-import SpinnerGral from "src/components/Spinners/SpinnerGral"
 import { setStatus } from "store/features/mariachis/mariachiSlice"
 import { setStatusBooking } from "store/features/bookings/bookingSlice"
+import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const usuarios = ({ session }) => {
@@ -36,7 +36,7 @@ const usuarios = ({ session }) => {
 	}, [userAdmin, dispatch, session])
 
 	if (!userAdmin.exist) {
-		return <SpinnerGral />
+		return <SpinnerLogo />
 	}
 
 	return (

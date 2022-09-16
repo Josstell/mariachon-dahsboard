@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
-import { useForm, useWatch } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
 import MariachiCard from "src/components/Cards/MariachiCard"
 import MariachiForm from "src/components/Forms/MariachiForm"
@@ -21,7 +21,6 @@ import {
 	setStatus,
 	setStatusGS,
 } from "store/features/mariachis/mariachiSlice"
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import toast, { Toaster } from "react-hot-toast"
 import { dateGral, optionsDate } from "src/helpers/utils"
 import { nanoid } from "@reduxjs/toolkit"
@@ -32,6 +31,7 @@ const addNewMariachi = () => {
 	const [arrayImages, setArrayImages] = useState([])
 	const [arrayVideos, setArrayVideos] = useState([])
 	const [crewElements, setCrewElements] = useState([])
+	const [loading, setLoading] = useState(false)
 
 	const userAdmin = useSelector(selectUserAdmin)
 	const status = useSelector(selectStatus)
@@ -48,14 +48,7 @@ const addNewMariachi = () => {
 
 	const methods = useForm()
 
-	const { watch, setValue, getValues, control } = methods
-
-	const valueServices = useWatch({
-		name: "services",
-		control,
-	})
-
-	console.log("services", valueServices)
+	const { watch, setValue, getValues } = methods
 
 	///https://drive.google.com/file/d/1clPxEJd6BLidvRqhRNj9xh5fICix5yFv/view?usp=sharing
 
@@ -150,7 +143,8 @@ const addNewMariachi = () => {
 	}, [crewElements])
 
 	const onSubmit = (dataForm) => {
-		///setLoading(true)
+		setLoading(true)
+		toastId = toast.loading("Cargando...")
 
 		let dataElements = []
 		crewElements.forEach((element) => {
@@ -205,21 +199,24 @@ const addNewMariachi = () => {
 		//	dispatch(addMariachiToGoogleSheet(dataMariachiToCard))
 	}
 
-	const notifyError = () => toast.error(error)
-	const notifySuccess = () => toast.success("Mariachi creado correctamente")
+	let toastId
+	const notifyError = () => toast.error(error, { id: toastId })
+	const notifySuccess = () =>
+		toast.success("Mariachi creado correctamente", { id: toastId })
 
 	useEffect(() => {
 		if (status === "failed") {
+			toast.dismiss(toastId)
 			notifyError()
 			dispatch(setStatus("idle"))
 		}
 		if (status === "succeeded" && statusGS === "succeeded") {
 			dispatch(setStatus("idle"))
 			dispatch(setStatusGS("idle"))
-
+			toast.dismiss(toastId)
 			notifySuccess()
+			setLoading(false)
 
-			//dispatch(setStatus("idle"))
 			router.push("/mariachis")
 		}
 	}, [status, statusGS, error])
@@ -243,22 +240,23 @@ const addNewMariachi = () => {
 							}`}
 						>
 							<MariachiTab>
-								{status !== "idle" || statusGS !== "idle" ? (
+								{/* {status !== "idle" || statusGS !== "idle" ? (
 									<SpinnerLoadign />
-								) : (
-									<MariachiForm
-										methods={methods}
-										onSubmit={onSubmit}
-										activeFormTab={activeFormTab}
-										arrayImages={arrayImages}
-										setArrayImages={setArrayImages}
-										arrayVideos={arrayVideos}
-										setArrayVideos={setArrayVideos}
-										crewElements={crewElements}
-										setCrewElements={setCrewElements}
-										isSaving
-									/>
-								)}
+								) : ( */}
+								<MariachiForm
+									methods={methods}
+									onSubmit={onSubmit}
+									activeFormTab={activeFormTab}
+									arrayImages={arrayImages}
+									setArrayImages={setArrayImages}
+									arrayVideos={arrayVideos}
+									setArrayVideos={setArrayVideos}
+									crewElements={crewElements}
+									setCrewElements={setCrewElements}
+									loading={loading}
+									isSaving
+								/>
+								{/* )} */}
 								<Toaster />
 							</MariachiTab>
 						</div>

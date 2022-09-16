@@ -36,6 +36,7 @@ export default function MariachiForm({
 	isSaving,
 	crewElements,
 	setCrewElements,
+	loading,
 }) {
 	const regionData = regions.response.estado
 
@@ -453,9 +454,9 @@ export default function MariachiForm({
 					</div>
 				</div>
 				<Button
-					hidden={addUser}
+					hidden={activeFormTab.gral}
 					message={isSaving ? "Guardar" : "Actualizar"}
-					disabledBtn={!activeFormTab.gral}
+					disabledBtn={loading}
 				/>
 			</Form>
 

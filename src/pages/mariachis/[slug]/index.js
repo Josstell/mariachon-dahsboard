@@ -20,7 +20,6 @@ import {
 	setStatusGS,
 	updateMariachi,
 } from "store/features/mariachis/mariachiSlice"
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import toast, { Toaster } from "react-hot-toast"
 import { dateGral, optionsDate } from "src/helpers/utils"
 import { nanoid } from "@reduxjs/toolkit"
@@ -43,6 +42,7 @@ const mariachiById = ({ slug }) => {
 	const [crewElements, setCrewElements] = useState(
 		data?.crew?.filter((_, index) => index > 0) || []
 	)
+	const [loading, setLoading] = useState(false)
 
 	//Activar Tab
 	const activeFormTab = useSelector(
@@ -145,8 +145,8 @@ const mariachiById = ({ slug }) => {
 	}, [crewElements])
 
 	const onSubmit = (dataForm) => {
-		//setLoading(true)
-
+		setLoading(true)
+		toastId = toast.loading("Cargando...")
 		let dataElements = []
 		crewElements.forEach((element) => {
 			dataElements.push(element)
@@ -193,17 +193,22 @@ const mariachiById = ({ slug }) => {
 		dispatch(addMariachiToGoogleSheet(dataMariachiToSend))
 	}
 
-	const notifyError = () => toast.error(error)
-	const notifySuccess = () => toast.success("Datos actualizados correctamente")
+	let toastId
+	const notifyError = () => toast.error(error, { id: toastId })
+	const notifySuccess = () =>
+		toast.success("Mariachi actualizado correctamente", { id: toastId })
 
 	useEffect(() => {
 		if (status === "failed") {
+			toast.dismiss(toastId)
+
 			notifyError()
 			dispatch(setStatus("idle"))
 		}
 		if (status === "succeeded" && statusGS === "succeeded") {
 			dispatch(setStatus("idle"))
 			dispatch(setStatusGS("idle"))
+			toast.dismiss(toastId)
 
 			notifySuccess()
 
@@ -233,21 +238,18 @@ const mariachiById = ({ slug }) => {
 							}`}
 						>
 							<MariachiTab>
-								{status !== "idle" || statusGS !== "idle" ? (
-									<SpinnerLoadign />
-								) : (
-									<MariachiForm
-										methods={methods}
-										onSubmit={onSubmit}
-										activeFormTab={activeFormTab}
-										arrayImages={arrayImages}
-										setArrayImages={setArrayImages}
-										arrayVideos={arrayVideos}
-										setArrayVideos={setArrayVideos}
-										crewElements={crewElements}
-										setCrewElements={setCrewElements}
-									/>
-								)}
+								<MariachiForm
+									methods={methods}
+									onSubmit={onSubmit}
+									activeFormTab={activeFormTab}
+									arrayImages={arrayImages}
+									setArrayImages={setArrayImages}
+									arrayVideos={arrayVideos}
+									setArrayVideos={setArrayVideos}
+									crewElements={crewElements}
+									setCrewElements={setCrewElements}
+									loading={loading}
+								/>
 								<Toaster />
 							</MariachiTab>
 						</div>

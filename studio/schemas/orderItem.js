@@ -53,5 +53,10 @@ export default {
 			title: "Precio total",
 			type: "number",
 		},
+		{
+			name: "priceOptionSelected",
+			title: "Precio seleccionado",
+			type: "string",
+		},
 	],
 }

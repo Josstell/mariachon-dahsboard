@@ -247,7 +247,7 @@ export function Button({ message, hidden, disabledBtn }) {
 				type="submit"
 				disabled={disabledBtn}
 			>
-				{message}
+				{disabledBtn ? message + "..." : message}
 			</button>
 		</div>
 	)

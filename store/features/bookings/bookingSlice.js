@@ -52,6 +52,7 @@ dateAndTime,
     price,
     qty,
 	fee,
+	priceOptionSelected,
     service,
 	  members,
 categorySet,
@@ -121,7 +122,7 @@ export const updateBooking = createAsyncThunk(
 						mariachi: mariachiUpdated,
 					},
 				}
-				dispatch(addBookingToGoogleSheet(dataReserva))
+				dispatch(addBookingToGoogleSheet({ ...dataReserva, sendEmail: true }))
 
 				return dataReserva
 			}
@@ -164,7 +165,8 @@ export const addBooking = createAsyncThunk(
 						mariachi: mariachiUpdated,
 					},
 				}
-				dispatch(addBookingToGoogleSheet(dataReserva))
+
+				dispatch(addBookingToGoogleSheet({ ...dataReserva, sendEmail: true }))
 
 				return dataReserva
 			}
@@ -193,7 +195,9 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 			)
 
 			if (data) {
-				dispatch(sendBooking(reserva))
+				if (reserva.sendEmail) {
+					dispatch(sendBooking(reserva))
+				}
 				return {
 					...data,
 				}

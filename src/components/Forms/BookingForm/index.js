@@ -21,10 +21,12 @@ const BookingForm = ({
 	setMariachibyId,
 	onSubmit,
 	isSaving,
+	loading,
 }) => {
 	const regionData = regions.response.estado
 
 	const [addUser, setAddUser] = useState(true)
+	const [role, setRole] = useState("Cliente")
 
 	const activeFormTab = useSelector((state) => state.bookings.bookingTabActive)
 
@@ -150,7 +152,6 @@ const BookingForm = ({
 	}
 
 	const handleErasePlaylist = (index) => {
-		console.log("numero cancion", index)
 		setArrayPlayList(arrayPlayList.filter((list, idx) => idx !== index))
 	}
 
@@ -172,6 +173,7 @@ const BookingForm = ({
 					label="Cliente"
 					onChange={(e) => hangleGetClient(e)}
 					addUser={addUser}
+					setRole={setRole}
 					setAddUser={setAddUser}
 				/>
 				<Input
@@ -230,6 +232,7 @@ const BookingForm = ({
 					options={mariachis}
 					label="Cambiar mariachi"
 					onChange={(e) => hangleGetMariachi(e)}
+					setRole={setRole}
 				/>
 
 				<RadioButton
@@ -252,6 +255,12 @@ const BookingForm = ({
 					hidden={activeFormTab.mariachi}
 					name="service"
 					label={["serenata", "hora", "contrato"]}
+					type="radio"
+				/>
+				<RadioButton
+					hidden={activeFormTab.mariachi}
+					name="priceOptionSelected"
+					label={["regular", "minimo", "festivo"]}
 					type="radio"
 				/>
 
@@ -336,15 +345,15 @@ const BookingForm = ({
 
 				<Button
 					message={isSaving ? "Guardar" : "Actualizar"}
-					hidden={addUser}
-					disabledBtn={!activeFormTab.parameters}
+					hidden={activeFormTab.parameters}
+					disabledBtn={loading}
 				/>
 			</Form>
 			{!addUser && activeFormTab.client ? (
 				<AddNewUserComponent
 					setAddUser={setAddUser}
 					addUser={addUser}
-					role={["Cliente"]}
+					role={[role]}
 				/>
 			) : (
 				<div className=""></div>

@@ -1,9 +1,8 @@
 import { nanoid } from "@reduxjs/toolkit"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import toast, { Toaster } from "react-hot-toast"
 import { useDispatch, useSelector } from "react-redux"
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 //import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import { regions } from "src/helpers/dataset"
 import { dateGral, optionsDate } from "src/helpers/utils"
@@ -29,10 +28,9 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 
 	const methods = useForm()
 
-	const { setValue } = methods
+	const [loading, setLoading] = useState(false)
 
-	const notifyError = () => toast.error(error)
-	const notifySuccess = () => toast.success("Usuario creado correctamente")
+	const { setValue } = methods
 
 	useEffect(() => {
 		dispatch(setStatusUser("idle"))
@@ -55,22 +53,33 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 		)
 	}, [])
 
+	let toastIdUs
+	const notifyError = () => toast.error(error, { id: toastIdUs })
+	const notifySuccess = () =>
+		toast.success("Usuario creado correctamente", { id: toastIdUs })
+
 	useEffect(() => {
 		if (status === "failed") {
-			notifyError()
 			setAddUser(!addUser)
 
 			dispatch(setStatusUser("idle"))
+			toast.dismiss(toastIdUs)
+			notifyError()
+			setLoading(false)
 		}
 		if (status === "succeeded") {
-			notifySuccess()
 			setAddUser(!addUser)
-
 			dispatch(setStatusUser("idle"))
+			toast.dismiss(toastIdUs)
+			notifySuccess()
+			setLoading(false)
 		}
 	}, [status])
 
 	const onSubmit = (dataFormUser) => {
+		setLoading(true)
+		toastIdUs = toast.loading("Cargando...")
+
 		const data = {
 			...dataFormUser,
 			categorySet: [
@@ -127,9 +136,9 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 		pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i,
 	}
 
-	if (!(status === "idle")) {
-		return <SpinnerLoadign />
-	}
+	// if (!(status === "idle")) {
+	// 	return <SpinnerLoadign />
+	// }
 	return (
 		<div className="flex flex-col -mt-10">
 			<Form onSubmit={onSubmit} methods={methods}>
@@ -163,7 +172,7 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 					options={regionData}
 					label="Estado"
 				/>
-				<Button hidden={true} message="Agregar" />
+				<Button hidden={true} message="Agregar" disabledBtn={loading} />
 			</Form>
 			<Toaster />
 		</div>
