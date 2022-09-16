@@ -17,6 +17,7 @@ import { selectAllUsers } from "store/features/users/userSlice"
 
 import { regions } from "src/helpers/dataset"
 import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
+import WhatsAppIcon from "src/components/SVG/Icons/WhatsAppIcon"
 
 const TableBookings = ({ userAdmin }) => {
 	const regionData = regions.response.estado
@@ -217,15 +218,22 @@ const TableBookings = ({ userAdmin }) => {
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Coordinador
+									Tipo de Precio
 								</th>
-
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
 									Estado de reserva
+								</th>
+
+								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500 "
+								>
+									<WhatsAppIcon className="fill-slate-900 dark:fill-slate-100 w-10 h-10 mx-16  " />
 								</th>
 								{/* <th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
@@ -312,17 +320,21 @@ const TableBookings = ({ userAdmin }) => {
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 											{booking?.orderItems?.fee}
 										</td>
-										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-											{/* <a onClick={() => handleWhatsApp(booking)}>
-												{booking?.orderItems?.mariachi?.coordinator?.name}{" "}
-											</a> */}
-											<SelectSimple
-												name="sendWhats"
-												options={crewUserById || []}
-												hidden
-												booking={booking}
-												handleWhatsApp={handleWhatsApp}
-											/>
+										<td
+											className={`border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 `}
+										>
+											<span
+												className={`font-bold ${
+													booking?.orderItems?.priceOptionSelected === "minimo"
+														? "text-red-600"
+														: booking?.orderItems?.priceOptionSelected ===
+														  "regular"
+														? "text-yellow-500"
+														: "text-green-500"
+												}`}
+											>
+												{booking?.orderItems?.priceOptionSelected?.toUpperCase()}
+											</span>
 										</td>
 
 										<td
@@ -338,6 +350,18 @@ const TableBookings = ({ userAdmin }) => {
 													booking?.status?.length - 1
 												].toUpperCase()}
 											</span>
+										</td>
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{/* <a onClick={() => handleWhatsApp(booking)}>
+												{booking?.orderItems?.mariachi?.coordinator?.name}{" "}
+											</a> */}
+											<SelectSimple
+												name="sendWhats"
+												options={crewUserById || []}
+												hidden
+												booking={booking}
+												handleWhatsApp={handleWhatsApp}
+											/>
 										</td>
 										{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex items-center">
