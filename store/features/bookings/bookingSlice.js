@@ -94,63 +94,64 @@ export const fetchBookings = createAsyncThunk(
 
 export const updateBooking = createAsyncThunk(
 	"bookings/updateUser",
-	async (booking, { getState, dispatch }) => {
+	(booking, { getState, dispatch }) => {
 		const {
 			mariachis: { mariachis },
 			users: { users },
 		} = getState()
 
-		// We send the initial data to the fake API server booking
+		// 		// We send the initial data to the fake API server booking
+		return axios
+			.put("/api/reservas/update", booking)
+			.then((response) => {
+				const data = response.data
+				if (data) {
+					const mariachiUpdated = mariachis.find(
+						(mar) => mar._id === data.orderItems[0].mariachi._ref
+					)
+					const clientUpdated = users.find(
+						(user) => user._id === data.client._ref
+					)
+					const items = data.orderItems[0]
 
-		try {
-			const { data } = await axios.put("/api/reservas/update", booking)
+					const dataReserva = {
+						...data,
+						client: clientUpdated,
+						orderItems: {
+							...items,
+							mariachi: mariachiUpdated,
+						},
+					}
+					dispatch(addBookingToGoogleSheet({ ...dataReserva, sendEmail: true }))
 
-			if (data) {
-				const mariachiUpdated = mariachis.find(
-					(mar) => mar._id === data.orderItems[0].mariachi._ref
-				)
-				const clientUpdated = users.find(
-					(user) => user._id === data.client._ref
-				)
-				const items = data.orderItems[0]
-
-				const dataReserva = {
-					...data,
-					client: clientUpdated,
-					orderItems: {
-						...items,
-						mariachi: mariachiUpdated,
-					},
+					return dataReserva
 				}
-				dispatch(addBookingToGoogleSheet({ ...dataReserva, sendEmail: true }))
+			})
+			.catch((error) => {
+				const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
 
-				return dataReserva
-			}
-		} catch (error) {
-			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
+				const errorData = {
+					data: error?.response?.data ? error?.response?.data : text,
+				}
 
-			const errorData = {
-				data: error?.response?.data ? error?.response?.data : text,
-			}
-
-			return errorData
-		}
-		// The response includes the complete post object, including unique ID
+				return errorData
+			})
 	}
 )
 
 export const addBooking = createAsyncThunk(
 	"bookings/addBooking",
-	async (booking, { getState, dispatch }) => {
+	(booking, { getState, dispatch }) => {
 		// We send the initial data to the fake API server
 		const {
 			users: { users },
 			mariachis: { mariachis },
 		} = getState()
-		try {
-			const { data } = await axios.post("/api/reservas/add", booking)
+		return axios
+			.post("/api/reservas/add", booking)
+			.then((response) => {
+				const data = response.data
 
-			if (data) {
 				const clientAdded = users.find((user) => user._id === data.client._ref)
 				const mariachiUpdated = mariachis.find(
 					(mar) => mar._id === data.orderItems[0].mariachi._ref
@@ -169,16 +170,16 @@ export const addBooking = createAsyncThunk(
 				dispatch(addBookingToGoogleSheet({ ...dataReserva, sendEmail: true }))
 
 				return dataReserva
-			}
-		} catch (error) {
-			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
+			})
+			.catch((error) => {
+				const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
 
-			const errorData = {
-				data: error?.response?.data ? error?.response?.data : text,
-			}
+				const errorData = {
+					data: error?.response?.data ? error?.response?.data : text,
+				}
 
-			return errorData
-		}
+				return errorData
+			})
 		// The response includes the complete post object, including unique ID
 	}
 )
@@ -188,15 +189,17 @@ export const addBooking = createAsyncThunk(
 export const addBookingToGoogleSheet = createAsyncThunk(
 	"bookings/addBookingToGoogleSheet",
 	(reserva, { dispatch }) => {
-		axios
+		return axios
 			.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`, reserva)
-			.then(({ data }) => {
+			.then((response) => {
+				console.log("hola", response.data)
+				const data = response.data
+
 				if (reserva.sendEmail) {
 					dispatch(sendBooking(reserva))
 				}
-				return {
-					...data,
-				}
+
+				return data
 			})
 			.catch((error) => {
 				const text = {
@@ -214,32 +217,25 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 
 export const sendBooking = createAsyncThunk(
 	"bookings/sendBooking",
-	async (reserva) => {
-		try {
-			const { data: dataEmail } = await axios.post(
-				`${NEXT_PUBLIC_URL_API}/api/email/reservation`,
-				reserva
-			)
-
-			if (dataEmail) {
-				console.log("email", dataEmail)
-
-				return {
-					...dataEmail,
+	(reserva) => {
+		return axios
+			.post(`${NEXT_PUBLIC_URL_API}/api/email/reservation`, reserva)
+			.then((response) => {
+				const data = response.data
+				return data
+			})
+			.catch((error) => {
+				console.log(error)
+				const text = {
+					message: "Algo paso! No se pudo enviar el correo.",
 				}
-			}
-		} catch (error) {
-			console.log(error)
-			const text = {
-				message: "Algo paso! No se pudo enviar el correo.",
-			}
 
-			const errorData = {
-				data: error?.response?.data ? error?.response?.data : text,
-			}
+				const errorData = {
+					data: error?.response?.data ? error?.response?.data : text,
+				}
 
-			return errorData
-		}
+				return errorData
+			})
 	}
 )
 
@@ -276,7 +272,7 @@ const bookingsSlice = createSlice({
 			state.statusBook = "failed"
 		},
 		[updateBooking.fulfilled]: (state, action) => {
-			if (action.payload.data) {
+			if (action?.payload?.data) {
 				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
 			} else {
@@ -288,7 +284,7 @@ const bookingsSlice = createSlice({
 			}
 		},
 		[addBooking.fulfilled]: (state, action) => {
-			if (action.payload.data) {
+			if (action?.payload?.data) {
 				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
 			} else {
@@ -297,7 +293,7 @@ const bookingsSlice = createSlice({
 			}
 		},
 		[addBookingToGoogleSheet.fulfilled]: (state, action) => {
-			if (action.payload.data) {
+			if (action?.payload?.data) {
 				state.statusGS = "failed"
 				state.error = "Error en la carga de la reserva en google sheet"
 			} else {
@@ -305,7 +301,7 @@ const bookingsSlice = createSlice({
 			}
 		},
 		[sendBooking.fulfilled]: (state, action) => {
-			if (action.payload.data) {
+			if (action?.payload?.data) {
 				state.statusBEmail = "failed"
 				state.error = "Error en el envio del correo"
 			} else {
