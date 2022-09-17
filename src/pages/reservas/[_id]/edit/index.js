@@ -17,7 +17,6 @@ import {
 	selectStatusBEmail,
 	selectStatusBook,
 	selectStatusBookGS,
-	sendBooking,
 	setStatusBooking,
 	setStatusBookingGS,
 	updateBooking,
