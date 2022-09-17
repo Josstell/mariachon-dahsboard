@@ -88,8 +88,8 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 				dataFormUser.Coordinador,
 				dataFormUser.Admin,
 			],
-			createdBy: { _ref: userAdmin._id, _type: "reference" },
-			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
+			createdBy: { _ref: userAdmin?._id, _type: "reference" },
+			dateCreated: dateGral?.toLocaleDateString("es-MX", optionsDate),
 			stage: ["AFILIADO"],
 		}
 
