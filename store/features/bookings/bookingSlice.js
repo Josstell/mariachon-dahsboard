@@ -101,7 +101,7 @@ export const updateBooking = createAsyncThunk(
 		} = getState()
 
 		// 		// We send the initial data to the fake API server booking
-		return axios
+		axios
 			.put("/api/reservas/update", booking)
 			.then((response) => {
 				const data = response.data
@@ -147,7 +147,7 @@ export const addBooking = createAsyncThunk(
 			users: { users },
 			mariachis: { mariachis },
 		} = getState()
-		return axios
+		axios
 			.post("/api/reservas/add", booking)
 			.then((response) => {
 				const data = response.data
@@ -188,12 +188,14 @@ export const addBooking = createAsyncThunk(
 
 export const addBookingToGoogleSheet = createAsyncThunk(
 	"bookings/addBookingToGoogleSheet",
-	(reserva) => {
-		return axios
+	(reserva, { dispatch }) => {
+		axios
 			.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`, reserva)
 			.then((response) => {
 				console.log("hola", response.data)
 				const data = response.data
+
+				dispatch(sendBooking(reserva))
 
 				return data
 			})
@@ -214,12 +216,12 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 export const sendBooking = createAsyncThunk(
 	"bookings/sendBooking",
 	(reserva) => {
-		return axios
+		axios
 			.post(`${NEXT_PUBLIC_URL_API}/api/email/reservation`, reserva)
-			.then((response) => {
-				const data = response.data
-				console.log("hola2 :", data)
-				return data
+			.then((resp) => {
+				const dataE = resp.data
+				console.log("hola2 :", dataE)
+				return dataE
 			})
 			.catch((error) => {
 				const text = {
