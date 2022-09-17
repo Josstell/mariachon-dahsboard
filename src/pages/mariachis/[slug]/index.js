@@ -12,7 +12,6 @@ import { wrapper } from "store"
 import { selectUserAdmin } from "store/features/users/userSlice"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import {
-	addMariachiToGoogleSheet,
 	selectError,
 	selectStatus,
 	selectStatusGS,
