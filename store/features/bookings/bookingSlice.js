@@ -222,7 +222,7 @@ export const sendBooking = createAsyncThunk(
 			.post(`${NEXT_PUBLIC_URL_API}/api/email/reservation`, reserva)
 			.then((response) => {
 				const data = response.data
-				console.log(data)
+				console.log("hola2 :", data)
 				return data
 			})
 			.catch((error) => {
