@@ -388,7 +388,11 @@ const reservaById = ({ id }) => {
 			notifyError()
 			dispatch(setStatusBooking("idle"))
 		}
-		if (status === "succeeded" && statusBookGS === "succeeded") {
+		if (
+			status === "succeeded" &&
+			statusBookGS === "succeeded" &&
+			statusBEmail === "idle"
+		) {
 			dispatch(sendBooking(reservaUpdate))
 		}
 		if (
