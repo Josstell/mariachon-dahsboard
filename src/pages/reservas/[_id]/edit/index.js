@@ -17,6 +17,7 @@ import {
 	selectStatusBEmail,
 	selectStatusBook,
 	selectStatusBookGS,
+	sendBooking,
 	setStatusBooking,
 	setStatusBookingGS,
 	updateBooking,
@@ -324,11 +325,13 @@ const reservaById = ({ id }) => {
 	// 	})
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
+	let reservaUpdate
+
 	const onSubmit = (dataForm) => {
 		setLoading(true)
 		toastIdRe = toast.loading("Cargando...")
 
-		const reservaUpdate = {
+		reservaUpdate = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
 			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 			dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
@@ -384,6 +387,9 @@ const reservaById = ({ id }) => {
 
 			notifyError()
 			dispatch(setStatusBooking("idle"))
+		}
+		if (status === "succeeded" && statusBookGS === "succeeded") {
+			dispatch(sendBooking(reservaUpdate))
 		}
 		if (
 			status === "succeeded" &&

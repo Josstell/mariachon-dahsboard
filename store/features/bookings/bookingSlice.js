@@ -188,16 +188,12 @@ export const addBooking = createAsyncThunk(
 
 export const addBookingToGoogleSheet = createAsyncThunk(
 	"bookings/addBookingToGoogleSheet",
-	(reserva, { dispatch }) => {
+	(reserva) => {
 		return axios
 			.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`, reserva)
 			.then((response) => {
 				console.log("hola", response.data)
 				const data = response.data
-
-				if (reserva.sendEmail) {
-					dispatch(sendBooking(reserva))
-				}
 
 				return data
 			})
