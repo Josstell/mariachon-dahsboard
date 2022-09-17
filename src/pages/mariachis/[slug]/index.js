@@ -187,10 +187,8 @@ const mariachiById = ({ slug }) => {
 			crew: dataElements,
 			stage: [dataForm?.stage],
 		}
-		console.log("Elementos", dataMariachiToSend)
 
 		dispatch(updateMariachi(dataMariachiToSend))
-		dispatch(addMariachiToGoogleSheet(dataMariachiToSend))
 	}
 
 	let toastId

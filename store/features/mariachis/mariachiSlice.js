@@ -76,7 +76,7 @@ export const fetchMariachis = createAsyncThunk(
 
 export const updateMariachi = createAsyncThunk(
 	"mariachis/updateMariachi",
-	async (mariachi, { getState }) => {
+	async (mariachi, { getState, dispatch }) => {
 		// We send the initial data to the fake API server
 		const {
 			users: { users },
@@ -88,10 +88,11 @@ export const updateMariachi = createAsyncThunk(
 				const coordinatorUpdated = users.find(
 					(user) => user._id === data.coordinator._ref
 				)
-				return {
-					...data,
-					coordinator: coordinatorUpdated,
-				}
+
+				const dataUpdate = { ...data, coordinator: coordinatorUpdated }
+				dispatch(addMariachiToGoogleSheet(dataUpdate))
+
+				return dataUpdate
 			}
 		} catch (error) {
 			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
@@ -119,11 +120,11 @@ export const addMariachi = createAsyncThunk(
 			const { data } = await axios.post("/api/mariachis/add", mariachi)
 
 			if (data) {
-				dispatch(addMariachiToGoogleSheet({ ...mariachi, _id: data._id }))
 				const coordinatorUpdated = users.find(
 					(user) => user._id === data.coordinator._ref
 				)
 
+				dispatch(addMariachiToGoogleSheet({ ...mariachi, _id: data._id }))
 				return {
 					...data,
 					coordinator: coordinatorUpdated,
