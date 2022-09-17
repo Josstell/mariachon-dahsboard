@@ -348,7 +348,7 @@ const newBooking = () => {
 			//_id: data._id,
 		}
 
-		dispatch(addBooking(reservaAdd))
+		dispatch(addBooking({ ...reservaAdd, sendEmail: true }))
 	}
 
 	let toastIdRe

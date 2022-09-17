@@ -82,7 +82,6 @@ export const fetchBookings = createAsyncThunk(
 	async (isAdmin) => {
 		if (isAdmin) {
 			const bookings = await client.fetch(query)
-			console.log("Hola Bookings", bookings)
 			return bookings
 		} else {
 			return []
@@ -101,31 +100,36 @@ export const updateBooking = createAsyncThunk(
 		} = getState()
 
 		// 		// We send the initial data to the fake API server booking
-		axios
+		return axios
 			.put("/api/reservas/update", booking)
-			.then((response) => {
-				const data = response.data
-				if (data) {
-					const mariachiUpdated = mariachis.find(
-						(mar) => mar._id === data.orderItems[0].mariachi._ref
-					)
-					const clientUpdated = users.find(
-						(user) => user._id === data.client._ref
-					)
-					const items = data.orderItems[0]
+			.then((responseData) => {
+				const data = responseData.data
 
-					const dataReserva = {
-						...data,
-						client: clientUpdated,
-						orderItems: {
-							...items,
-							mariachi: mariachiUpdated,
-						},
-					}
-					dispatch(addBookingToGoogleSheet({ ...dataReserva, sendEmail: true }))
+				const mariachiUpdated = mariachis.find(
+					(mar) => mar._id === data.orderItems[0].mariachi._ref
+				)
+				const clientUpdated = users.find(
+					(user) => user._id === data.client._ref
+				)
+				const items = data.orderItems[0]
 
-					return dataReserva
+				const dataReserva = {
+					...data,
+					client: clientUpdated,
+					orderItems: {
+						...items,
+						mariachi: mariachiUpdated,
+					},
 				}
+
+				dispatch(
+					addBookingToGoogleSheet({
+						...dataReserva,
+						sendEmail: booking.sendEmail,
+					})
+				)
+
+				return dataReserva
 			})
 			.catch((error) => {
 				const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
@@ -147,7 +151,7 @@ export const addBooking = createAsyncThunk(
 			users: { users },
 			mariachis: { mariachis },
 		} = getState()
-		axios
+		return axios
 			.post("/api/reservas/add", booking)
 			.then((response) => {
 				const data = response.data
@@ -167,7 +171,12 @@ export const addBooking = createAsyncThunk(
 					},
 				}
 
-				dispatch(addBookingToGoogleSheet({ ...dataReserva, sendEmail: true }))
+				dispatch(
+					addBookingToGoogleSheet({
+						...dataReserva,
+						sendEmail: booking.sendEmail,
+					})
+				)
 
 				return dataReserva
 			})
@@ -189,15 +198,36 @@ export const addBooking = createAsyncThunk(
 export const addBookingToGoogleSheet = createAsyncThunk(
 	"bookings/addBookingToGoogleSheet",
 	(reserva, { dispatch }) => {
-		axios
+		return axios
 			.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`, reserva)
 			.then((response) => {
 				console.log("hola", response.data)
 				const data = response.data
 
-				dispatch(sendBooking(reserva))
+				if (reserva.sendEmail) {
+					dispatch(sendBooking(reserva))
+					return data
+					// return axios
+					// 	.post(`/api/reservas/email`, reserva)
+					// 	.then((resp) => {
+					// 		const dataE = resp.data
+					// 		console.log("hola2 :", dataE)
+					// 		return dataE
+					// 	})
+					// 	.catch((error) => {
+					// 		const text = {
+					// 			message: "Algo paso! No se pudo enviar el correo.",
+					// 		}
 
-				return data
+					// 		const errorData = {
+					// 			data: error?.response?.data ? error?.response?.data : text,
+					// 		}
+
+					// 		return errorData
+					// 	})
+				} else {
+					return data
+				}
 			})
 			.catch((error) => {
 				const text = {
@@ -216,8 +246,8 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 export const sendBooking = createAsyncThunk(
 	"bookings/sendBooking",
 	(reserva) => {
-		axios
-			.post(`${NEXT_PUBLIC_URL_API}/api/email/reservation`, reserva)
+		return axios
+			.post(`/api/reservas/email`, reserva)
 			.then((resp) => {
 				const dataE = resp.data
 				console.log("hola2 :", dataE)
@@ -276,6 +306,7 @@ const bookingsSlice = createSlice({
 			} else {
 				state.statusBook = "succeeded"
 				const bookingUp = action.payload
+				console.log("action!!!", action.payload)
 				state.bookings = state.bookings.map((booking) =>
 					booking._id === bookingUp._id ? bookingUp : booking
 				)
