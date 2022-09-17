@@ -52,6 +52,9 @@ const TableBookings = ({ userAdmin }) => {
 	}
 
 	const handleWhatsApp = (reservationData, sendMariachiValue) => {
+		if (sendMariachiValue === 0) {
+			return
+		}
 		const coorSelected = users.find((user) => user._id === sendMariachiValue)
 
 		createUrlWhatsApp({ ...reservationData, coordinator: coorSelected })
@@ -82,7 +85,7 @@ const TableBookings = ({ userAdmin }) => {
 			status: ["Enviada"],
 		}
 
-		dispatch(updateBooking({ ...reservaUpdate, sendEmail: true }))
+		dispatch(updateBooking({ ...reservaUpdate, sendEmail: false }))
 	}
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
@@ -256,6 +259,7 @@ const TableBookings = ({ userAdmin }) => {
 										(cre) => cre._ref === user._id
 									)
 								)
+								crewUserById.unshift({ name: "Mandar a: ", _id: 0 })
 								return (
 									<tr
 										key={booking?._id}
@@ -351,7 +355,7 @@ const TableBookings = ({ userAdmin }) => {
 												].toUpperCase()}
 											</span>
 										</td>
-										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 cursor-pointer">
 											{/* <a onClick={() => handleWhatsApp(booking)}>
 												{booking?.orderItems?.mariachi?.coordinator?.name}{" "}
 											</a> */}
