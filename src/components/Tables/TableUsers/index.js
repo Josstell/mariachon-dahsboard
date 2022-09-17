@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
 import { selectAllUsers } from "store/features/users/userSlice"
@@ -24,6 +24,10 @@ const TableUser = () => {
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
 	const [regionSelected, setRegionSelected] = useState("All")
+
+	useEffect(() => {
+		setUsersDataSearch(usersData)
+	}, [usersData])
 
 	const handleGetRegion = (e) => {
 		setRegionSelected(e.target.value)

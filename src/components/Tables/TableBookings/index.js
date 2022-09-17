@@ -2,7 +2,7 @@
 import { ViewGridAddIcon } from "@heroicons/react/outline"
 import Image from "next/image"
 import Link from "next/link"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { SelectSimple } from "src/components/Forms/Smart/Inputs"
 import GetLogoWithName from "src/components/GetLogoWithName"
@@ -27,6 +27,10 @@ const TableBookings = ({ userAdmin }) => {
 	const [bookingsDataSearch, setBookingsDataSearch] = useState(
 		BookingData || []
 	)
+
+	useEffect(() => {
+		setBookingsDataSearch(BookingData)
+	}, [BookingData])
 
 	const dispatch = useDispatch()
 	const BookingsData = useSelector(selectAllBookings)
