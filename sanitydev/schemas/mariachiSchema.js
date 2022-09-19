@@ -118,6 +118,36 @@ export default {
 				],
 			},
 		},
+
+		{
+			name: "notes",
+			title: "Notas y observaciones ",
+			type: "array",
+			of: [
+				{
+					title: "Notas y observaciones ",
+
+					name: "note",
+					type: "object",
+					fields: [{ name: "note", type: "string" }],
+				},
+			],
+		},
+		{
+			name: "urls",
+			title: "Pagina y redes sociales ",
+			type: "array",
+			of: [
+				{
+					name: "links",
+					type: "object",
+					fields: [
+						{ name: "url", type: "string" },
+						{ name: "typeUrl", type: "string" },
+					],
+				},
+			],
+		},
 		{
 			title: "Imagenes",
 			name: "images",

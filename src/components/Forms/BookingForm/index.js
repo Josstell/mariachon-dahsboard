@@ -37,6 +37,8 @@ const BookingForm = ({
 
 	const usersByClient = useSearchUserByCategory(users, "Cliente")
 
+	const { getValues } = methods
+
 	// useEffect(() => {
 	// 	if (!addUser) {
 	// 		const tabOnlyClientActive = {
@@ -161,6 +163,12 @@ const BookingForm = ({
 
 	//
 
+	const regionSelected = getValues("region") || "PUE"
+
+	const mariachisIfPartner = mariachis.filter(
+		(mar) => mar.stage[0] === "AFILIADO" && mar.region === regionSelected
+	)
+
 	return (
 		<>
 			<Form onSubmit={onSubmit} methods={methods}>
@@ -229,7 +237,7 @@ const BookingForm = ({
 				<Select
 					hidden={activeFormTab.mariachi}
 					name="idMariachi"
-					options={mariachis}
+					options={mariachisIfPartner}
 					label="Cambiar mariachi"
 					onChange={(e) => hangleGetMariachi(e)}
 					setRole={setRole}
