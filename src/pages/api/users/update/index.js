@@ -12,6 +12,7 @@ export default handlerCors().put((req, res) => {
 		username: req.body.username || "",
 		modifiedBy: req.body.modifiedBy,
 		dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
+		stage: req.body?.stage,
 	}
 
 	client

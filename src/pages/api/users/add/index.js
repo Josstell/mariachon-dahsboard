@@ -24,6 +24,8 @@ export default handlerCors().post(async (req, res) => {
 				},
 				uid: req.body?.uid || "",
 				provider: req.body?.provider || "",
+				stage: req.body?.stage,
+
 				slug: { current: urlSlug(req.body.name) },
 				createdBy: req.body?.createdBy,
 				dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),

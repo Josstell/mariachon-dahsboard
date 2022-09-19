@@ -95,6 +95,7 @@ const userById = ({ id }) => {
 				...dataForm,
 				_id: dataUser._id,
 				categorySet: dataUser?.categorySet || "",
+				stage: ["AFILIADO"],
 			})
 		)
 		dispatch(

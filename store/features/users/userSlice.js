@@ -111,8 +111,9 @@ export const addNewUser = createAsyncThunk(
 		try {
 			const { data } = await axios.post("/api/users/add", newUser)
 			if (data) {
-				dispatch(addClientToGoogleSheet({ ...newUser, _id: data._id }))
-				return data
+				const newData = { ...newUser, _id: data._id }
+				dispatch(addClientToGoogleSheet(newData))
+				return newData
 			}
 		} catch (error) {
 			return error.response.data
@@ -131,7 +132,6 @@ export const addClientToGoogleSheet = createAsyncThunk(
 				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`,
 				{
 					...client,
-					
 				}
 			)
 
@@ -218,7 +218,6 @@ const usersSlice = createSlice({
 			state.status = "loading"
 		},
 		[addNewUser.fulfilled]: (state, action) => {
-			console.log("user:!!!", action.payload, state.users.users)
 			if (action.payload.message) {
 				state.status = "failed"
 				state.error = action.payload.message
