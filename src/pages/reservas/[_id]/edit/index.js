@@ -392,6 +392,7 @@ const reservaById = ({ id }) => {
 			dispatch(setStatusBooking("idle"))
 			dispatch(setStatusBookingGS("idle"))
 			dispatch(setStatusBookingEmail("idle"))
+			setLoading(false)
 		}
 
 		if (
@@ -403,6 +404,7 @@ const reservaById = ({ id }) => {
 			dispatch(setStatusBookingGS("idle"))
 			toast.dismiss(toastIdRe)
 			notifySuccess()
+			setLoading(false)
 
 			router.push("/reservas")
 		}

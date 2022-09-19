@@ -370,6 +370,7 @@ const newBooking = () => {
 			dispatch(setStatusBooking("idle"))
 			dispatch(setStatusBookingGS("idle"))
 			dispatch(setStatusBookingEmail("idle"))
+			setLoading(false)
 		}
 		if (
 			status === "succeeded" &&
@@ -381,6 +382,8 @@ const newBooking = () => {
 			dispatch(setStatusBookingEmail("idle"))
 			toast.dismiss(toastIdRe)
 			notifySuccess()
+			setLoading(false)
+
 			router.push("/reservas")
 		}
 	}, [router, status, statusBookGS, statusBEmail])
