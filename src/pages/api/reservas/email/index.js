@@ -19,6 +19,11 @@ export default handlerCors().post((req, res) => {
 		? new Date(req.body?.dateAndTime)
 		: new Date()
 
+	let emailData = req.body?.client?.email
+	let isEmailNoValid = emailData.search("noemail")
+
+	console.log(emailData, isEmailNoValid)
+
 	let reservaDetails = {
 		id: req.body?.reserva,
 		clienteId: req.body?.client?._id || "",
@@ -83,7 +88,7 @@ export default handlerCors().post((req, res) => {
 	const templateEmail = process.env.TEMPLETE_ID_EMAIL_RESERVA
 
 	let emailToSend =
-		reservaDetails?.email === ""
+		reservaDetails?.email === "" || !isEmailNoValid
 			? ["informes@mariachon.com"]
 			: ["informes@mariachon.com", reservaDetails?.email]
 
