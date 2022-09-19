@@ -122,14 +122,13 @@ export const updateBooking = createAsyncThunk(
 					},
 				}
 
-				dispatch(
+				return dispatch(
 					addBookingToGoogleSheet({
 						...dataReserva,
 						sendEmail: booking.sendEmail,
+						isAddingOrUpdating: "add",
 					})
 				)
-
-				return dataReserva
 			})
 			.catch((error) => {
 				const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
@@ -171,14 +170,13 @@ export const addBooking = createAsyncThunk(
 					},
 				}
 
-				dispatch(
+				return dispatch(
 					addBookingToGoogleSheet({
 						...dataReserva,
 						sendEmail: booking.sendEmail,
+						isAddingOrUpdating: "update",
 					})
 				)
-
-				return dataReserva
 			})
 			.catch((error) => {
 				const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
@@ -198,16 +196,14 @@ export const addBooking = createAsyncThunk(
 export const addBookingToGoogleSheet = createAsyncThunk(
 	"bookings/addBookingToGoogleSheet",
 	(reserva, { dispatch }) => {
-		console.log("para ggole", reserva)
+		let reservaData = reserva
 		return axios
 			.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`, reserva)
 			.then((response) => {
-				console.log("hola", response.data)
-				const data = response.data
-
 				if (reserva.sendEmail) {
-					dispatch(sendBooking(reserva))
-					return data
+					delete reservaData.sendEmail
+					return dispatch(sendBooking(reservaData))
+
 					// return axios
 					// 	.post(`/api/reservas/email`, reserva)
 					// 	.then((resp) => {
@@ -227,7 +223,9 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 					// 		return errorData
 					// 	})
 				} else {
-					return data
+					delete reservaData.sendEmail
+					delete reservaData.isAddingOrUpdating
+					return { data: response.data, reserva: reservaData }
 				}
 			})
 			.catch((error) => {
@@ -251,8 +249,7 @@ export const sendBooking = createAsyncThunk(
 			.post(`/api/reservas/email`, reserva)
 			.then((resp) => {
 				const dataE = resp.data
-				console.log("hola2 :", dataE)
-				return dataE
+				return { dataE: dataE, reserva: reserva }
 			})
 			.catch((error) => {
 				const text = {
@@ -301,41 +298,54 @@ const bookingsSlice = createSlice({
 			state.statusBook = "failed"
 		},
 		[updateBooking.fulfilled]: (state, action) => {
-			if (action?.payload?.data) {
+			if (action?.payload?.payload?.payload?.reserva) {
+				state.statusBook = "succeeded"
+			} else {
 				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
-			} else {
-				state.statusBook = "succeeded"
-				const bookingUp = action.payload
-				console.log("action!!!", action.payload)
-				state.bookings = state.bookings.map((booking) =>
-					booking._id === bookingUp._id ? bookingUp : booking
-				)
+				// const bookingUp = action.payload
+				// console.log("action!!!", action.payload)
+				// state.bookings = state.bookings.map((booking) =>
+				// 	booking._id === bookingUp._id ? bookingUp : booking
+				// )
 			}
 		},
 		[addBooking.fulfilled]: (state, action) => {
-			if (action?.payload?.data) {
+			if (action?.payload?.payload?.payload?.reserva) {
+				state.statusBook = "succeeded"
+			} else {
 				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
-			} else {
-				state.statusBook = "succeeded"
-				state.bookings.push(action.payload)
 			}
 		},
 		[addBookingToGoogleSheet.fulfilled]: (state, action) => {
-			if (action?.payload?.data) {
-				state.statusGS = "failed"
-				state.error = "Error en la carga de la reserva en google sheet"
-			} else {
+			if (action?.payload?.payload?.reserva) {
 				state.statusBookGS = "succeeded"
+			} else {
+				state.statusBookGS = "failed"
+				state.error = "Error en la carga de la reserva en google sheet"
 			}
 		},
 		[sendBooking.fulfilled]: (state, action) => {
-			if (action?.payload?.data) {
+			console.log("send email", action.payload)
+
+			if (action?.payload?.reserva) {
+				state.statusBookGS = "succeeded"
+				state.statusBEmail = "succeeded"
+				state.statusBook = "succeeded"
+
+				let reservaData = action.payload.reserva
+				if (reservaData.isAddingOrUpdating === "add") {
+					state.bookings.push(action.payload)
+				} else if (reservaData.isAddingOrUpdating === "update") {
+					delete reservaData.isAddingOrUpdating
+					state.bookings = state.bookings.map((booking) =>
+						booking._id === reservaData._id ? reservaData : booking
+					)
+				}
+			} else {
 				state.statusBEmail = "failed"
 				state.error = "Error en el envio del correo"
-			} else {
-				state.statusBEmail = "succeeded"
 			}
 		},
 

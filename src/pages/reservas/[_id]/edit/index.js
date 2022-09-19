@@ -18,6 +18,7 @@ import {
 	selectStatusBook,
 	selectStatusBookGS,
 	setStatusBooking,
+	setStatusBookingEmail,
 	setStatusBookingGS,
 	updateBooking,
 } from "store/features/bookings/bookingSlice"
@@ -379,11 +380,18 @@ const reservaById = ({ id }) => {
 		toast.success("Reserva actualizada correctamente", { id: toastIdRe })
 
 	useEffect(() => {
-		if (status === "failed") {
+		console.log("status:", status, statusBookGS, statusBEmail)
+		if (
+			status === "failed" ||
+			statusBookGS === "failed" ||
+			statusBEmail === "failed"
+		) {
 			toast.dismiss(toastIdRe)
 
 			notifyError()
 			dispatch(setStatusBooking("idle"))
+			dispatch(setStatusBookingGS("idle"))
+			dispatch(setStatusBookingEmail("idle"))
 		}
 
 		if (

@@ -357,11 +357,19 @@ const newBooking = () => {
 		toast.success("Reserva creada correctamente", { id: toastIdRe })
 
 	useEffect(() => {
-		if (status === "failed") {
+		console.log("status:", status, statusBookGS, statusBEmail)
+
+		if (
+			status === "failed" ||
+			statusBookGS === "failed" ||
+			statusBEmail === "failed"
+		) {
 			toast.dismiss(toastIdRe)
 
 			notifyError()
 			dispatch(setStatusBooking("idle"))
+			dispatch(setStatusBookingGS("idle"))
+			dispatch(setStatusBookingEmail("idle"))
 		}
 		if (
 			status === "succeeded" &&
