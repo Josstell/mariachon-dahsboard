@@ -90,9 +90,7 @@ export const updateMariachi = createAsyncThunk(
 				)
 
 				const dataUpdate = { ...data, coordinator: coordinatorUpdated }
-				dispatch(addMariachiToGoogleSheet(dataUpdate))
-
-				return dataUpdate
+				return dispatch(addMariachiToGoogleSheet(dataUpdate))
 			}
 		} catch (error) {
 			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
@@ -124,11 +122,13 @@ export const addMariachi = createAsyncThunk(
 					(user) => user._id === data.coordinator._ref
 				)
 
-				dispatch(addMariachiToGoogleSheet({ ...mariachi, _id: data._id }))
-				return {
-					...data,
+				const mariachiData = {
+					...mariachi,
+					_id: data._id,
 					coordinator: coordinatorUpdated,
 				}
+
+				return dispatch(addMariachiToGoogleSheet(mariachiData))
 			}
 		} catch (error) {
 			const text = { message: "Algo paso! Favor de intentarlo màs tarde." }
@@ -155,7 +155,8 @@ export const addMariachiToGoogleSheet = createAsyncThunk(
 			)
 
 			return {
-				...data,
+				data,
+				mariachiData: mariachi,
 			}
 		} catch (error) {
 			const text = {
@@ -203,34 +204,33 @@ const mariachisSlice = createSlice({
 			state.status = "failed"
 		},
 		[updateMariachi.fulfilled]: (state, action) => {
-			if (action.payload.data) {
-				state.status = "failed"
-				state.error = "Algo paso, por favor intentelo nuevamente."
-			} else {
+			if (action.payload.payload.mariachiData) {
 				state.status = "succeeded"
 				const mariachiUp = action.payload
 				state.mariachis = state.mariachis.map((mariachi) =>
 					mariachi._id === mariachiUp._id ? mariachiUp : mariachi
 				)
+			} else {
+				state.status = "failed"
+				state.error = "Algo paso, por favor intentelo nuevamente."
 			}
 		},
 		[addMariachiToGoogleSheet.fulfilled]: (state, action) => {
-			if (action.payload.data) {
-				console.log("aqui:  ", action.payload)
-				state.statusGS = "failed"
-				state.error = "Error en la carga de google sheet"
-			} else {
+			if (action.payload.mariachiData) {
 				state.statusGS = "succeeded"
 				state.messageAPIS = action.payload
+			} else {
+				state.statusGS = "failed"
+				state.error = "Error en la carga de google sheet"
 			}
 		},
 		[addMariachi.fulfilled]: (state, action) => {
-			if (action.payload.data) {
-				state.status = "failed"
-				state.error = "Algo paso, por favor intentelo nuevamente."
-			} else {
+			if (action.payload.payload.mariachiData) {
 				state.status = "succeeded"
 				state.mariachis.push(action.payload)
+			} else {
+				state.status = "failed"
+				state.error = "Algo paso, por favor intentelo nuevamente."
 			}
 		},
 		[HYDRATE]: (state, action) => {
