@@ -89,7 +89,7 @@ export const updateUser = createAsyncThunk(
 				const admin = data.categorySet.find((category) => category === "Admin")
 
 				data = {
-					...data,
+					...user,
 					exist: true,
 					isAdmin: admin === "Admin" ? true : false,
 				}
