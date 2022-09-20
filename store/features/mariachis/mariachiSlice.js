@@ -204,9 +204,9 @@ const mariachisSlice = createSlice({
 			state.status = "failed"
 		},
 		[updateMariachi.fulfilled]: (state, action) => {
-			if (action.payload.payload.mariachiData) {
+			if (action.payload?.payload?.mariachiData) {
 				state.status = "succeeded"
-				const mariachiUp = action.payload
+				const mariachiUp = action.payload.payload.mariachiData
 				state.mariachis = state.mariachis.map((mariachi) =>
 					mariachi._id === mariachiUp._id ? mariachiUp : mariachi
 				)
@@ -218,16 +218,16 @@ const mariachisSlice = createSlice({
 		[addMariachiToGoogleSheet.fulfilled]: (state, action) => {
 			if (action.payload.mariachiData) {
 				state.statusGS = "succeeded"
-				state.messageAPIS = action.payload
+				state.messageAPIS = action.payload.data
 			} else {
 				state.statusGS = "failed"
 				state.error = "Error en la carga de google sheet"
 			}
 		},
 		[addMariachi.fulfilled]: (state, action) => {
-			if (action.payload.payload.mariachiData) {
+			if (action.payload?.payload?.mariachiData) {
 				state.status = "succeeded"
-				state.mariachis.push(action.payload)
+				state.mariachis.push(action.payload.payload.mariachiData)
 			} else {
 				state.status = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
