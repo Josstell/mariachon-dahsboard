@@ -90,6 +90,10 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 			],
 			createdBy: { _ref: userAdmin?._id, _type: "reference" },
 			dateCreated: dateGral?.toLocaleDateString("es-MX", optionsDate),
+			username:
+				dataFormUser.username === ""
+					? dataFormUser.name.split(" ").join("").toLocaleLowerCase()
+					: dataFormUser.username,
 		}
 
 		const dataUpdate = {

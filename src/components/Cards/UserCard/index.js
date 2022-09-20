@@ -5,7 +5,6 @@ import GetLogoWithNameV from "src/components/GetLogoWithName/GetLogoWithNameV"
 
 const UserCard = ({ userUpdat }) => {
 	const [userUpdate, setUserUpdate] = useState(userUpdat)
-	console.log("use!!!", userUpdate)
 
 	useEffect(() => {
 		setUserUpdate(userUpdat)

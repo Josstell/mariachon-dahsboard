@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux"
 import UserCard from "src/components/Cards/UserCard"
 import UserForm from "src/components/Forms/UserForm"
 import Layout from "src/components/Layout"
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import { dateGral, optionsDate } from "src/helpers/utils"
@@ -17,8 +16,10 @@ import { wrapper } from "store"
 import {
 	selectAllUsers,
 	selectError,
+	selectStatusGSUser,
 	selectStatusUser,
 	selectUserAdmin,
+	setStatusGSUser,
 	setStatusUser,
 	setUserUpdate,
 	updateUser,
@@ -36,6 +37,8 @@ const userById = ({ id }) => {
 	const userAdmin = useSelector(selectUserAdmin)
 
 	const status = useSelector(selectStatusUser)
+	const statusGSUser = useSelector(selectStatusGSUser)
+
 	const error = useSelector(selectError)
 
 	const methods = useForm()
@@ -87,6 +90,7 @@ const userById = ({ id }) => {
 
 	const onSubmit = (dataForm) => {
 		setLoading(true)
+		toastIdUs = toast.loading("Cargando...")
 
 		//Creando variable session para recargar datos
 
@@ -96,6 +100,10 @@ const userById = ({ id }) => {
 				_id: dataUser._id,
 				categorySet: dataUser?.categorySet || "",
 				stage: ["AFILIADO"],
+				username:
+					dataForm.username === ""
+						? dataForm.name.split(" ").join("").toLocaleLowerCase()
+						: dataForm.username,
 			})
 		)
 		dispatch(
@@ -106,25 +114,41 @@ const userById = ({ id }) => {
 				modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 				dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
 				stage: ["AFILIADO"],
+				username:
+					dataForm.username === ""
+						? dataForm.name.split(" ").join("").toLocaleLowerCase()
+						: dataForm.username,
 			})
 		)
 	}
 
-	const notifyError = () => toast.error(error)
-	const notifySuccess = () => toast.success("Datos actualizados correctamente")
+	let toastIdUs
+
+	const notifyError = () => toast.error(error, { id: toastIdUs })
+	const notifySuccess = () =>
+		toast.success("Usuario actualizado correctamente", { id: toastIdUs })
 
 	useEffect(() => {
-		if (status === "failed") {
+		if (status === "failed" || statusGSUser === "failed") {
+			toast.dismiss(toastIdUs)
+
 			notifyError()
 			dispatch(setStatusUser("idle"))
+			dispatch(setStatusGSUser("idle"))
+			setLoading(false)
 		}
-		if (status === "succeeded") {
+		if (status === "succeeded" && statusGSUser === "succeeded") {
+			toast.dismiss(toastIdUs)
+
 			dispatch(setStatusUser("idle"))
+			dispatch(setStatusGSUser("idle"))
+
 			notifySuccess()
+			setLoading(false)
 
 			setTimeout(() => router.push("/usuarios"), 1000)
 		}
-	}, [status, error, notifyError, dispatch, router])
+	}, [status, statusGSUser, error, notifyError, dispatch, router])
 
 	const userUpdat = {
 		name: watch("name"),
@@ -147,19 +171,15 @@ const userById = ({ id }) => {
 						className={`no-scrollbar overflow-auto h-[1024px] md:h-fit flex flex-col md:flex-row 
 							justify-evenly items-center`}
 					>
-						<div className="w-4/12 h-fit min-w-[370px]  md:min-h-full">
+						<div className="w-4/12 h-fit min-w-[370px]  md:min-h-full px-3">
 							{/* <UserForm />  Formulario */}
 							<div className="m-auto md:m-0">
-								{!(status === "idle") ? (
-									<SpinnerLoadign />
-								) : (
-									<UserForm
-										methods={methods}
-										data={dataUser}
-										onSubmit={onSubmit}
-										loading={loading}
-									/>
-								)}
+								<UserForm
+									methods={methods}
+									data={dataUser}
+									onSubmit={onSubmit}
+									loading={loading}
+								/>
 
 								<Toaster />
 							</div>

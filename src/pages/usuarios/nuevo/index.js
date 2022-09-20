@@ -11,14 +11,15 @@ import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import {
 	addNewUser,
 	selectError,
+	selectStatusGSUser,
 	selectStatusUser,
 	selectUserAdmin,
+	setStatusGSUser,
 	setStatusUser,
 } from "store/features/users/userSlice"
 
 import { nanoid } from "@reduxjs/toolkit"
 import { useRouter } from "next/router"
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import { dateGral, optionsDate } from "src/helpers/utils"
 
 const addnewuser = () => {
@@ -29,6 +30,8 @@ const addnewuser = () => {
 
 	const userAdmin = useSelector(selectUserAdmin)
 	const status = useSelector(selectStatusUser)
+	const statusGSUser = useSelector(selectStatusGSUser)
+
 	const error = useSelector(selectError)
 
 	const dispatch = useDispatch()
@@ -39,9 +42,6 @@ const addnewuser = () => {
 
 	const { setValue, watch } = methods
 
-	const notifyError = () => toast.error(error)
-	const notifySuccess = () => toast.success("Datos creados correctamente")
-
 	useEffect(() => {
 		dispatch(setStatusUser("idle"))
 		setValue("name", "")
@@ -51,22 +51,37 @@ const addnewuser = () => {
 		setValue("region", "")
 	}, [])
 
+	let toastIdUs
+
+	const notifyError = () => toast.error(error, { id: toastIdUs })
+	const notifySuccess = () =>
+		toast.success("Usuario actualizado correctamente", { id: toastIdUs })
+
 	useEffect(() => {
-		if (status === "failed") {
-			setLoading(false)
+		if (status === "failed" || statusGSUser === "failed") {
+			toast.dismiss(toastIdUs)
+
 			notifyError()
 			dispatch(setStatusUser("idle"))
-		}
-		if (status === "succeeded") {
+			dispatch(setStatusGSUser("idle"))
 			setLoading(false)
+		}
+		if (status === "succeeded" && statusGSUser === "succeeded") {
+			toast.dismiss(toastIdUs)
+
+			dispatch(setStatusUser("idle"))
+			dispatch(setStatusGSUser("idle"))
+
 			notifySuccess()
-			//dispatch(setStatus("idle"))
+			setLoading(false)
+
 			setTimeout(() => router.push("/usuarios"), 1000)
 		}
-	}, [router, status])
+	}, [status, statusGSUser, error, notifyError, dispatch, router])
 
 	const onSubmit = (dataFormUser) => {
 		setLoading(true)
+		toastIdUs = toast.loading("Cargando...")
 
 		const data = {
 			...dataFormUser,
@@ -79,6 +94,10 @@ const addnewuser = () => {
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
 			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 			stage: ["PROSPECTO"],
+			username:
+				dataFormUser.username === ""
+					? dataFormUser.name.split(" ").join("").toLocaleLowerCase()
+					: dataFormUser.username,
 		}
 
 		const dataNew = {
@@ -90,7 +109,6 @@ const addnewuser = () => {
 					? []
 					: data?.categorySet?.filter((cat) => cat !== false),
 		}
-
 		dispatch(addNewUser(dataNew))
 	}
 
@@ -116,19 +134,15 @@ const addnewuser = () => {
 						className={`no-scrollbar overflow-auto   h-full md:h-full flex flex-col md:flex-row 
 							justify-evenly items-center`}
 					>
-						<div className="w-4/12 h-fit min-w-[370px]  md:min-h-full">
+						<div className="w-4/12 h-fit min-w-[370px]  md:min-h-full px-3">
 							{/* <UserForm />  Formulario */}
 							<div className="mt-96 m-auto md:m-0">
-								{!(status === "idle") ? (
-									<SpinnerLoadign />
-								) : (
-									<UserForm
-										methods={methods}
-										data={{ ...data, button: "Crear nuevo" }}
-										onSubmit={onSubmit}
-										loading={loading}
-									/>
-								)}
+								<UserForm
+									methods={methods}
+									data={{ ...data, button: "Crear nuevo" }}
+									onSubmit={onSubmit}
+									loading={loading}
+								/>
 							</div>
 
 							<Toaster />

@@ -13,7 +13,7 @@ const initialState = {
 	userUpdate: {},
 	userById: {},
 	status: "idle",
-	statusGS: "idle",
+	statusGSUser: "idle",
 	error: null,
 }
 const query = groq`
@@ -80,25 +80,34 @@ export const fetchUsersNew = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
 	"users/updateUser",
-	async (user, { dispatch }) => {
+	(user, { dispatch }) => {
 		// We send the initial data to the fake API server
-		try {
-			const { data } = await axios.put("/api/users/update", user)
-
-			if (data) {
-				dispatch(addClientToGoogleSheet({ ...user }))
+		return axios
+			.put("/api/users/update", user)
+			.then((response) => {
+				let data = response.data
 				const admin = data.categorySet.find((category) => category === "Admin")
 
-				return {
+				data = {
 					...data,
 					exist: true,
 					isAdmin: admin === "Admin" ? true : false,
 				}
-			}
-		} catch (error) {
-			console.log(error)
-		}
-		// The response includes the complete post object, including unique ID
+				console.log("data!!!", data)
+
+				return dispatch(addClientToGoogleSheet(data))
+			})
+			.catch((error) => {
+				const text = {
+					message: "Algo paso! No se actualizaron datos en Base de datos.",
+				}
+
+				const errorData = {
+					data: error?.response?.data ? error?.response?.data : text,
+				}
+
+				return errorData
+			})
 	}
 )
 
@@ -106,18 +115,34 @@ export const updateUser = createAsyncThunk(
 export const addNewUser = createAsyncThunk(
 	"user/addNewUser",
 	// The payload creator receives the partial `{title, content, user}` object
-	async (newUser, { dispatch }) => {
+	(newUser, { dispatch }) => {
 		// We send the initial data to the fake API server
-		try {
-			const { data } = await axios.post("/api/users/add", newUser)
-			if (data) {
-				const newData = { ...newUser, _id: data._id }
-				dispatch(addClientToGoogleSheet(newData))
-				return newData
-			}
-		} catch (error) {
-			return error.response.data
-		}
+		return axios
+			.post("/api/users/add", newUser)
+			.then((response) => {
+				const data = response?.data
+
+				const admin = data.categorySet.find((category) => category === "Admin")
+
+				const newData = {
+					...newUser,
+					exist: true,
+					isAdmin: admin === "Admin" ? true : false,
+					_id: data._id,
+				}
+				return dispatch(addClientToGoogleSheet(newData))
+			})
+			.catch((error) => {
+				const text = {
+					message: "Algo paso! No se guardaron datos en Base de datos.",
+				}
+
+				const errorData = {
+					data: error?.response?.data ? error?.response?.data : text,
+				}
+
+				return errorData
+			})
 		// The response includes the complete post object, including unique ID
 	}
 )
@@ -125,30 +150,33 @@ export const addNewUser = createAsyncThunk(
 /// get user by Id
 
 export const addClientToGoogleSheet = createAsyncThunk(
-	"mariachis/addMariachiToGoogleSheet",
-	async (client) => {
-		try {
-			const { data } = await axios.post(
-				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`,
-				{
-					...client,
+	"users/addClientToGoogleSheet",
+	(client) => {
+		return axios
+			.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`, client)
+			.then((res) => {
+				const data = res.data
+				if (data) {
+					console.log("retorne", res, data)
+					return {
+						data: data,
+						userData: client,
+					}
 				}
-			)
+			})
+			.catch((error) => {
+				console.log("error", error)
 
-			return {
-				...data,
-			}
-		} catch (error) {
-			const text = {
-				message: "Algo paso! No se guardaron datos en Google Sheet.",
-			}
+				const text = {
+					message: "Algo paso! No se guardaron datos en Google Sheet.",
+				}
 
-			const errorData = {
-				data: error?.response?.data ? error?.response?.data : text,
-			}
+				const errorData = {
+					data: error?.response?.data ? error?.response?.data : text,
+				}
 
-			return errorData
-		}
+				return errorData
+			})
 	}
 )
 // const queryUserById = groq`*[_type == "user" && _id == $id][0]{
@@ -196,7 +224,7 @@ const usersSlice = createSlice({
 			state.status = action.payload
 		},
 		setStatusGSUser: (state, action) => {
-			state.statusGS = action.payload
+			state.statusGSUser = action.payload
 		},
 	},
 
@@ -217,42 +245,62 @@ const usersSlice = createSlice({
 		[addNewUser.pending]: (state) => {
 			state.status = "loading"
 		},
+		// [addNewUser.rejected]: (state) => {
+		// 	state.status = "failed"
+		// 	state.error = "¡Algo paso faver de intentarlo más tarde!"
+		// },
 		[addNewUser.fulfilled]: (state, action) => {
-			if (action.payload.message) {
-				state.status = "failed"
-				state.error = action.payload.message
-			} else {
+			console.log("addUser Data", action.payload?.payload?.userData)
+
+			if (action.payload?.payload?.userData) {
 				state.status = "succeeded"
-				state.users.push(action.payload)
+				state.users.push(action.payload?.payload?.userData)
+			} else {
+				state.status = "failed"
+				state.error = action.payload.data
 			}
 		},
-
+		// [updateUser.rejected]: (state) => {
+		// 	state.error = "¡Algo paso faver de intentarlo más tarde!"
+		// 	state.status = "failed"
+		// },
 		[updateUser.pending]: (state) => {
 			state.status = "loading"
 		},
-
 		[updateUser.fulfilled]: (state, action) => {
 			state.status = "succeeded"
 			state.userUpdate = {}
-			const userAd = action.payload
+			const userAd = action.payload?.payload?.userData
 
-			if (action.payload?.isAdmin) {
-				state.admin = action.payload
-				state.users = state.users.map((user) =>
-					user._id === userAd._id ? userAd : user
-				)
+			console.log("Update Data", action.payload)
+
+			if (userAd) {
+				if (userAd?.isAdmin) {
+					state.admin = userAd
+					state.users = state.users.map((user) =>
+						user._id === userAd._id ? userAd : user
+					)
+				} else {
+					state.users = state.users.map((user) =>
+						user._id === userAd._id ? userAd : user
+					)
+				}
 			} else {
-				state.users = state.users.map((user) =>
-					user._id === userAd._id ? userAd : user
-				)
+				state.statusGSUser = "failed"
+				state.error = "Error en la carga de google sheet"
 			}
 		},
+		// [addClientToGoogleSheet.rejected]: (state) => {
+		// 	state.error = "¡Algo paso favor de intentarlo más tarde!"
+		// 	state.status = "failed"
+		// },
 		[addClientToGoogleSheet.fulfilled]: (state, action) => {
-			if (action.payload.data) {
-				state.statusGS = "failed"
-				state.error = "Error en la carga de google sheet"
+			console.log("GS completed", action.payload)
+			if (action.payload?.userData) {
+				state.statusGSUser = "succeeded"
 			} else {
-				state.statusGS = "succeeded"
+				state.statusGSUser = "failed"
+				state.error = "Error en la carga de google sheet"
 			}
 		},
 
@@ -267,6 +315,7 @@ const usersSlice = createSlice({
 					users: action.payload.users.users,
 					admin: action.payload.users.admin,
 					status: action.payload.users.status,
+					statusGSUser: action.payload.users.statusGSUser,
 				}
 			}
 
@@ -280,6 +329,7 @@ const usersSlice = createSlice({
 			state.users = action.payload.users.users
 			state.admin = action.payload.users.admin
 			state.status = action.payload.users.status
+			state.statusGSUser = action.payload.users.statusGSUser
 			state.error = action.payload.users.error
 		},
 	},
@@ -288,12 +338,19 @@ const usersSlice = createSlice({
 //export const { setUsers } = usersSlice.actions
 
 export default usersSlice.reducer
-export const { setAdminUser, setUserUpdate, setStatusUser, getUserById } =
-	usersSlice.actions
+export const {
+	setAdminUser,
+	setUserUpdate,
+	setStatusUser,
+	getUserById,
+	setStatusGSUser,
+} = usersSlice.actions
 
 export const selectAllUsers = (state) => state.users.users
 
 export const selectUserAdmin = (state) => state.users.admin
 export const selectUserUpdate = (state) => state.users.userUpdate
 export const selectStatusUser = (state) => state.users.status
+export const selectStatusGSUser = (state) => state.users.statusGSUser
+
 export const selectError = (state) => state.users.error

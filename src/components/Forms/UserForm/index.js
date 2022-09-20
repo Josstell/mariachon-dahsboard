@@ -1,4 +1,3 @@
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import { regions } from "src/helpers/dataset"
 import Form from "../Smart/Form"
 import { Button, Checkbox, Input, Select } from "../Smart/Inputs"
@@ -82,9 +81,9 @@ const UserForm = ({ methods, onSubmit, loading, data }) => {
 				<Button
 					hidden={true}
 					message={data?.button ? data?.button : "Actualizar"}
+					disabledBtn={loading}
 				/>
 			</Form>
-			{loading && <SpinnerLoadign />}
 		</>
 	)
 }
