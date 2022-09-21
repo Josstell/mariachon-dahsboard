@@ -13,6 +13,7 @@ import { SelectSimple } from "src/components/Forms/Smart/Inputs"
 import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
 
 import { regions } from "src/helpers/dataset"
+import TotalSum from "src/components/SVG/Icons/TotalSum"
 
 const TableUser = () => {
 	const regionData = regions.response.estado
@@ -53,8 +54,12 @@ const TableUser = () => {
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
 						<div className="relative w-full px-4 max-w-full flex flex-row justify-between divide-x-2 md:divide-x-0 pr-2 ">
-							<h3 className="font-semibold text-lg text-slate-700 dark:text-white ">
-								Usuarios
+							<h3 className="font-semibold text-lg text-slate-700 dark:text-white flex flex-col justify-center items-center ">
+								<span>Usuarios</span>
+								<div className="flex justify-center items-center">
+									<TotalSum className="fill-slate-900 dark:fill-slate-100 w-5 h-5 mt-1" />
+									<span className="text-sm "> {usersDataSearch.length}</span>
+								</div>
 							</h3>
 							<div className="flex flex-row justify-between items-center pl-2 ">
 								<div className="mr-2">

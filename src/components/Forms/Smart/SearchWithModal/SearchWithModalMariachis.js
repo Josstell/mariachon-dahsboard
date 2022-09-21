@@ -1,6 +1,6 @@
 import { useState } from "react"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
-import { etapesData, statusData } from "src/helpers/utils"
+import { etapesData, statusData, userByType } from "src/helpers/utils"
 import useSearchByQuery from "src/hook/useSearchByQuery"
 import { RadioButtonSimple } from "../Inputs"
 
@@ -16,12 +16,14 @@ const SearchWithModalMariachis = ({
 	const [porServicio, setPorServicio] = useState("")
 
 	const [byEtapes, setByEtapes] = useState("")
+	const [userType, setuserType] = useState("")
 
 	const [setQuery, filtereDdata] = useSearchByQuery(
 		mariachiDataSearch,
 		typeData,
 		porServicio,
 		byEtapes,
+		userType,
 		regionSelected,
 		dataOriginal
 	)
@@ -49,6 +51,10 @@ const SearchWithModalMariachis = ({
 		console.log("Status", e.target.value)
 	}
 
+	const handleUserType = (e) => {
+		setuserType(e.target.value)
+	}
+
 	setMariachisDataSearch(filtereDdata)
 
 	// if (hideIconShowSearch) {
@@ -72,7 +78,13 @@ const SearchWithModalMariachis = ({
 								className="w-full rounded-md bg-slate-500 text-slate-100 text-xs leading-tight focus:outline-none py-2 px-2"
 								id="search"
 								type="text"
-								placeholder="Nombre, coordinador, elementos, etc"
+								placeholder={
+									typeData === "mariachi"
+										? "Mariachi, Coordinador, tel,"
+										: typeData === "user"
+										? "nombre, email, tel"
+										: "#reserva, cliente, mariachi"
+								}
 								checked={porPrecio}
 								onChange={handleModalSearch}
 							/>
@@ -106,6 +118,12 @@ const SearchWithModalMariachis = ({
 							porPrecio && (typeData === "mariachi" || typeData === "user")
 						}
 						handleServices={handleEtapes}
+					/>
+					<RadioButtonSimple
+						name="searchByUserType"
+						label={userByType}
+						hidden={porPrecio && typeData === "user"}
+						handleServices={handleUserType}
 					/>
 
 					<RadioButtonSimple

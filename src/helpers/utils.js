@@ -27,6 +27,8 @@ export const etapesData = ["PROSPECTO", "MONITOREO", "AFILIADO", "ANULADO"]
 
 //export const etapesClient = ["PROSPECTO", "MONITOREO", "AFILIADO", "ANULADO"]
 
+export const userByType = ["ADMIN", "CLIENTE", "MARIACHI", "COORDINADOR"]
+
 export const statusData = [
 	"Agendado",
 	"Enviada",
