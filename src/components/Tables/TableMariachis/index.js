@@ -232,7 +232,7 @@ const TableMariachis = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{mariachisDataSearch?.map((mariachi) => (
+							{mariachisData?.map((mariachi) => (
 								<tr
 									key={mariachi._id}
 									className="transition duration-300 ease-in-out hover:bg-slate-600/95"

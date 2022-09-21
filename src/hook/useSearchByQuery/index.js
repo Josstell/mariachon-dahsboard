@@ -16,25 +16,6 @@ const useSearchByQuery = (
 
 	const [filteredData, setFilteredData] = useState([])
 
-	//let datOriginal
-
-	// if (typeElement==="user"){
-	// 	datOriginal = useSelector(selectAllUsers)
-	// } else if(typeElement==="mariachi"){
-	// 			datOriginal = useSelector(selectAllMariachis)
-
-	// }
-
-	// useMemo(() => {
-	// 	if (regionSelected !== "All") {
-	// 		console.log("Not all")
-	// 		const result = filteredData.filter((dat) => {
-	// 			return dat.region === regionSelected
-	// 		})
-	// 		setFilteredData(result)
-	// 	}
-	// }, [regionSelected])
-
 	useMemo(() => {
 		if (typeElement === "user") {
 			console.log(
