@@ -229,6 +229,7 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 				}
 			})
 			.catch((error) => {
+				console.log("Google Error", error)
 				const text = {
 					message: "Algo paso! No se guardaron datos en Google Sheet.",
 				}
