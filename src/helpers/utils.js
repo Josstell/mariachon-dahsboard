@@ -34,6 +34,7 @@ export const mariachiCategory = ["basico", "normal", "premium"]
 export const byServices = ["Inactivo", "serenata", "hora", "contrato"]
 
 export const statusData = [
+	"Todos",
 	"Agendado",
 	"Enviada",
 	"Realizada",

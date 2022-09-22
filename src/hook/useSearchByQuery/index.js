@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import { optionsDate } from "src/helpers/utils"
 // import { useSelector } from "react-redux"
 // import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 // import { selectAllUsers } from "store/features/users/userSlice"
@@ -11,6 +12,8 @@ const useSearchByQuery = (
 	userByType,
 	mariachiCategories,
 	typeOfPrices,
+	statusReserva,
+	byDateBooking,
 	regionSelected,
 	dataOriginal
 ) => {
@@ -134,9 +137,87 @@ const useSearchByQuery = (
 				})
 			}
 
-			console.log("por servicio:", porServicio, typeOfPrices)
-
 			setFilteredData(filterMariachiCategory)
+		}
+
+		if (typeElement === "booking") {
+			let filterRegionSelected
+			let filerQuerySelected
+			let filterStatusReserva
+
+			let filterByDateReserva
+
+			if (regionSelected === "All") {
+				filterRegionSelected = dataOriginal
+			} else {
+				filterRegionSelected = dataOriginal.filter(
+					(data) => data.shippingAddress.region === regionSelected
+				)
+			}
+
+			if (query === "") {
+				filerQuerySelected = filterRegionSelected
+			} else {
+				filerQuerySelected = filterRegionSelected.filter((dat) => {
+					return (
+						`${dat.client.name}`.toLowerCase().includes(query.toLowerCase()) ||
+						`${dat.reserva}`.toLowerCase().includes(query.toLowerCase()) ||
+						`${dat.orderItems.mariachi.name}`
+							.toLowerCase()
+							.includes(query.toLowerCase())
+					)
+				})
+			}
+
+			// if (byEtapes === "") {
+			// 	filterStageSelected = filerQuerySelected
+			// } else {
+			// 	filterStageSelected = filerQuerySelected.filter((dat) => {
+			// 		return dat.stage[0] === byEtapes
+			// 	})
+			// }
+
+			if (statusReserva === "" || statusReserva === "Todos") {
+				filterStatusReserva = filerQuerySelected
+			} else {
+				filterStatusReserva = filerQuerySelected.filter((dat) => {
+					return dat.status[0] === statusReserva
+				})
+			}
+			console.log("Reserva status: ", statusReserva, byDateBooking)
+
+			if (byDateBooking === "") {
+				filterByDateReserva = filterStatusReserva
+			} else {
+				filterByDateReserva = filterStatusReserva.filter((dat) => {
+					const reservaDate = new Date(dat.dateAndTime)
+					const datePicked = new Date(byDateBooking)
+					console.log(
+						reservaDate.toLocaleDateString("es-MX", optionsDate),
+						datePicked.toLocaleDateString("es-MX", optionsDate)
+					)
+					return (
+						reservaDate.toLocaleDateString("es-MX", optionsDate) ===
+						datePicked.toLocaleDateString("es-MX", optionsDate)
+					)
+				})
+			}
+
+			setFilteredData(filterByDateReserva)
+
+			// if (mariachiCategories === "") {
+			// 	filterMariachiCategory = filterStageSelected
+			// } else {
+			// 	filterStageSelected.forEach((dataFilter) => {
+			// 		const typefiltered = dataFilter.categorySet.find((cat) =>
+			// 			cat ? cat.toLowerCase() === mariachiCategories.toLowerCase() : false
+			// 		)
+
+			// 		if (typefiltered !== undefined) {
+			// 			filterMariachiCategory.push(dataFilter)
+			// 		}
+			// 	})
+			// }
 		}
 	}, [
 		query,
@@ -146,6 +227,8 @@ const useSearchByQuery = (
 		userByType,
 		mariachiCategories,
 		typeOfPrices,
+		statusReserva,
+		byDateBooking,
 	])
 
 	return [setQuery, filteredData, setFilteredData]

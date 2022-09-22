@@ -9,7 +9,7 @@ import {
 	userByType,
 } from "src/helpers/utils"
 import useSearchByQuery from "src/hook/useSearchByQuery"
-import { RadioButtonSimple } from "../Inputs"
+import { InputSimple, RadioButtonSimple } from "../Inputs"
 
 const SearchWithModalMariachis = ({
 	dataOriginal,
@@ -28,6 +28,9 @@ const SearchWithModalMariachis = ({
 	const [byEtapes, setByEtapes] = useState("")
 	const [userType, setuserType] = useState("")
 
+	const [statusReserva, setstatusReserva] = useState("")
+	const [byDateBooking, setByDateBooking] = useState("")
+
 	const [setQuery, filtereDdata] = useSearchByQuery(
 		mariachiDataSearch,
 		typeData,
@@ -36,6 +39,8 @@ const SearchWithModalMariachis = ({
 		userType,
 		mariachiCategories,
 		typeOfPrices,
+		statusReserva,
+		byDateBooking,
 		regionSelected,
 		dataOriginal
 	)
@@ -57,7 +62,7 @@ const SearchWithModalMariachis = ({
 		setByEtapes(e.target.value)
 	}
 	const handleStatus = (e) => {
-		console.log("Status", e.target.value)
+		setstatusReserva(e.target.value)
 	}
 
 	const handleUserType = (e) => {
@@ -70,6 +75,11 @@ const SearchWithModalMariachis = ({
 
 	const handleMariachiCategory = (e) => {
 		setMariachiCategories(e.target.value)
+	}
+
+	const handleBookingByDate = (e) => {
+		console.log("Fecha!!!!", e.target.value)
+		setByDateBooking(e.target.value)
 	}
 
 	setMariachisDataSearch(filtereDdata)
@@ -139,9 +149,7 @@ const SearchWithModalMariachis = ({
 					<RadioButtonSimple
 						name="searchByPrice"
 						label={byServices}
-						hidden={
-							porPrecio && (typeData === "mariachi" || typeData === "booking")
-						}
+						hidden={porPrecio && typeData === "mariachi"}
 						handleServices={handleServices}
 					/>
 					<RadioButtonSimple
@@ -155,6 +163,13 @@ const SearchWithModalMariachis = ({
 						label={userByType}
 						hidden={porPrecio && typeData === "user"}
 						handleServices={handleUserType}
+					/>
+					<InputSimple
+						name="bookingByDate"
+						label="Filtrar por fecha del evento"
+						hidden={porPrecio && typeData === "booking"}
+						type="datetime-local"
+						handleServices={handleBookingByDate}
 					/>
 					<RadioButtonSimple
 						name="searchByStatus"

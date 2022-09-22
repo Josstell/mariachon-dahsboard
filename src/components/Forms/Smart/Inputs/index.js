@@ -451,3 +451,25 @@ export function MultiInputSimple({ name, refs, label, hidden }) {
 		</div>
 	)
 }
+
+export function InputSimple({ name, label, hidden, type, handleServices }) {
+	return (
+		<>
+			<div
+				className={`w-full items-center  py-2 border-teal-500  border-b my-2 ${
+					!hidden && "hidden"
+				} `}
+			>
+				<label className="block uppercase tracking-wide text-gray-700 dark:text-slate-50 text-[10px] font-bold mb-2">
+					{label}
+				</label>
+				<input
+					name={name}
+					type={type}
+					className="appearance-none bg-transparent border-none w-full text-gray-700 dark:text-slate-50 mr-3 py-1 px-2 leading-tight focus:outline-none"
+					onChange={handleServices}
+				/>
+			</div>
+		</>
+	)
+}

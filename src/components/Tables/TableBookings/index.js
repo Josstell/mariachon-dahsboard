@@ -18,6 +18,7 @@ import { selectAllUsers } from "store/features/users/userSlice"
 import { regions } from "src/helpers/dataset"
 import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
 import WhatsAppIcon from "src/components/SVG/Icons/WhatsAppIcon"
+import TotalSum from "src/components/SVG/Icons/TotalSum"
 
 const TableBookings = ({ userAdmin }) => {
 	const regionData = regions.response.estado
@@ -105,6 +106,7 @@ const TableBookings = ({ userAdmin }) => {
 			>
 				<div className={!hideIconShowSearch && "hidden"}>
 					<SearchWithModalMariachis
+						dataOriginal={BookingData}
 						mariachiDataSearch={bookingsDataSearch}
 						setMariachisDataSearch={setBookingsDataSearch}
 						setHideIconShowSearch={setHideIconShowSearch}
@@ -117,8 +119,12 @@ const TableBookings = ({ userAdmin }) => {
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
 						<div className="relative w-full px-4 max-w-full flex justify-between divide-x-2 md:divide-x-0 pr-2">
-							<h3 className="font-semibold text-lg text-slate-700 dark:text-white">
-								Reservas
+							<h3 className="font-semibold text-xs md:text-lg text-slate-700 dark:text-white  flex flex-col justify-center items-center">
+								<span>Reserva</span>
+								<div className="flex justify-center items-center">
+									<TotalSum className="fill-slate-900 dark:fill-slate-100 w-5 h-5 mt-1" />
+									<span className="text-sm ">{bookingsDataSearch.length}</span>
+								</div>
 							</h3>
 
 							<div className="flex flex-row justify-between items-center pl-2 ">
@@ -257,13 +263,12 @@ const TableBookings = ({ userAdmin }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{BookingData?.map((booking) => {
+							{bookingsDataSearch?.map((booking) => {
 								const crewUserById = users.filter((user) =>
 									booking?.orderItems?.mariachi?.crew.find(
 										(cre) => cre._ref === user._id
 									)
 								)
-								crewUserById.unshift({ name: "Mandar a: ", _id: 0 })
 								return (
 									<tr
 										key={booking?._id}
