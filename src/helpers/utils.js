@@ -29,6 +29,10 @@ export const etapesData = ["PROSPECTO", "MONITOREO", "AFILIADO", "ANULADO"]
 
 export const userByType = ["ADMIN", "CLIENTE", "MARIACHI", "COORDINADOR"]
 
+export const typeOfPrice = ["regular", "minimo", "festivo"]
+export const mariachiCategory = ["basico", "normal", "premium"]
+export const byServices = ["Inactivo", "serenata", "hora", "contrato"]
+
 export const statusData = [
 	"Agendado",
 	"Enviada",

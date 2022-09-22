@@ -1,6 +1,13 @@
 import { useState } from "react"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
-import { etapesData, statusData, userByType } from "src/helpers/utils"
+import {
+	byServices,
+	etapesData,
+	mariachiCategory,
+	statusData,
+	typeOfPrice,
+	userByType,
+} from "src/helpers/utils"
 import useSearchByQuery from "src/hook/useSearchByQuery"
 import { RadioButtonSimple } from "../Inputs"
 
@@ -13,7 +20,10 @@ const SearchWithModalMariachis = ({
 	typeData,
 }) => {
 	const [porPrecio, setPorPrecio] = useState(false)
+
 	const [porServicio, setPorServicio] = useState("")
+	const [typeOfPrices, setTypeOfPrices] = useState("regular")
+	const [mariachiCategories, setMariachiCategories] = useState("")
 
 	const [byEtapes, setByEtapes] = useState("")
 	const [userType, setuserType] = useState("")
@@ -24,6 +34,8 @@ const SearchWithModalMariachis = ({
 		porServicio,
 		byEtapes,
 		userType,
+		mariachiCategories,
+		typeOfPrices,
 		regionSelected,
 		dataOriginal
 	)
@@ -34,17 +46,14 @@ const SearchWithModalMariachis = ({
 	}
 
 	const handlePorPrecio = (e) => {
-		console.log("por preioco", e.target.checked)
 		setPorPrecio(e.target.checked)
 	}
 
 	const handleServices = (e) => {
-		console.log("servicios", e.target.value)
 		setPorServicio(e.target.value)
 	}
 
 	const handleEtapes = (e) => {
-		console.log("Etapas", e.target.value)
 		setByEtapes(e.target.value)
 	}
 	const handleStatus = (e) => {
@@ -53,6 +62,14 @@ const SearchWithModalMariachis = ({
 
 	const handleUserType = (e) => {
 		setuserType(e.target.value)
+	}
+
+	const handleTyOfPrice = (e) => {
+		setTypeOfPrices(e.target.value)
+	}
+
+	const handleMariachiCategory = (e) => {
+		setMariachiCategories(e.target.value)
 	}
 
 	setMariachisDataSearch(filtereDdata)
@@ -103,14 +120,14 @@ const SearchWithModalMariachis = ({
 							</label>
 						</div>
 					</div>
+
 					<RadioButtonSimple
-						name="searchByPrice"
-						label={["Serenata", "Hora", "Contrato"]}
-						hidden={
-							porPrecio && (typeData === "mariachi" || typeData === "booking")
-						}
-						handleServices={handleServices}
+						name="searchByMariachiCategory"
+						label={mariachiCategory}
+						hidden={porPrecio && typeData === "mariachi"}
+						handleServices={handleMariachiCategory}
 					/>
+
 					<RadioButtonSimple
 						name="searchByEtape"
 						label={etapesData}
@@ -120,12 +137,25 @@ const SearchWithModalMariachis = ({
 						handleServices={handleEtapes}
 					/>
 					<RadioButtonSimple
+						name="searchByPrice"
+						label={byServices}
+						hidden={
+							porPrecio && (typeData === "mariachi" || typeData === "booking")
+						}
+						handleServices={handleServices}
+					/>
+					<RadioButtonSimple
+						name="searchByTypePrice"
+						label={typeOfPrice}
+						hidden={porPrecio && typeData === "mariachi"}
+						handleServices={handleTyOfPrice}
+					/>
+					<RadioButtonSimple
 						name="searchByUserType"
 						label={userByType}
 						hidden={porPrecio && typeData === "user"}
 						handleServices={handleUserType}
 					/>
-
 					<RadioButtonSimple
 						name="searchByStatus"
 						label={statusData}

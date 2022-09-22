@@ -14,6 +14,7 @@ import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 
 import { regions } from "src/helpers/dataset"
+import TotalSum from "src/components/SVG/Icons/TotalSum"
 
 const TableMariachis = () => {
 	const regionData = regions.response.estado
@@ -101,8 +102,15 @@ const TableMariachis = () => {
 				<div className="rounded-t mb-0 px-4 py-3 border-0">
 					<div className="flex flex-wrap items-center">
 						<div className="relative w-full px-4 max-w-full flex justify-between items-center divide-x-2 md:divide-x-0 pr-2">
-							<h3 className="font-semibold text-xs md:text-lg text-slate-700 dark:text-white ">
-								Mariachis
+							<h3 className="font-semibold text-xs md:text-lg text-slate-700 dark:text-white  flex flex-col justify-center items-center">
+								<span>Mariachis</span>
+								<div className="flex justify-center items-center">
+									<TotalSum className="fill-slate-900 dark:fill-slate-100 w-5 h-5 mt-1" />
+									<span className="text-sm ">
+										{" "}
+										{mariachisDataSearch.length}
+									</span>
+								</div>{" "}
 							</h3>
 							<div className="flex flex-row justify-between items-center pl-2 ">
 								<div className="mr-2">
@@ -232,7 +240,7 @@ const TableMariachis = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{mariachisData?.map((mariachi) => (
+							{mariachisDataSearch?.map((mariachi) => (
 								<tr
 									key={mariachi._id}
 									className="transition duration-300 ease-in-out hover:bg-slate-600/95"

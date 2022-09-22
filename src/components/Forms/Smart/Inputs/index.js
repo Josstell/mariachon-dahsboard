@@ -314,9 +314,9 @@ export function RadioButtonSimple({ name, label, hidden, handleServices }) {
 							/>
 							<label
 								htmlFor={labe + "Mariachi"}
-								className={`bg-slate-200 text-[10px] font-bold text-slate-900 peer-checked:text-slate-50 peer-checked:bg-slate-900 text-center self-center py-2 p-1 rounded-lg cursor-pointer hover:opacity-75`}
+								className={`bg-slate-200 text-[10px] font-bold text-slate-900 peer-checked:text-slate-50 peer-checked:bg-slate-900 text-center self-center py-2 px-1 rounded-lg cursor-pointer hover:opacity-75`}
 							>
-								{labe}
+								{labe.toUpperCase()}
 							</label>
 						</div>
 					)
