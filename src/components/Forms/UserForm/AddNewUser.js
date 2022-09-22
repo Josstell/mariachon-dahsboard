@@ -35,6 +35,10 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 	useEffect(() => {
 		dispatch(setStatusUser("idle"))
 		setValue("region", "PUE")
+		setValue("name", "")
+		setValue("username", "")
+		setValue("tel", "")
+		setValue("email", "")
 		setValue(
 			"Cliente",
 			role.find((rol) => rol === "Cliente")
@@ -90,6 +94,7 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 			],
 			createdBy: { _ref: userAdmin?._id, _type: "reference" },
 			dateCreated: dateGral?.toLocaleDateString("es-MX", optionsDate),
+			stage: ["AFILIADO"],
 			username:
 				dataFormUser.username === ""
 					? dataFormUser.name.split(" ").join("").toLocaleLowerCase()
@@ -98,7 +103,6 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 
 		const dataUpdate = {
 			...data,
-			stage: ["AFILIADO"],
 			email:
 				data.email === "" ? `noemail${nanoid()}@mariachon.com.mx` : data.email,
 			categorySet:
