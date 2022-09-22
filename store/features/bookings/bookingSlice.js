@@ -114,7 +114,7 @@ export const updateBooking = createAsyncThunk(
 				const items = data.orderItems[0]
 
 				const dataReserva = {
-					...data,
+					...booking,
 					client: clientUpdated,
 					orderItems: {
 						...items,
@@ -126,7 +126,7 @@ export const updateBooking = createAsyncThunk(
 					addBookingToGoogleSheet({
 						...dataReserva,
 						sendEmail: booking.sendEmail,
-						isAddingOrUpdating: "add",
+						isAddingOrUpdating: "update",
 					})
 				)
 			})
@@ -162,7 +162,8 @@ export const addBooking = createAsyncThunk(
 				const items = data.orderItems[0]
 
 				const dataReserva = {
-					...data,
+					...booking,
+					_id: data._id,
 					client: clientAdded,
 					orderItems: {
 						...items,
@@ -174,7 +175,7 @@ export const addBooking = createAsyncThunk(
 					addBookingToGoogleSheet({
 						...dataReserva,
 						sendEmail: booking.sendEmail,
-						isAddingOrUpdating: "update",
+						isAddingOrUpdating: "add",
 					})
 				)
 			})
