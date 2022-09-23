@@ -6,7 +6,7 @@ import { groq } from "next-sanity"
 
 import axios from "axios"
 
-//const { NEXT_PUBLIC_URL_API } = process.env
+const { NEXT_PUBLIC_URL_API } = process.env
 
 const initialState = {
 	bookings: [],
@@ -205,8 +205,8 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 		console.log("to ggogle", reserva)
 		return axios
 			.post(
-				//`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
-				`/api/google-sheet/add/reservation`,
+				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
+				//`/api/google-sheet/add/reservation`,
 				reservaData
 			)
 			.then((response) => {

@@ -5,7 +5,7 @@ import client from "@lib/sanity"
 import { groq } from "next-sanity"
 import axios from "axios"
 
-//const { NEXT_PUBLIC_URL_API } = process.env
+const { NEXT_PUBLIC_URL_API } = process.env
 
 const initialState = {
 	users: [],
@@ -158,8 +158,8 @@ export const addClientToGoogleSheet = createAsyncThunk(
 	(client) => {
 		return (
 			axios
-				.post(`/api/google-sheet/add/client`, client)
-				//.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`, client)
+				//.post(`/api/google-sheet/add/client`, client)
+				.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`, client)
 				.then((res) => {
 					const data = res.data
 					if (data) {
