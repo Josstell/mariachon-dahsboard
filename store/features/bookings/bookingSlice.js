@@ -6,7 +6,7 @@ import { groq } from "next-sanity"
 
 import axios from "axios"
 
-const { NEXT_PUBLIC_URL_API } = process.env
+//const { NEXT_PUBLIC_URL_API } = process.env
 
 const initialState = {
 	bookings: [],
@@ -169,6 +169,7 @@ export const addBooking = createAsyncThunk(
 					...booking,
 					_id: data._id,
 					client: clientAdded,
+					reserva: data.reserva,
 					orderItems: {
 						...items,
 						mariachi: mariachiUpdated,
@@ -204,7 +205,8 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 		console.log("to ggogle", reserva)
 		return axios
 			.post(
-				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
+				//`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
+				`/api/google-sheet/add/reservation`,
 				reservaData
 			)
 			.then((response) => {
@@ -295,9 +297,7 @@ const bookingsSlice = createSlice({
 				const index = state.bookings.findIndex(
 					(booking) => booking._id === reservaData._id
 				)
-				if (index) {
-					state.bookings[index] = reservaData
-				}
+				state.bookings[index] = reservaData
 			} else if (action.payload?.payload?.reserva) {
 				state.statusBook = "succeeded"
 
@@ -306,9 +306,7 @@ const bookingsSlice = createSlice({
 				const index = state.bookings.findIndex(
 					(booking) => booking._id === reservaData._id
 				)
-				if (index) {
-					state.bookings[index] = reservaData
-				}
+				state.bookings[index] = reservaData
 			} else {
 				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente, nuevo."
@@ -318,10 +316,10 @@ const bookingsSlice = createSlice({
 			console.log(action.payload)
 			if (action?.payload?.payload?.payload?.reserva) {
 				state.statusBook = "succeeded"
-				state.bookings.push(action?.payload?.payload?.payload?.reserva)
+				state.bookings.unshift(action?.payload?.payload?.payload?.reserva)
 			} else if (action?.payload?.payload?.reserva) {
 				state.statusBook = "succeeded"
-				state.bookings.push(action?.payload?.payload?.payload?.reserva)
+				state.bookings.unshift(action?.payload?.payload?.payload?.reserva)
 			} else {
 				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente, actualizar."

@@ -123,10 +123,10 @@ const SearchWithModalMariachis = ({
 								<input
 									type="checkbox"
 									name="porPrecio"
-									className="accent-slate-200 mr-2"
+									className="accent-slate-200 mr-2 text-sm"
 									onChange={handlePorPrecio}
 								/>{" "}
-								otros
+								Más
 							</label>
 						</div>
 					</div>

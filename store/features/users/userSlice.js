@@ -5,7 +5,7 @@ import client from "@lib/sanity"
 import { groq } from "next-sanity"
 import axios from "axios"
 
-const { NEXT_PUBLIC_URL_API } = process.env
+//const { NEXT_PUBLIC_URL_API } = process.env
 
 const initialState = {
 	users: [],
@@ -119,6 +119,8 @@ export const addNewUser = createAsyncThunk(
 	// The payload creator receives the partial `{title, content, user}` object
 	(newUser, { dispatch }) => {
 		// We send the initial data to the fake API server
+
+		console.log("add nuevo", newUser)
 		return axios
 			.post("/api/users/add", newUser)
 			.then((response) => {
@@ -154,31 +156,34 @@ export const addNewUser = createAsyncThunk(
 export const addClientToGoogleSheet = createAsyncThunk(
 	"users/addClientToGoogleSheet",
 	(client) => {
-		return axios
-			.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`, client)
-			.then((res) => {
-				const data = res.data
-				if (data) {
-					console.log("retorne", res, data)
-					return {
-						data: data,
-						userData: client,
+		return (
+			axios
+				.post(`/api/google-sheet/add/client`, client)
+				//.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`, client)
+				.then((res) => {
+					const data = res.data
+					if (data) {
+						console.log("retorne", res, data)
+						return {
+							data: data,
+							userData: client,
+						}
 					}
-				}
-			})
-			.catch((error) => {
-				console.log("error", error)
+				})
+				.catch((error) => {
+					console.log("error", error)
 
-				const text = {
-					message: "Algo paso! No se guardaron datos en Google Sheet.",
-				}
+					const text = {
+						message: "Algo paso! No se guardaron datos en Google Sheet.",
+					}
 
-				const errorData = {
-					data: error?.response?.data ? error?.response?.data : text,
-				}
+					const errorData = {
+						data: error?.response?.data ? error?.response?.data : text,
+					}
 
-				return errorData
-			})
+					return errorData
+				})
+		)
 	}
 )
 // const queryUserById = groq`*[_type == "user" && _id == $id][0]{
@@ -255,7 +260,7 @@ const usersSlice = createSlice({
 
 			if (action.payload?.payload?.userData) {
 				state.status = "succeeded"
-				state.users.push(action.payload?.payload?.userData)
+				state.users.unshift(action.payload?.payload?.userData)
 			} else {
 				state.status = "failed"
 				state.error = action.payload.data
@@ -273,20 +278,21 @@ const usersSlice = createSlice({
 			state.userUpdate = {}
 			const userAd = action.payload?.payload?.userData
 
-			console.log("Update Data", action.payload)
+			console.log("Update Data", action.payload, userAd)
 
 			if (userAd) {
 				if (userAd?.isAdmin) {
 					state.admin = userAd
 					const index = state.users.findIndex((user) => user._id === userAd._id)
+					console.log("admin", index)
+
 					if (index) {
 						state.users[index] = userAd
 					}
 				} else {
+					console.log("noadmin")
 					const index = state.users.findIndex((user) => user._id === userAd._id)
-					if (index) {
-						state.users[index] = userAd
-					}
+					state.users[index] = userAd
 				}
 			} else {
 				state.statusGSUser = "failed"

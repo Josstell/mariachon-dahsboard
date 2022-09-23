@@ -5,7 +5,7 @@ import client from "@lib/sanity"
 import { groq } from "next-sanity"
 import axios from "axios"
 
-const { NEXT_PUBLIC_URL_API } = process.env
+//const { NEXT_PUBLIC_URL_API } = process.env
 
 const initialState = {
 	mariachis: [],
@@ -150,7 +150,8 @@ export const addMariachiToGoogleSheet = createAsyncThunk(
 	async (mariachi) => {
 		try {
 			const { data } = await axios.post(
-				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/mariachi`,
+				//`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/mariachi`,
+				`/api/google-sheet/add/mariachi`,
 				mariachi
 			)
 
@@ -213,9 +214,7 @@ const mariachisSlice = createSlice({
 				const index = state.mariachis.findIndex(
 					(mariachi) => mariachi._id === mariachiUp._id
 				)
-				if (index) {
-					state.mariachis[index] = mariachiUp
-				}
+				state.mariachis[index] = mariachiUp
 			} else {
 				state.status = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
@@ -235,7 +234,7 @@ const mariachisSlice = createSlice({
 
 			if (action.payload?.payload?.mariachiData) {
 				state.status = "succeeded"
-				state.mariachis.push(action.payload.payload.mariachiData)
+				state.mariachis.unshift(action.payload.payload.mariachiData)
 			} else {
 				state.status = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
