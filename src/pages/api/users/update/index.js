@@ -3,16 +3,27 @@ import client from "@lib/sanity"
 import { dateGral, optionsDate } from "src/helpers/utils"
 
 export default handlerCors().put((req, res) => {
-	const setMutation = {
-		name: req.body.name,
-		tel: req.body.tel,
-		email: req.body.email,
-		region: req.body.region || "",
-		city: req.body.city || "",
-		username: req.body.username || "",
-		modifiedBy: req.body.modifiedBy,
+	let setMutation = {
+		name: req.body?.name,
+		tel: req.body?.tel,
+		email: req.body?.email,
+		categorySet: req.body?.categorySet.map((cat) => (!cat ? undefined : cat)),
+		region: req.body?.region || "",
+		username: req.body?.username || "",
+		modifiedBy: req.body?.modifiedBy,
 		dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
 		stage: req.body?.stage,
+	}
+
+	if (req.body?.image) {
+		setMutation = {
+			...setMutation,
+			profileImage: {
+				///checar
+				url: req.body?.image || "",
+				metadata: { alt: req.body?.username || "" },
+			},
+		}
 	}
 
 	client

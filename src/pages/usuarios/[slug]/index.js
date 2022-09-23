@@ -94,32 +94,28 @@ const userById = ({ id }) => {
 
 		//Creando variable session para recargar datos
 
-		dispatch(
-			setUserUpdate({
-				...dataForm,
-				_id: dataUser._id,
-				categorySet: dataUser?.categorySet || "",
-				stage: ["AFILIADO"],
-				username:
-					dataForm.username === ""
-						? dataForm.name.split(" ").join("").toLocaleLowerCase()
-						: dataForm.username,
-			})
-		)
-		dispatch(
-			updateUser({
-				...dataForm,
-				_id: dataUser._id,
-				categorySet: dataUser?.categorySet || "",
-				modifiedBy: { _ref: userAdmin._id, _type: "reference" },
-				dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
-				stage: ["AFILIADO"],
-				username:
-					dataForm.username === ""
-						? dataForm.name.split(" ").join("").toLocaleLowerCase()
-						: dataForm.username,
-			})
-		)
+		const updateUserData = {
+			...dataForm,
+			_id: dataUser._id,
+			categorySet: [
+				!!dataForm?.Cliente && dataForm?.Cliente,
+				!!dataForm?.Coordinador && dataForm?.Coordinador,
+				!!dataForm?.Mariachi && dataForm?.Mariachi,
+				!!dataForm?.Admin && dataForm?.Admin,
+				!!dataForm?.Vendedor && dataForm?.Vendedor,
+			],
+			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
+			dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
+			stage: ["AFILIADO"],
+			username:
+				dataForm.username === ""
+					? dataForm.name.split(" ").join("").toLocaleLowerCase()
+					: dataForm.username,
+		}
+		console.log(updateUserData)
+
+		dispatch(setUserUpdate(updateUserData))
+		dispatch(updateUser(updateUserData))
 	}
 
 	let toastIdUs

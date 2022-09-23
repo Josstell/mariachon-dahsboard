@@ -17,7 +17,7 @@ const initialState = {
 	error: null,
 }
 const query = groq`
-*[_type == "user" && !(_id in path('drafts.**'))]
+*[_type == "user" && !(_id in path('drafts.**'))] | order(_createdAt desc)
 `
 
 // get all users
@@ -82,6 +82,8 @@ export const updateUser = createAsyncThunk(
 	"users/updateUser",
 	(user, { dispatch }) => {
 		// We send the initial data to the fake API server
+
+		console.log("actualizar usuario", user)
 		return axios
 			.put("/api/users/update", user)
 			.then((response) => {
@@ -89,7 +91,7 @@ export const updateUser = createAsyncThunk(
 				const admin = data.categorySet.find((category) => category === "Admin")
 
 				data = {
-					...user,
+					...data,
 					exist: true,
 					isAdmin: admin === "Admin" ? true : false,
 				}
@@ -234,7 +236,6 @@ const usersSlice = createSlice({
 		},
 		[fetchUsersNew.fulfilled]: (state, action) => {
 			const adminUsr = action.payload?.admin
-			console.log("Exito", adminUsr)
 			state.admin = { ...adminUsr }
 			state.status = "succeeded"
 			state.users = action.payload?.users
@@ -250,7 +251,7 @@ const usersSlice = createSlice({
 		// 	state.error = "¡Algo paso faver de intentarlo más tarde!"
 		// },
 		[addNewUser.fulfilled]: (state, action) => {
-			console.log("addUser Data", action.payload?.payload?.userData)
+			console.log("addUser Data", action.payload)
 
 			if (action.payload?.payload?.userData) {
 				state.status = "succeeded"
@@ -277,13 +278,15 @@ const usersSlice = createSlice({
 			if (userAd) {
 				if (userAd?.isAdmin) {
 					state.admin = userAd
-					state.users = state.users.map((user) =>
-						user._id === userAd._id ? userAd : user
-					)
+					const index = state.users.findIndex((user) => user._id === userAd._id)
+					if (index) {
+						state.users[index] = userAd
+					}
 				} else {
-					state.users = state.users.map((user) =>
-						user._id === userAd._id ? userAd : user
-					)
+					const index = state.users.findIndex((user) => user._id === userAd._id)
+					if (index) {
+						state.users[index] = userAd
+					}
 				}
 			} else {
 				state.statusGSUser = "failed"

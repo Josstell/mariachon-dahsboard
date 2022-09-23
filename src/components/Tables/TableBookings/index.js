@@ -11,6 +11,11 @@ import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import { createUrlWhatsApp, dateGral, optionsDate } from "src/helpers/utils"
 import {
 	selectAllBookings,
+	selectError,
+	selectStatusBook,
+	selectStatusBookGS,
+	setStatusBooking,
+	setStatusBookingGS,
 	updateBooking,
 } from "store/features/bookings/bookingSlice"
 import { selectAllUsers } from "store/features/users/userSlice"
@@ -19,19 +24,48 @@ import { regions } from "src/helpers/dataset"
 import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
 import WhatsAppIcon from "src/components/SVG/Icons/WhatsAppIcon"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
+import toast, { Toaster } from "react-hot-toast"
+import { useRouter } from "next/router"
 
 const TableBookings = ({ userAdmin }) => {
+	const router = useRouter()
+
 	const regionData = regions.response.estado
 
 	const BookingData = useSelector(selectAllBookings)
+
+	const statusBookGS = useSelector(selectStatusBookGS)
+	const status = useSelector(selectStatusBook)
+
+	const error = useSelector(selectError)
 
 	const [bookingsDataSearch, setBookingsDataSearch] = useState(
 		BookingData || []
 	)
 
+	let toastIdUpWhats
+	const notifyError = () => toast.error(error, { id: toastIdUpWhats })
+	const notifySuccess = () =>
+		toast.success("Reserva actualizada correctamente", { id: toastIdUpWhats })
+
 	useEffect(() => {
-		setBookingsDataSearch(BookingData)
-	}, [BookingData])
+		if (status === "failed" || statusBookGS === "failed") {
+			toast.dismiss(toastIdUpWhats)
+
+			notifyError()
+			dispatch(setStatusBooking("idle"))
+			dispatch(setStatusBookingGS("idle"))
+		}
+
+		if (status === "succeeded" && statusBookGS === "succeeded") {
+			dispatch(setStatusBooking("idle"))
+			dispatch(setStatusBookingGS("idle"))
+			toast.dismiss(toastIdUpWhats)
+			notifySuccess()
+
+			router.push("/reservas")
+		}
+	}, [status, statusBookGS])
 
 	const dispatch = useDispatch()
 	const BookingsData = useSelector(selectAllBookings)
@@ -60,6 +94,8 @@ const TableBookings = ({ userAdmin }) => {
 		if (sendMariachiValue === 0) {
 			return
 		}
+		toastIdUpWhats = toast.loading("Cargando...")
+
 		const coorSelected = users.find((user) => user._id === sendMariachiValue)
 
 		createUrlWhatsApp({ ...reservationData, coordinator: coorSelected })
@@ -76,6 +112,7 @@ const TableBookings = ({ userAdmin }) => {
 						_type: "reference",
 					},
 					categorySet: reservationData?.orderItems?.categorySet,
+					priceOptionSelected: reservationData?.orderItems?.priceOptionSelected,
 					members: reservationData?.orderItems?.members,
 					service: reservationData?.orderItems?.service,
 					price: (reservationData?.orderItems?.price || 0) * 1,
@@ -405,6 +442,7 @@ const TableBookings = ({ userAdmin }) => {
 					</table>
 				</div>
 			</div>
+			<Toaster />
 		</div>
 	)
 }

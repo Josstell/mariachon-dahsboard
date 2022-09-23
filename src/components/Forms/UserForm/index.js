@@ -66,7 +66,7 @@ const UserForm = ({ methods, onSubmit, loading, data }) => {
 				/>
 				<Checkbox
 					hidden={true}
-					name={["Cliente", "Mariachi", "Coordinador", "Admin"]}
+					name={["Cliente", "Mariachi", "Coordinador", "Vendedor"]}
 				/>
 				{/* <Checkbox hidden={true} name="mariachi" label="Mariachi" />
 				<Checkbox hidden={true} name="coordinator" label="Coordinador" />

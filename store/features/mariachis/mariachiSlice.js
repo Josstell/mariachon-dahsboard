@@ -20,7 +20,7 @@ const initialState = {
 	},
 }
 const query = groq`
-*[_type == "mariachi" && !(_id in path('drafts.**')) ]{
+*[_type == "mariachi" && !(_id in path('drafts.**')) ]| order(_createdAt desc){
   _id,
   createdBy,
 modifiedBy,
@@ -207,9 +207,15 @@ const mariachisSlice = createSlice({
 			if (action.payload?.payload?.mariachiData) {
 				state.status = "succeeded"
 				const mariachiUp = action.payload.payload.mariachiData
-				state.mariachis = state.mariachis.map((mariachi) =>
-					mariachi._id === mariachiUp._id ? mariachiUp : mariachi
+
+				console.log("mariachis update", action.payload, mariachiUp)
+
+				const index = state.mariachis.findIndex(
+					(mariachi) => mariachi._id === mariachiUp._id
 				)
+				if (index) {
+					state.mariachis[index] = mariachiUp
+				}
 			} else {
 				state.status = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
@@ -225,6 +231,8 @@ const mariachisSlice = createSlice({
 			}
 		},
 		[addMariachi.fulfilled]: (state, action) => {
+			console.log("mariachis add", action.payload)
+
 			if (action.payload?.payload?.mariachiData) {
 				state.status = "succeeded"
 				state.mariachis.push(action.payload.payload.mariachiData)

@@ -8,7 +8,7 @@ export default handlerCors().post(async (req, res) => {
 	const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
 	const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
 	const tokenWithWriteAccess = process.env.SANITY_API_TOKEN
-	const createMutations = [
+	let createMutations = [
 		{
 			create: {
 				_type: "user",
@@ -16,14 +16,10 @@ export default handlerCors().post(async (req, res) => {
 				username: req.body.name.split(" ").join("").toLocaleLowerCase(),
 				email: req.body.email,
 				tel: req.body.tel || "",
-				categorySet: req.body?.categorySet || ["cliente"],
+				categorySet: req.body?.categorySet || ["Cliente"],
 				region: req.body?.region || "",
-				profileImage: {
-					url: req.body?.image || "",
-					alt: req.body?.username || "",
-				},
+
 				uid: req.body?.uid || "",
-				provider: req.body?.provider || "",
 				stage: req.body?.stage,
 
 				slug: { current: urlSlug(req.body.name) },
@@ -32,6 +28,17 @@ export default handlerCors().post(async (req, res) => {
 			},
 		},
 	]
+
+	if (req.body?.image) {
+		createMutations = {
+			...createMutations,
+			profileImage: {
+				///checar
+				url: req.body?.image || "",
+				metadata: { alt: req.body?.username || "" },
+			},
+		}
+	}
 
 	const queryExist = `*[_type == "user" && (email == $emailE || tel == $telE)  ][0]`
 	//`*[_type == "user" && email == $email][0]`,
