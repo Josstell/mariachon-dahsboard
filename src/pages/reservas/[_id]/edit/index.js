@@ -343,7 +343,7 @@ const reservaById = ({ id }) => {
 						_type: "reference",
 					},
 					categorySet: dataForm.category_mariachi,
-					members: dataForm.members,
+					members: dataForm?.members * 1 || 0,
 					service: dataForm.service,
 					price: (dataForm.price || 0) * 1,
 					deposit: (dataForm.deposit || 0) * 1,
