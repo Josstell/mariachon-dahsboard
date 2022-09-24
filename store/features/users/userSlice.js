@@ -5,8 +5,6 @@ import client from "@lib/sanity"
 import { groq } from "next-sanity"
 import axios from "axios"
 
-const { NEXT_PUBLIC_URL_API } = process.env
-
 const initialState = {
 	users: [],
 	admin: {},
@@ -80,36 +78,34 @@ export const fetchUsersNew = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
 	"users/updateUser",
-	(user, { dispatch }) => {
+	async (user, { dispatch }) => {
 		// We send the initial data to the fake API server
 
 		console.log("actualizar usuario", user)
-		return axios
-			.put("/api/users/update", user)
-			.then((response) => {
-				let data = response.data
-				const admin = data.categorySet.find((category) => category === "Admin")
 
-				data = {
-					...data,
-					exist: true,
-					isAdmin: admin === "Admin" ? true : false,
-				}
-				console.log("data!!!", data)
+		try {
+			const { data } = await axios.put("/api/users/update", user)
 
-				return dispatch(addClientToGoogleSheet(data))
-			})
-			.catch((error) => {
-				const text = {
-					message: "Algo paso! No se actualizaron datos en Base de datos.",
-				}
+			const admin = data.categorySet.find((category) => category === "Admin")
 
-				const errorData = {
-					data: error?.response?.data ? error?.response?.data : text,
-				}
+			const userData = {
+				...user,
+				exist: true,
+				isAdmin: admin === "Admin" ? true : false,
+			}
+			console.log("data!!!", userData)
+			return dispatch(addClientToGoogleSheet(userData))
+		} catch (error) {
+			const text = {
+				message: "Algo paso! No se actualizaron datos en Base de datos.",
+			}
 
-				return errorData
-			})
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
+
+			return errorData
+		}
 	}
 )
 
@@ -117,36 +113,35 @@ export const updateUser = createAsyncThunk(
 export const addNewUser = createAsyncThunk(
 	"user/addNewUser",
 	// The payload creator receives the partial `{title, content, user}` object
-	(newUser, { dispatch }) => {
+	async (newUser, { dispatch }) => {
 		// We send the initial data to the fake API server
 
 		console.log("add nuevo", newUser)
-		return axios
-			.post("/api/users/add", newUser)
-			.then((response) => {
-				const data = response?.data
 
-				const admin = data.categorySet.find((category) => category === "Admin")
+		try {
+			const { data } = await axios.post("/api/users/add", newUser)
 
-				const newData = {
-					...newUser,
-					exist: true,
-					isAdmin: admin === "Admin" ? true : false,
-					_id: data._id,
-				}
-				return dispatch(addClientToGoogleSheet(newData))
-			})
-			.catch((error) => {
-				const text = {
-					message: "Algo paso! No se guardaron datos en Base de datos.",
-				}
+			const admin = data.categorySet.find((category) => category === "Admin")
 
-				const errorData = {
-					data: error?.response?.data ? error?.response?.data : text,
-				}
+			const newData = {
+				...newUser,
+				exist: true,
+				isAdmin: admin === "Admin" ? true : false,
+				_id: data._id,
+			}
+			return dispatch(addClientToGoogleSheet(newData))
+		} catch (error) {
+			const text = {
+				message: "Algo paso! No se guardaron datos en Base de datos.",
+			}
 
-				return errorData
-			})
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
+
+			return errorData
+		}
+
 		// The response includes the complete post object, including unique ID
 	}
 )
@@ -155,35 +150,28 @@ export const addNewUser = createAsyncThunk(
 
 export const addClientToGoogleSheet = createAsyncThunk(
 	"users/addClientToGoogleSheet",
-	(client) => {
-		return (
-			axios
-				//.post(`/api/google-sheet/add/client`, client)
-				.post(`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`, client)
-				.then((res) => {
-					const data = res.data
-					if (data) {
-						console.log("retorne", res, data)
-						return {
-							data: data,
-							userData: client,
-						}
-					}
-				})
-				.catch((error) => {
-					console.log("error", error)
+	async (client) => {
+		try {
+			//`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/client`,
+			const { data } = await axios.post(`/api/google-sheet/add/client`, client)
 
-					const text = {
-						message: "Algo paso! No se guardaron datos en Google Sheet.",
-					}
+			if (data) {
+				return {
+					data: data,
+					userData: client,
+				}
+			}
+		} catch (error) {
+			const text = {
+				message: "Algo paso! No se guardaron datos en Google Sheet.",
+			}
 
-					const errorData = {
-						data: error?.response?.data ? error?.response?.data : text,
-					}
+			const errorData = {
+				data: error?.response?.data ? error?.response?.data : text,
+			}
 
-					return errorData
-				})
-		)
+			return errorData
+		}
 	}
 )
 // const queryUserById = groq`*[_type == "user" && _id == $id][0]{
@@ -260,7 +248,7 @@ const usersSlice = createSlice({
 
 			if (action.payload?.payload?.userData) {
 				state.status = "succeeded"
-				state.users.unshift(action.payload?.payload?.userData)
+				state.users.push(action.payload?.payload?.userData)
 			} else {
 				state.status = "failed"
 				state.error = action.payload.data

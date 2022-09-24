@@ -1,5 +1,4 @@
 import handlerCors from "src/helpers/api/allowCors"
-
 import { callApiGoogleSheet } from "src/helpers"
 //import NextCors from 'nextjs-cors'
 const { SPREADSHEET_ID_MARIACHON_MARIACHIS, SHEET_ID_CLIENTES } = process.env
@@ -30,7 +29,7 @@ export default handlerCors().post(async (req, res) => {
 		email: req.body?.email || "",
 		tel: req.body?.tel || "",
 		username: req.body?.username || "",
-		etapa: req.body?.stage[0] !== undefined ? req.body?.stage[0] : "",
+		etapa: req.body?.stage[0] || "",
 		role: req.body?.categorySet?.filter((cat) => !cat === false)[0] || "",
 	}
 

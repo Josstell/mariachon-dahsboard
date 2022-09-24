@@ -234,7 +234,7 @@ const mariachisSlice = createSlice({
 
 			if (action.payload?.payload?.mariachiData) {
 				state.status = "succeeded"
-				state.mariachis.unshift(action.payload.payload.mariachiData)
+				state.mariachis.push(action.payload.payload.mariachiData)
 			} else {
 				state.status = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
