@@ -149,9 +149,9 @@ export const addMariachiToGoogleSheet = createAsyncThunk(
 	"mariachis/addMariachiToGoogleSheet",
 	async (mariachi) => {
 		try {
+			//`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/mariachi`,
 			const { data } = await axios.post(
-				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/mariachi`,
-				//`/api/google-sheet/add/mariachi`,
+				`/api/google-sheet/add/mariachi`,
 				mariachi
 			)
 

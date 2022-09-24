@@ -203,12 +203,9 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 		let reservaData = reserva
 
 		console.log("to ggogle", reserva)
+		//	`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
 		return axios
-			.post(
-				`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
-				//`/api/google-sheet/add/reservation`,
-				reservaData
-			)
+			.post(`/api/google-sheet/add/reservation`, reservaData)
 			.then((response) => {
 				if (reserva.sendEmail) {
 					return dispatch(sendBooking(reservaData))
