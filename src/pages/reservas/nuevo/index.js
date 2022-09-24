@@ -121,8 +121,8 @@ const newBooking = () => {
 		setValue("address", reservaData.shippingAddress.address)
 		setValue("city", reservaData?.shippingAddress.city || "")
 		setValue("cp", reservaData?.shippingAddress.cp || "")
-		setValue("region", reservaData?.shippingAddress.region || "")
-		setValue("dateAndTime", reservaData?.dateAndTime)
+		setValue("region", "PUE")
+		setValue("dateAndTime", new Date())
 		setValue("members", reservaData.orderItems.members)
 		setValue("category_mariachi", reservaData?.orderItems?.categorySet)
 		setValue("fee", reservaData.orderItems.fee || 0)
@@ -304,6 +304,18 @@ const newBooking = () => {
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
 	const onSubmit = (dataForm) => {
+		if (dataForm.clientId === "") {
+			toast.error("¡Falta asignar cliente¡")
+			return
+		}
+		if (dataForm.idMariachi === "") {
+			toast.error("¡Falta asignar mariachi¡")
+			return
+		}
+		if (dataForm.address === "") {
+			toast.error("No se asigno dirección del evento.")
+			return
+		}
 		setLoading(true)
 		toastIdRe = toast.loading("Cargando...")
 

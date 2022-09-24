@@ -200,6 +200,8 @@ const mariachiById = ({ slug }) => {
 			toast.dismiss(toastId)
 
 			notifyError()
+			setLoading(false)
+
 			dispatch(setStatus("idle"))
 		}
 		if (status === "succeeded" && statusGS === "succeeded") {
@@ -208,6 +210,8 @@ const mariachiById = ({ slug }) => {
 			toast.dismiss(toastId)
 
 			notifySuccess()
+
+			setLoading(false)
 
 			//dispatch(setStatus("idle"))
 			router.push("/mariachis")

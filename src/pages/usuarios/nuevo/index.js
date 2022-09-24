@@ -48,7 +48,8 @@ const addnewuser = () => {
 		setValue("username", "")
 		setValue("tel", "")
 		setValue("email", "")
-		setValue("region", "")
+		setValue("region", "PUE")
+		setValue("Cliente", "Cliente")
 	}, [])
 
 	let toastIdUs

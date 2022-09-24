@@ -62,13 +62,13 @@ const addNewMariachi = () => {
 		setValue("tel", "")
 		setValue("description", "")
 		setValue("address", "")
-		setValue("region", "")
+		setValue("region", "PUE")
 		setValue("members", 0)
 		setValue("hora", 0)
 		setValue("serenata", 0)
 		setValue("contrato", 0)
 		setValue("category_mariachi", "")
-		setValue("coordinator", "")
+		//setValue("coordinator", "")
 		setValue("elements", "")
 		setValue("stage", "PROSPECTO")
 		// setValue("horaMinimo", 0)
@@ -86,7 +86,6 @@ const addNewMariachi = () => {
 
 	useEffect(() => {
 		if (statusUser === "succeeded") {
-			setValue("coordinator", "")
 			setValue("elements", "")
 		}
 	}, [statusUser])
@@ -118,7 +117,6 @@ const addNewMariachi = () => {
 				festivo: 0,
 			},
 		},
-		coordinator: watch("coordinator"),
 		stage: watch("stage"),
 	}
 
@@ -143,6 +141,10 @@ const addNewMariachi = () => {
 	}, [crewElements])
 
 	const onSubmit = (dataForm) => {
+		if (dataForm.coordinator == "") {
+			toast.error("¡Falta elegir coordinator!")
+			return
+		}
 		setLoading(true)
 		toastId = toast.loading("Cargando...")
 
@@ -191,6 +193,8 @@ const addNewMariachi = () => {
 			videos: arrayVideos,
 		}
 
+		//	console.log("Data Form Mariachi", dataMariachiToCard)
+
 		dispatch(
 			addMariachi({
 				...dataMariachiToCard,
@@ -208,6 +212,8 @@ const addNewMariachi = () => {
 		if (status === "failed") {
 			toast.dismiss(toastId)
 			notifyError()
+			setLoading(false)
+
 			dispatch(setStatus("idle"))
 		}
 		if (status === "succeeded" && statusGS === "succeeded") {

@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import { regions } from "src/helpers/dataset"
 import useSearchUserByCategory from "src/hook/useSearchUserByCategory"
@@ -166,6 +166,21 @@ export default function MariachiForm({
 	const handleShowAddV = () => {
 		setShowAddV(!showAddV)
 	}
+
+	const {
+		setError,
+		formState: { errors },
+	} = methods
+
+	useEffect(() => {
+		setError("coordinator", {
+			types: {
+				required: "This is required",
+			},
+		})
+	}, [setError])
+
+	console.log("form errors", errors)
 
 	return (
 		<>
@@ -453,6 +468,7 @@ export default function MariachiForm({
 							})}
 					</div>
 				</div>
+
 				<Button
 					hidden={activeFormTab.gral}
 					message={isSaving ? "Guardar" : "Actualizar"}
