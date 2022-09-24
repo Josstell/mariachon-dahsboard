@@ -141,6 +141,10 @@ const addNewMariachi = () => {
 	}, [crewElements])
 
 	const onSubmit = (dataForm) => {
+		if (dataForm.name == "") {
+			toast.error("¡Asignar nombre al grupo!")
+			return
+		}
 		if (dataForm.coordinator == "") {
 			toast.error("¡Falta elegir coordinator!")
 			return
