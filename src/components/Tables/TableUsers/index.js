@@ -1,9 +1,13 @@
 import Image from "next/image"
 import Link from "next/link"
 import React, { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
-import { selectAllUsers } from "store/features/users/userSlice"
+import {
+	selectAllUsers,
+	setNewUser,
+	setUpdatedUser,
+} from "store/features/users/userSlice"
 
 import { ViewGridAddIcon } from "@heroicons/react/outline"
 //import Search from "src/components/Search"
@@ -14,11 +18,47 @@ import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal
 
 import { regions } from "src/helpers/dataset"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
+import { subscriptionUser } from "@lib/sanity"
+
+// const query = groq`
+// *[_type == "user" && !(_id in path('drafts.**'))  ] | order(_createdAt desc)
+// `
+//&& _id != $ownerId
 
 const TableUser = () => {
-	const regionData = regions.response.estado
-
+	const dispatch = useDispatch()
 	const usersData = useSelector(selectAllUsers)
+
+	/*********************************************************************/
+
+	//const params = { ownerId: session._id }
+
+	// const subscriptionUser = client.listen(query).subscribe((update) => {
+	// 	const dataset = update.result
+	// 	const isAlreadyUser = usersData.find((user) => user._id === dataset._id)
+
+	// 	if (isAlreadyUser) {
+	// 		dispatch(setUpdatedUser(dataset))
+	// 	} else if (!isAlreadyUser) {
+	// 		dispatch(setNewUser(dataset))
+	// 	}
+	// })
+
+	const subscriptionUserLocal = subscriptionUser.subscribe((update) => {
+		const dataset = update.result
+		console.log(dataset)
+		const isAlreadyUser = usersData.find((user) => user._id === dataset._id)
+
+		if (isAlreadyUser) {
+			dispatch(setUpdatedUser(dataset))
+		} else if (!isAlreadyUser) {
+			dispatch(setNewUser(dataset))
+		}
+	})
+
+	/*********************************************************************/
+
+	const regionData = regions.response.estado
 
 	const [usersDataSearch, setUsersDataSearch] = useState(usersData)
 
@@ -28,7 +68,7 @@ const TableUser = () => {
 
 	useEffect(() => {
 		setUsersDataSearch(usersData)
-	}, [usersData])
+	}, [usersData, subscriptionUserLocal])
 
 	const handleGetRegion = (e) => {
 		setRegionSelected(e.target.value)

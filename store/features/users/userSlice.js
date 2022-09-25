@@ -221,6 +221,23 @@ const usersSlice = createSlice({
 		setStatusGSUser: (state, action) => {
 			state.statusGSUser = action.payload
 		},
+		setUpdatedUser: (state, action) => {
+			const userToUpdate = action.payload
+			const target = state.users.find((obj) => obj._id === userToUpdate._id)
+			if (userToUpdate?.isAdmin) {
+				state.admin = userToUpdate
+				Object.assign(target, userToUpdate)
+			} else {
+				Object.assign(target, userToUpdate)
+			}
+		},
+		setNewUser: (state, action) => {
+			const userToUpdate = action.payload
+			const target = state.users.find((obj) => obj._id === userToUpdate._id)
+			if (!target) {
+				state.users.unshift(userToUpdate)
+			}
+		},
 	},
 
 	extraReducers: {
@@ -244,11 +261,8 @@ const usersSlice = createSlice({
 		// 	state.error = "¡Algo paso faver de intentarlo más tarde!"
 		// },
 		[addNewUser.fulfilled]: (state, action) => {
-			console.log("addUser Data", action.payload)
-
 			if (action.payload?.payload?.userData) {
 				state.status = "succeeded"
-				state.users.push(action.payload?.payload?.userData)
 			} else {
 				state.status = "failed"
 				state.error = action.payload.data
@@ -262,26 +276,11 @@ const usersSlice = createSlice({
 			state.status = "loading"
 		},
 		[updateUser.fulfilled]: (state, action) => {
-			state.status = "succeeded"
 			state.userUpdate = {}
 			const userAd = action.payload?.payload?.userData
 
-			console.log("Update Data", action.payload, userAd)
-
 			if (userAd) {
-				if (userAd?.isAdmin) {
-					state.admin = userAd
-					const index = state.users.findIndex((user) => user._id === userAd._id)
-					console.log("admin", index)
-
-					if (index) {
-						state.users[index] = userAd
-					}
-				} else {
-					console.log("noadmin")
-					const index = state.users.findIndex((user) => user._id === userAd._id)
-					state.users[index] = userAd
-				}
+				state.status = "succeeded"
 			} else {
 				state.statusGSUser = "failed"
 				state.error = "Error en la carga de google sheet"
@@ -341,6 +340,8 @@ export const {
 	setStatusUser,
 	getUserById,
 	setStatusGSUser,
+	setUpdatedUser,
+	setNewUser,
 } = usersSlice.actions
 
 export const selectAllUsers = (state) => state.users.users

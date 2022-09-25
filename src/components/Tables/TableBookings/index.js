@@ -14,8 +14,10 @@ import {
 	selectError,
 	selectStatusBook,
 	selectStatusBookGS,
+	setNewBooking,
 	setStatusBooking,
 	setStatusBookingGS,
+	setUpdateBooking,
 	updateBooking,
 } from "store/features/bookings/bookingSlice"
 import { selectAllUsers } from "store/features/users/userSlice"
@@ -26,13 +28,59 @@ import WhatsAppIcon from "src/components/SVG/Icons/WhatsAppIcon"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
 import toast, { Toaster } from "react-hot-toast"
 import { useRouter } from "next/router"
+import { subscriptionBooking } from "@lib/sanity"
+import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 
 const TableBookings = ({ userAdmin }) => {
+	const dispatch = useDispatch()
+
+	const BookingData = useSelector(selectAllBookings)
+	const mariachiData = useSelector(selectAllMariachis)
+	const usersData = useSelector(selectAllUsers)
+
+	/*********************************************************************/
+
+	//const params = { ownerId: session._id }
+
+	const subscriptionBookingLocal = subscriptionBooking.subscribe((update) => {
+		const reservaListen = update.result
+
+		const isBookingAlready = BookingData.find(
+			(booking) => booking._id === reservaListen._id
+		)
+
+		const clientAdded = usersData.find(
+			(user) => user._id === reservaListen.client._ref
+		)
+		const mariachiUpdated = mariachiData.find(
+			(mar) => mar._id === reservaListen.orderItems[0].mariachi._ref
+		)
+		const items = reservaListen.orderItems[0]
+
+		const dataReserva = {
+			...reservaListen,
+			client: clientAdded,
+			reserva: reservaListen.reserva,
+			orderItems: {
+				...items,
+				mariachi: mariachiUpdated,
+			},
+		}
+
+		console.log("La reserva ya esta: ", isBookingAlready)
+
+		if (dataReserva.orderItems.mariachi && isBookingAlready) {
+			dispatch(setUpdateBooking(dataReserva))
+		} else if (dataReserva.orderItems.mariachi && !isBookingAlready) {
+			dispatch(setNewBooking(dataReserva))
+		}
+	})
+
+	/*********************************************************************/
+
 	const router = useRouter()
 
 	const regionData = regions.response.estado
-
-	const BookingData = useSelector(selectAllBookings)
 
 	const statusBookGS = useSelector(selectStatusBookGS)
 	const status = useSelector(selectStatusBook)
@@ -42,6 +90,10 @@ const TableBookings = ({ userAdmin }) => {
 	const [bookingsDataSearch, setBookingsDataSearch] = useState(
 		BookingData || []
 	)
+
+	useEffect(() => {
+		setBookingsDataSearch(BookingData)
+	}, [BookingData, subscriptionBookingLocal])
 
 	let toastIdUpWhats
 	const notifyError = () => toast.error(error, { id: toastIdUpWhats })
@@ -67,7 +119,6 @@ const TableBookings = ({ userAdmin }) => {
 		}
 	}, [status, statusBookGS])
 
-	const dispatch = useDispatch()
 	const BookingsData = useSelector(selectAllBookings)
 
 	const users = useSelector(selectAllUsers)

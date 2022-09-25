@@ -99,8 +99,6 @@ export const updateBooking = createAsyncThunk(
 			users: { users },
 		} = getState()
 
-		console.log("reserva!!", booking)
-
 		const bookingData = booking
 		// 		// We send the initial data to the fake API server booking
 		return axios
@@ -251,6 +249,41 @@ export const sendBooking = createAsyncThunk(
 	}
 )
 
+/// listen sanity
+
+export const listenUpdatedToArrayBooking = createAsyncThunk(
+	"bookings/ListenUpdatedToArrayBooking",
+	(reservaListen, { getState }) => {
+		const {
+			users: { users },
+			mariachis: { mariachis },
+		} = getState()
+
+		const clientAdded = users.find(
+			(user) => user._id === reservaListen.client._ref
+		)
+		const mariachiUpdated = mariachis.find(
+			(mar) => mar._id === reservaListen.orderItems[0].mariachi._ref
+		)
+		const items = reservaListen.orderItems[0]
+
+		const dataReserva = {
+			...reservaListen,
+			_id: dataReserva._id,
+			client: clientAdded,
+			reserva: reservaListen.reserva,
+			orderItems: {
+				...items,
+				mariachi: mariachiUpdated,
+			},
+		}
+		//  // if(target) {
+		return dataReserva
+	}
+)
+
+/////////////////
+
 const bookingsSlice = createSlice({
 	name: "bookings",
 	initialState,
@@ -269,6 +302,19 @@ const bookingsSlice = createSlice({
 		},
 		setStatusBookingEmail: (state, action) => {
 			state.statusBEmail = action.payload
+		},
+		setUpdateBooking: (state, action) => {
+			const dataReserva = action.payload
+			const target = state.bookings.find((obj) => obj._id === dataReserva._id)
+
+			Object.assign(target, dataReserva)
+		},
+		setNewBooking: (state, action) => {
+			const dataReserva = action.payload
+			const target = state.bookings.find((obj) => obj._id === dataReserva._id)
+			if (!target) {
+				state.bookings.unshift(dataReserva)
+			}
 		},
 	},
 
@@ -289,21 +335,22 @@ const bookingsSlice = createSlice({
 			if (action.payload?.payload?.payload?.reserva) {
 				state.statusBook = "succeeded"
 
-				const reservaData = action.payload?.payload?.payload?.reserva
+				// const reservaData = action.payload?.payload?.payload?.reserva
 
-				const index = state.bookings.findIndex(
-					(booking) => booking._id === reservaData._id
-				)
-				state.bookings[index] = reservaData
+				// const index = state.bookings.findIndex(
+				// 	(booking) => booking._id === reservaData._id
+				// )
+				// state.bookings[index] = reservaData
 			} else if (action.payload?.payload?.reserva) {
 				state.statusBook = "succeeded"
+				state.statusBEmail = "succeeded"
 
-				const reservaData = action.payload?.payload?.reserva
+				// const reservaData = action.payload?.payload?.reserva
 
-				const index = state.bookings.findIndex(
-					(booking) => booking._id === reservaData._id
-				)
-				state.bookings[index] = reservaData
+				// const index = state.bookings.findIndex(
+				// 	(booking) => booking._id === reservaData._id
+				// )
+				// state.bookings[index] = reservaData
 			} else {
 				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente, nuevo."
@@ -313,10 +360,12 @@ const bookingsSlice = createSlice({
 			console.log(action.payload)
 			if (action?.payload?.payload?.payload?.reserva) {
 				state.statusBook = "succeeded"
-				state.bookings.unshift(action?.payload?.payload?.payload?.reserva)
+				//	state.bookings.unshift(action?.payload?.payload?.payload?.reserva)
 			} else if (action?.payload?.payload?.reserva) {
 				state.statusBook = "succeeded"
-				state.bookings.unshift(action?.payload?.payload?.payload?.reserva)
+				state.statusBEmail = "succeeded"
+
+				//	state.bookings.unshift(action?.payload?.payload?.payload?.reserva)
 			} else {
 				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente, actualizar."
@@ -340,6 +389,19 @@ const bookingsSlice = createSlice({
 			} else {
 				state.statusBEmail = "failed"
 				state.error = "Error en el envio del correo"
+			}
+		},
+		[listenUpdatedToArrayBooking.fulfilled]: (state, action) => {
+			const reservaListened = action.payload
+			const target = state.bookings.find(
+				(obj) => obj._id === reservaListened._id
+			)
+
+			if (target) {
+				Object.assign(target, reservaListened)
+			}
+			{
+				state.bookings.unshift(reservaListened)
 			}
 		},
 
@@ -370,6 +432,8 @@ export const {
 	setStatusBooking,
 	setStatusBookingGS,
 	setStatusBookingEmail,
+	setUpdateBooking,
+	setNewBooking,
 } = bookingsSlice.actions
 
 // export const { setAdminUser } = bookingsSlice.actions

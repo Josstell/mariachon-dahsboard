@@ -4,22 +4,58 @@ import { ViewGridAddIcon } from "@heroicons/react/outline"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { SelectSimple } from "src/components/Forms/Smart/Inputs"
 import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
 import GetLogoWithName from "src/components/GetLogoWithName"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import BookingIcon from "src/components/SVG/Icons/BookingIcon"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
-import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
+import {
+	selectAllMariachis,
+	setNewMariachi,
+	setUpdatedMariachi,
+} from "store/features/mariachis/mariachiSlice"
 
 import { regions } from "src/helpers/dataset"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
+import { subscriptionMariachi } from "@lib/sanity"
+import { selectAllUsers } from "store/features/users/userSlice"
 
 const TableMariachis = () => {
-	const regionData = regions.response.estado
-
+	const dispatch = useDispatch()
 	const mariachisData = useSelector(selectAllMariachis)
+	const usersData = useSelector(selectAllUsers)
+
+	/*********************************************************************/
+
+	//const params = { ownerId: session._id }
+
+	const subscriptionMariachiLocal = subscriptionMariachi.subscribe((update) => {
+		const dataset = update.result
+
+		const isAlreadyMariachi = mariachisData.find(
+			(mariachi) => mariachi._id === dataset._id
+		)
+
+		const coordinatorUpdated = usersData.find(
+			(user) => user._id === dataset.coordinator._ref
+		)
+
+		const mariachiData = {
+			...dataset,
+			coordinator: coordinatorUpdated,
+		}
+
+		if (mariachiData.coordinator && isAlreadyMariachi) {
+			dispatch(setUpdatedMariachi(mariachiData))
+		} else if (mariachiData.coordinator && !isAlreadyMariachi) {
+			dispatch(setNewMariachi(mariachiData))
+		}
+	})
+
+	/*********************************************************************/
+	const regionData = regions.response.estado
 
 	const [mariachisDataSearch, setMariachisDataSearch] = useState(
 		mariachisData || []
@@ -27,7 +63,7 @@ const TableMariachis = () => {
 
 	useEffect(() => {
 		setMariachisDataSearch(mariachisData)
-	}, [mariachisData])
+	}, [mariachisData, subscriptionMariachiLocal])
 
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 

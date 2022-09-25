@@ -5,7 +5,7 @@ import client from "@lib/sanity"
 import { groq } from "next-sanity"
 import axios from "axios"
 
-const { NEXT_PUBLIC_URL_API } = process.env
+//const { NEXT_PUBLIC_URL_API } = process.env
 
 const initialState = {
 	mariachis: [],
@@ -191,6 +191,22 @@ const mariachisSlice = createSlice({
 		setStatusGS: (state, action) => {
 			state.statusGS = action.payload
 		},
+		setUpdatedMariachi: (state, action) => {
+			const mariachiToUpdate = action.payload
+			const target = state.mariachis.find(
+				(obj) => obj._id === mariachiToUpdate._id
+			)
+			Object.assign(target, mariachiToUpdate)
+		},
+		setNewMariachi: (state, action) => {
+			const mariachiToUpdate = action.payload
+			const target = state.mariachis.find(
+				(obj) => obj._id === mariachiToUpdate._id
+			)
+			if (!target) {
+				state.mariachis.unshift(mariachiToUpdate)
+			}
+		},
 	},
 
 	extraReducers: {
@@ -206,15 +222,8 @@ const mariachisSlice = createSlice({
 		},
 		[updateMariachi.fulfilled]: (state, action) => {
 			if (action.payload?.payload?.mariachiData) {
+				state.statusGS = "succeeded"
 				state.status = "succeeded"
-				const mariachiUp = action.payload.payload.mariachiData
-
-				console.log("mariachis update", action.payload, mariachiUp)
-
-				const index = state.mariachis.findIndex(
-					(mariachi) => mariachi._id === mariachiUp._id
-				)
-				state.mariachis[index] = mariachiUp
 			} else {
 				state.status = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
@@ -230,11 +239,9 @@ const mariachisSlice = createSlice({
 			}
 		},
 		[addMariachi.fulfilled]: (state, action) => {
-			console.log("mariachis add", action.payload)
-
 			if (action.payload?.payload?.mariachiData) {
+				state.statusGS = "succeeded"
 				state.status = "succeeded"
-				state.mariachis.push(action.payload.payload.mariachiData)
 			} else {
 				state.status = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
@@ -263,8 +270,13 @@ const mariachisSlice = createSlice({
 //export const { setUsers } = mariachisSlice.actions
 
 export default mariachisSlice.reducer
-export const { setDispMariachiTabActive, setStatus, setStatusGS } =
-	mariachisSlice.actions
+export const {
+	setDispMariachiTabActive,
+	setStatus,
+	setStatusGS,
+	setUpdatedMariachi,
+	setNewMariachi,
+} = mariachisSlice.actions
 
 export const selectAllMariachis = (state) => state.mariachis.mariachis
 export const selectStatus = (state) => state.mariachis.status
