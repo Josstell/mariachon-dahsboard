@@ -371,7 +371,7 @@ const TableMariachis = () => {
 											{mariachi.stage[0]}
 										</p>
 									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
 										{mariachi.stage[0] === "AFILIADO" ? (
 											<Link
 												href={{
@@ -380,10 +380,10 @@ const TableMariachis = () => {
 												}}
 												passHref
 											>
-												<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8" />
+												<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8 cursor-pointer" />
 											</Link>
 										) : (
-											<BookingIcon className="fill-slate-900/30 dark:fill-slate-100/30 w-8 h-8" />
+											<BookingIcon className="fill-slate-900/30 dark:fill-slate-100/30 w-8 h-8 cursor-not-allowed" />
 										)}
 									</td>
 								</tr>

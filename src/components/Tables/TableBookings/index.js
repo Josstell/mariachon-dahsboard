@@ -370,7 +370,7 @@ const TableBookings = ({ userAdmin }) => {
 												<span
 													className=" font-bold 
 													text-slate-600
-													dark:text-white"
+													dark:text-white cursor-pointer"
 												>
 													{booking?.reserva || booking?._id}
 												</span>
