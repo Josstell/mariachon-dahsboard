@@ -56,7 +56,7 @@ const addNewMariachi = () => {
 
 	useEffect(() => {
 		if (!userAdmin.exist) {
-			router.push("/")
+			router.push("/mariachis")
 		}
 		setValue("name", "")
 		setValue("tel", "")

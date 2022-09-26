@@ -278,9 +278,9 @@ export function SelectSimple({
 						: handleGral
 				}
 			>
-				{options.map((val) => (
+				{options.map((val, index) => (
 					<option
-						key={val._id || val.clave || val._ref}
+						key={val._id || val.clave || val._ref || index}
 						value={val._id || val.clave || val._ref}
 					>
 						{val.name}

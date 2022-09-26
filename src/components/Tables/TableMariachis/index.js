@@ -116,8 +116,6 @@ const TableMariachis = () => {
 		return <SpinnerLogo />
 	}
 
-	console.log("Mariachis: ", mariachisDataSearch)
-
 	return (
 		<div className="px-2 md:px1 w-full h-full">
 			<div
@@ -374,15 +372,19 @@ const TableMariachis = () => {
 										</p>
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										<Link
-											href={{
-												pathname: "reservas/nuevo",
-												query: { mariachiId: mariachi._id },
-											}}
-											passHref
-										>
-											<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8" />
-										</Link>
+										{mariachi.stage[0] === "AFILIADO" ? (
+											<Link
+												href={{
+													pathname: "reservas/nuevo",
+													query: { mariachiId: mariachi._id },
+												}}
+												passHref
+											>
+												<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8" />
+											</Link>
+										) : (
+											<BookingIcon className="fill-slate-900/30 dark:fill-slate-100/30 w-8 h-8" />
+										)}
 									</td>
 								</tr>
 							))}

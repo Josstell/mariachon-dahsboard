@@ -21,6 +21,7 @@ import {
 import { nanoid } from "@reduxjs/toolkit"
 import { useRouter } from "next/router"
 import { dateGral, optionsDate } from "src/helpers/utils"
+import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 
 const addnewuser = () => {
 	const [loading, setLoading] = useState(false)
@@ -43,6 +44,9 @@ const addnewuser = () => {
 	const { setValue, watch } = methods
 
 	useEffect(() => {
+		if (!userAdmin.exist) {
+			router.push("/usuarios")
+		}
 		dispatch(setStatusUser("idle"))
 		setValue("name", "")
 		setValue("username", "")
@@ -125,6 +129,9 @@ const addnewuser = () => {
 			watch("Coordinador"),
 			watch("Admin"),
 		],
+	}
+	if (!userAdmin.exist) {
+		return <SpinnerLogo />
 	}
 
 	return (

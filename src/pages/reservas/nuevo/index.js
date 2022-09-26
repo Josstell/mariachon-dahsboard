@@ -106,6 +106,9 @@ const newBooking = () => {
 	const { setValue, watch, getValues } = methods
 
 	useEffect(() => {
+		if (!userAdmin.exist) {
+			router.push("/reservas")
+		}
 		setValue("nameClient", userbyId?.name || data?.client?.name)
 		setValue("telClient", userbyId?.tel || data?.client?.tel)
 		setValue("emailClient", userbyId?.email || data?.client?.email)

@@ -67,8 +67,6 @@ const TableBookings = ({ userAdmin }) => {
 			},
 		}
 
-		console.log("La reserva ya esta: ", isBookingAlready)
-
 		if (dataReserva.orderItems.mariachi && isBookingAlready) {
 			dispatch(setUpdateBooking(dataReserva))
 		} else if (dataReserva.orderItems.mariachi && !isBookingAlready) {

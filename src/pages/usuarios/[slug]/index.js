@@ -60,7 +60,7 @@ const userById = ({ id }) => {
 			dispatch(setUserUpdate(dataUser))
 		}
 		if (!userAdmin.exist) {
-			router.push("/")
+			router.push("/usuarios")
 		}
 		setValue("name", dataUser.name)
 		setValue("username", dataUser.username)

@@ -46,7 +46,6 @@ const TableUser = () => {
 
 	const subscriptionUserLocal = subscriptionUser.subscribe((update) => {
 		const dataset = update.result
-		console.log(dataset)
 		const isAlreadyUser = usersData.find((user) => user._id === dataset._id)
 
 		if (isAlreadyUser) {
@@ -130,6 +129,13 @@ const TableUser = () => {
 						<thead>
 							<tr>
 								<th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Avatar
+								</th>
+								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left  
 										bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
@@ -178,13 +184,6 @@ const TableUser = () => {
 								>
 									Etapa
 								</th>
-								<th
-									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
-											bg-slate-50 text-slate-500 border-slate-100
-											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
-								>
-									Editar
-								</th>
 
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
@@ -201,43 +200,6 @@ const TableUser = () => {
 									key={user._id}
 									className="transition duration-300 ease-in-out hover:bg-slate-600/95"
 								>
-									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-										<span
-											className="ml-3 font-bold 
-													text-slate-600
-													dark:text-white"
-										>
-											{/* //{useTruncatedIdOrTel(user._id)} */}
-											{user.name}
-										</span>
-									</th>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{user.username}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{user.email}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{user?.tel ? user.tel : "no disponible"}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{user?.categorySet &&
-											user?.categorySet.map((category, index) => (
-												<span key={index}>
-													{!(index === user.categorySet.length - 1) &&
-													!(category === null)
-														? `${category}, `
-														: category}
-												</span>
-											))}
-									</td>
-
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{user.region}
-									</td>
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{user?.stage || ""}
-									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex ">
 											<Link href={`/usuarios/${user._id.toString()}`}>
@@ -277,16 +239,56 @@ const TableUser = () => {
 										</div>
 									</td>
 
-									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-										<Link
-											href={{
-												pathname: "reservas/nuevo",
-												query: { client: user._id },
-											}}
-											passHref
+									<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
+										<span
+											className="ml-3 font-bold 
+													text-slate-600
+													dark:text-white"
 										>
-											<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8" />
-										</Link>
+											{/* //{useTruncatedIdOrTel(user._id)} */}
+											{user.name}
+										</span>
+									</th>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{user.username}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{user.email}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{user?.tel ? user.tel : "no disponible"}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{user?.categorySet &&
+											user?.categorySet.map((category, index) => (
+												<span key={index}>
+													{!(index === user.categorySet.length - 1) &&
+													!(category === null)
+														? `${category}, `
+														: category}
+												</span>
+											))}
+									</td>
+
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{user.region}
+									</td>
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+										{user?.stage || ""}
+									</td>
+
+									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
+										{user.stage[0] !== "ANULADO" && (
+											<Link
+												href={{
+													pathname: "reservas/nuevo",
+													query: { client: user._id },
+												}}
+												passHref
+											>
+												<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8" />
+											</Link>
+										)}
 									</td>
 								</tr>
 							))}
