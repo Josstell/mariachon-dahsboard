@@ -11,13 +11,16 @@ import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import { createUrlWhatsApp, dateGral, optionsDate } from "src/helpers/utils"
 import {
 	selectAllBookings,
+	selectBookingsSearch,
 	selectError,
 	selectStatusBook,
 	selectStatusBookGS,
 	setNewBooking,
+	setNewBookingSearch,
 	setStatusBooking,
 	setStatusBookingGS,
 	setUpdateBooking,
+	setUpdateBookingSearch,
 	updateBooking,
 } from "store/features/bookings/bookingSlice"
 import { selectAllUsers } from "store/features/users/userSlice"
@@ -38,6 +41,8 @@ const TableBookings = ({ userAdmin }) => {
 	const mariachiData = useSelector(selectAllMariachis)
 	const usersData = useSelector(selectAllUsers)
 
+	const BookingsSearch = useSelector(selectBookingsSearch)
+
 	/*********************************************************************/
 
 	//const params = { ownerId: session._id }
@@ -46,6 +51,10 @@ const TableBookings = ({ userAdmin }) => {
 		const reservaListen = update.result
 
 		const isBookingAlready = BookingData.find(
+			(booking) => booking._id === reservaListen._id
+		)
+
+		const isBookingAlreadySearch = BookingsSearch.find(
 			(booking) => booking._id === reservaListen._id
 		)
 
@@ -72,6 +81,12 @@ const TableBookings = ({ userAdmin }) => {
 		} else if (dataReserva.orderItems.mariachi && !isBookingAlready) {
 			dispatch(setNewBooking(dataReserva))
 		}
+
+		if (dataReserva.orderItems.mariachi && isBookingAlreadySearch) {
+			dispatch(setUpdateBookingSearch(dataReserva))
+		} else if (dataReserva.orderItems.mariachi && !isBookingAlreadySearch) {
+			dispatch(setNewBookingSearch(dataReserva))
+		}
 	})
 
 	/*********************************************************************/
@@ -90,7 +105,7 @@ const TableBookings = ({ userAdmin }) => {
 	)
 
 	useEffect(() => {
-		setBookingsDataSearch(BookingData)
+		setBookingsDataSearch(BookingsSearch)
 	}, [BookingData, subscriptionBookingLocal])
 
 	let toastIdUpWhats
@@ -180,6 +195,17 @@ const TableBookings = ({ userAdmin }) => {
 	}
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
+	const handleReservaUrl = (id) => {
+		console.log("to", id)
+		subscriptionBookingLocal.unsubscribe()
+		router.push(`/reservas/${id.toString()}/edit`)
+	}
+
+	const handleNewReserva = () => {
+		subscriptionBookingLocal.unsubscribe()
+		router.push(`/reservas/nuevo`)
+	}
+
 	if (!BookingsData) {
 		return <SpinnerLogo />
 	}
@@ -224,14 +250,14 @@ const TableBookings = ({ userAdmin }) => {
 									/>
 								</div>{" "}
 								<LupaSearchIcon
-									className={`fill-slate-300 w-5 mr-2 z-100 ${
+									className={`fill-slate-300 w-5 mr-2 z-100 cursor-default ${
 										hideIconShowSearch ? "hidden" : null
 									}`}
 									onClick={() => setHideIconShowSearch(true)}
 								/>
-								<Link href={"reservas/nuevo"}>
+								<div onClick={handleNewReserva}>
 									<ViewGridAddIcon className="w-5 cursor-pointer" />
-								</Link>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -366,15 +392,14 @@ const TableBookings = ({ userAdmin }) => {
 										className="transition duration-300 ease-in-out hover:bg-slate-600/95"
 									>
 										<th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left ">
-											<Link href={`/reservas/${booking?._id}/edit`}>
-												<span
-													className=" font-bold 
+											<span
+												className=" font-bold 
 													text-slate-600
 													dark:text-white cursor-pointer"
-												>
-													{booking?.reserva || booking?._id}
-												</span>
-											</Link>
+												onClick={() => handleReservaUrl(booking._id)}
+											>
+												{booking?.reserva || booking?._id}
+											</span>
 										</th>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 											{booking?.client?.name}

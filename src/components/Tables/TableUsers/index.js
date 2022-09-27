@@ -1,12 +1,14 @@
 import Image from "next/image"
-import Link from "next/link"
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import GetLogoWithName from "src/components/GetLogoWithName"
 import {
 	selectAllUsers,
+	selectUsersSearch,
 	setNewUser,
+	setNewUserSearch,
 	setUpdatedUser,
+	setUpdatedUserSearch,
 } from "store/features/users/userSlice"
 
 import { ViewGridAddIcon } from "@heroicons/react/outline"
@@ -19,6 +21,7 @@ import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal
 import { regions } from "src/helpers/dataset"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
 import { subscriptionUser } from "@lib/sanity"
+import { useRouter } from "next/router"
 
 // const query = groq`
 // *[_type == "user" && !(_id in path('drafts.**'))  ] | order(_createdAt desc)
@@ -26,51 +29,74 @@ import { subscriptionUser } from "@lib/sanity"
 //&& _id != $ownerId
 
 const TableUser = () => {
+	const router = useRouter()
+
 	const dispatch = useDispatch()
-	const usersData = useSelector(selectAllUsers)
+	const usersDataAll = useSelector(selectAllUsers)
+
+	const usersSearch = useSelector(selectUsersSearch)
 
 	/*********************************************************************/
 
-	//const params = { ownerId: session._id }
-
-	// const subscriptionUser = client.listen(query).subscribe((update) => {
-	// 	const dataset = update.result
-	// 	const isAlreadyUser = usersData.find((user) => user._id === dataset._id)
-
-	// 	if (isAlreadyUser) {
-	// 		dispatch(setUpdatedUser(dataset))
-	// 	} else if (!isAlreadyUser) {
-	// 		dispatch(setNewUser(dataset))
-	// 	}
-	// })
-
 	const subscriptionUserLocal = subscriptionUser.subscribe((update) => {
-		const dataset = update.result
-		const isAlreadyUser = usersData.find((user) => user._id === dataset._id)
+		const userDataset = update.result
+		const isAlreadyUser = usersDataAll.find(
+			(user) => user._id === userDataset._id
+		)
+
+		const isAlreadyUserSearch = usersSearch.find(
+			(user) => user._id === userDataset._id
+		)
 
 		if (isAlreadyUser) {
-			dispatch(setUpdatedUser(dataset))
+			dispatch(setUpdatedUser(userDataset))
 		} else if (!isAlreadyUser) {
-			dispatch(setNewUser(dataset))
+			dispatch(setNewUser(userDataset))
+		}
+
+		if (isAlreadyUserSearch) {
+			dispatch(setUpdatedUserSearch(userDataset))
+		} else if (!isAlreadyUser) {
+			dispatch(setNewUserSearch(userDataset))
 		}
 	})
+
+	//console.log("isListening", isListening)
 
 	/*********************************************************************/
 
 	const regionData = regions.response.estado
 
-	const [usersDataSearch, setUsersDataSearch] = useState(usersData)
+	const [usersDataSearch, setUsersDataSearch] = useState([])
 
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
 	const [regionSelected, setRegionSelected] = useState("All")
 
 	useEffect(() => {
-		setUsersDataSearch(usersData)
-	}, [usersData, subscriptionUserLocal])
+		setUsersDataSearch(usersSearch)
+		//	setDataset({})
+	}, [usersDataAll, subscriptionUserLocal])
 
 	const handleGetRegion = (e) => {
 		setRegionSelected(e.target.value)
+	}
+
+	const handleUserUrl = (id) => {
+		subscriptionUser.unsubscribe()
+		router.push(`/usuarios/${id.toString()}`)
+	}
+
+	const handleNewUser = () => {
+		subscriptionUserLocal.unsubscribe()
+		router.push(`/usuarios/nuevo`)
+	}
+	const handleReservas = (id) => {
+		subscriptionUserLocal.unsubscribe()
+		router.push({
+			pathname: "reservas/nuevo",
+			query: { client: id },
+		})
 	}
 
 	return (
@@ -81,7 +107,7 @@ const TableUser = () => {
 			>
 				<div className={!hideIconShowSearch && "hidden"}>
 					<SearchWithModalMariachis
-						dataOriginal={usersData}
+						dataOriginal={usersDataAll}
 						mariachiDataSearch={usersDataSearch}
 						setMariachisDataSearch={setUsersDataSearch}
 						setHideIconShowSearch={setHideIconShowSearch}
@@ -116,9 +142,11 @@ const TableUser = () => {
 									}`}
 									onClick={() => setHideIconShowSearch(true)}
 								/>
-								<Link href={`/usuarios/nuevo`} passHref>
+								{/* <Link href={`/usuarios/nuevo`} passHref> */}
+								<div onClick={handleNewUser}>
 									<ViewGridAddIcon className="w-5 cursor-pointer" />
-								</Link>
+								</div>
+								{/* </Link> */}
 							</div>
 						</div>
 					</div>
@@ -202,40 +230,33 @@ const TableUser = () => {
 								>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex ">
-											<Link href={`/usuarios/${user._id.toString()}`}>
-												<a className="w-10 h-10 rounded-full border-1 border-slate-50 shadow relative">
-													{user?.image ? (
-														<Image
-															className="rounded-full"
-															src={user?.image}
-															layout="fill"
-															objectFit="cover"
-															alt=""
-														/>
-													) : user?.profileImage?.url ? (
-														<Image
-															className="rounded-full"
-															src={user?.profileImage.url}
-															layout="fill"
-															objectFit="cover"
-															alt=""
-														/>
-													) : (
-														<GetLogoWithName
-															text={user.name}
-															numberLetter={0}
-														/>
-													)}
-												</a>
-												{/* {user.images.map((img) => (
-												<img
-													key={img.uid}
-													src={img.url}
-													alt="..."
-													className="w-10 h-10 rounded-full border-2 border-slate-50 shadow"
-												></img>
-											))} */}
-											</Link>
+											{/* //	<Link href={`/usuarios/${user._id.toString()}`}> */}
+											<a
+												className="w-10 h-10 rounded-full border-1 border-slate-50 shadow relative"
+												onClick={() => handleUserUrl(user._id)}
+											>
+												{user?.image ? (
+													<Image
+														className="rounded-full"
+														src={user?.image}
+														layout="fill"
+														objectFit="cover"
+														alt=""
+													/>
+												) : user?.profileImage?.url ? (
+													<Image
+														className="rounded-full"
+														src={user?.profileImage.url}
+														layout="fill"
+														objectFit="cover"
+														alt=""
+													/>
+												) : (
+													<GetLogoWithName text={user.name} numberLetter={0} />
+												)}
+											</a>
+
+											{/* </Link> */}
 										</div>
 									</td>
 
@@ -279,15 +300,9 @@ const TableUser = () => {
 
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right cursor-pointer">
 										{user.stage[0] !== "ANULADO" && (
-											<Link
-												href={{
-													pathname: "reservas/nuevo",
-													query: { client: user._id },
-												}}
-												passHref
-											>
+											<div onClick={() => handleReservas(user._id)}>
 												<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8" />
-											</Link>
+											</div>
 										)}
 									</td>
 								</tr>

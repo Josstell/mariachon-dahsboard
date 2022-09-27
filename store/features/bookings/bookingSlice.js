@@ -6,10 +6,10 @@ import { groq } from "next-sanity"
 
 import axios from "axios"
 
-const { NEXT_PUBLIC_URL_API } = process.env
-
 const initialState = {
 	bookings: [],
+	bookingsSearch: [],
+
 	statusBook: "idle",
 	statusBookGS: "idle",
 	statusBEmail: "idle",
@@ -316,6 +316,26 @@ const bookingsSlice = createSlice({
 				state.bookings.unshift(dataReserva)
 			}
 		},
+		setBookingsSearch: (state, action) => {
+			state.bookingsSearch = action.payload
+		},
+		setUpdateBookingSearch: (state, action) => {
+			const dataReserva = action.payload
+			const target = state.bookingsSearch.find(
+				(obj) => obj._id === dataReserva._id
+			)
+
+			Object.assign(target, dataReserva)
+		},
+		setNewBookingSearch: (state, action) => {
+			const dataReserva = action.payload
+			const target = state.bookingsSearch.find(
+				(obj) => obj._id === dataReserva._id
+			)
+			if (!target) {
+				state.bookingsSearch.unshift(dataReserva)
+			}
+		},
 	},
 
 	extraReducers: {
@@ -434,6 +454,9 @@ export const {
 	setStatusBookingEmail,
 	setUpdateBooking,
 	setNewBooking,
+	setBookingsSearch,
+	setUpdateBookingSearch,
+	setNewBookingSearch,
 } = bookingsSlice.actions
 
 // export const { setAdminUser } = bookingsSlice.actions
@@ -444,3 +467,5 @@ export const selectStatusBookGS = (state) => state.bookings.statusBookGS
 export const selectStatusBEmail = (state) => state.bookings.statusBEmail
 
 export const selectError = (state) => state.bookings.error
+
+export const selectBookingsSearch = (state) => state.bookings.bookingsSearch

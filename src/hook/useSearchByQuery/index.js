@@ -1,5 +1,9 @@
 import { useMemo, useState } from "react"
+import { useDispatch } from "react-redux"
 import { optionsDate } from "src/helpers/utils"
+import { setBookingsSearch } from "store/features/bookings/bookingSlice"
+import { setMariachisSearch } from "store/features/mariachis/mariachiSlice"
+import { setUsersSearch } from "store/features/users/userSlice"
 // import { useSelector } from "react-redux"
 // import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 // import { selectAllUsers } from "store/features/users/userSlice"
@@ -20,6 +24,8 @@ const useSearchByQuery = (
 	const [query, setQuery] = useState("")
 
 	const [filteredData, setFilteredData] = useState([])
+
+	const dispatch = useDispatch()
 
 	useMemo(() => {
 		// regionSelected, byEtapes,userByType, query
@@ -71,6 +77,7 @@ const useSearchByQuery = (
 			}
 
 			setFilteredData(filterTypeUserSelected)
+			dispatch(setUsersSearch(filterTypeUserSelected))
 		}
 
 		// regionSelected, byEtapes, query,	typeOfPrice, mariachiCategory,
@@ -138,6 +145,7 @@ const useSearchByQuery = (
 			}
 
 			setFilteredData(filterMariachiCategory)
+			dispatch(setMariachisSearch(filterMariachiCategory))
 		}
 
 		if (typeElement === "booking") {
@@ -184,7 +192,6 @@ const useSearchByQuery = (
 					return dat.status[0] === statusReserva
 				})
 			}
-			console.log("Reserva status: ", statusReserva, byDateBooking)
 
 			if (byDateBooking === "") {
 				filterByDateReserva = filterStatusReserva
@@ -192,10 +199,7 @@ const useSearchByQuery = (
 				filterByDateReserva = filterStatusReserva.filter((dat) => {
 					const reservaDate = new Date(dat.dateAndTime)
 					const datePicked = new Date(byDateBooking)
-					console.log(
-						reservaDate.toLocaleDateString("es-MX", optionsDate),
-						datePicked.toLocaleDateString("es-MX", optionsDate)
-					)
+
 					return (
 						reservaDate.toLocaleDateString("es-MX", optionsDate) ===
 						datePicked.toLocaleDateString("es-MX", optionsDate)
@@ -204,6 +208,7 @@ const useSearchByQuery = (
 			}
 
 			setFilteredData(filterByDateReserva)
+			dispatch(setBookingsSearch(filterByDateReserva))
 
 			// if (mariachiCategories === "") {
 			// 	filterMariachiCategory = filterStageSelected

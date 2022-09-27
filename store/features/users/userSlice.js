@@ -7,6 +7,7 @@ import axios from "axios"
 
 const initialState = {
 	users: [],
+	usersSearch: [],
 	admin: {},
 	userUpdate: {},
 	userById: {},
@@ -238,6 +239,30 @@ const usersSlice = createSlice({
 				state.users.unshift(userToUpdate)
 			}
 		},
+		setUsersSearch: (state, action) => {
+			state.usersSearch = action.payload
+		},
+		setUpdatedUserSearch: (state, action) => {
+			const userToUpdate = action.payload
+			const target = state.usersSearch.find(
+				(obj) => obj._id === userToUpdate._id
+			)
+			if (userToUpdate?.isAdmin) {
+				state.admin = userToUpdate
+				Object.assign(target, userToUpdate)
+			} else {
+				Object.assign(target, userToUpdate)
+			}
+		},
+		setNewUserSearch: (state, action) => {
+			const userToUpdate = action.payload
+			const target = state.usersSearch.find(
+				(obj) => obj._id === userToUpdate._id
+			)
+			if (!target) {
+				state.usersSearch.unshift(userToUpdate)
+			}
+		},
 	},
 
 	extraReducers: {
@@ -291,7 +316,6 @@ const usersSlice = createSlice({
 		// 	state.status = "failed"
 		// },
 		[addClientToGoogleSheet.fulfilled]: (state, action) => {
-			console.log("GS completed", action.payload)
 			if (action.payload?.userData) {
 				state.statusGSUser = "succeeded"
 			} else {
@@ -342,6 +366,9 @@ export const {
 	setStatusGSUser,
 	setUpdatedUser,
 	setNewUser,
+	setUsersSearch,
+	setUpdatedUserSearch,
+	setNewUserSearch,
 } = usersSlice.actions
 
 export const selectAllUsers = (state) => state.users.users
@@ -350,5 +377,6 @@ export const selectUserAdmin = (state) => state.users.admin
 export const selectUserUpdate = (state) => state.users.userUpdate
 export const selectStatusUser = (state) => state.users.status
 export const selectStatusGSUser = (state) => state.users.statusGSUser
+export const selectUsersSearch = (state) => state.users.usersSearch
 
 export const selectError = (state) => state.users.error

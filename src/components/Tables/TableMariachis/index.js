@@ -2,7 +2,6 @@
 //import Image from "next/image"
 import { ViewGridAddIcon } from "@heroicons/react/outline"
 import Image from "next/image"
-import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { SelectSimple } from "src/components/Forms/Smart/Inputs"
@@ -13,19 +12,26 @@ import BookingIcon from "src/components/SVG/Icons/BookingIcon"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import {
 	selectAllMariachis,
+	selectMariachisSearch,
 	setNewMariachi,
+	setNewMariachiSearch,
 	setUpdatedMariachi,
+	setUpdatedMariachiSearch,
 } from "store/features/mariachis/mariachiSlice"
 
 import { regions } from "src/helpers/dataset"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
 import { subscriptionMariachi } from "@lib/sanity"
 import { selectAllUsers } from "store/features/users/userSlice"
+import { useRouter } from "next/router"
 
 const TableMariachis = () => {
 	const dispatch = useDispatch()
+	const router = useRouter()
 	const mariachisData = useSelector(selectAllMariachis)
 	const usersData = useSelector(selectAllUsers)
+
+	const mariachisSearch = useSelector(selectMariachisSearch)
 
 	/*********************************************************************/
 
@@ -35,6 +41,10 @@ const TableMariachis = () => {
 		const dataset = update.result
 
 		const isAlreadyMariachi = mariachisData.find(
+			(mariachi) => mariachi._id === dataset._id
+		)
+
+		const isAlreadyMariachiSearch = mariachisSearch.find(
 			(mariachi) => mariachi._id === dataset._id
 		)
 
@@ -52,6 +62,12 @@ const TableMariachis = () => {
 		} else if (mariachiData.coordinator && !isAlreadyMariachi) {
 			dispatch(setNewMariachi(mariachiData))
 		}
+
+		if (mariachiData.coordinator && isAlreadyMariachiSearch) {
+			dispatch(setUpdatedMariachiSearch(mariachiData))
+		} else if (mariachiData.coordinator && !isAlreadyMariachiSearch) {
+			dispatch(setNewMariachiSearch(mariachiData))
+		}
 	})
 
 	/*********************************************************************/
@@ -62,7 +78,7 @@ const TableMariachis = () => {
 	)
 
 	useEffect(() => {
-		setMariachisDataSearch(mariachisData)
+		setMariachisDataSearch(mariachisSearch)
 	}, [mariachisData, subscriptionMariachiLocal])
 
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
@@ -110,6 +126,23 @@ const TableMariachis = () => {
 
 	const handleGetRegion = (e) => {
 		setRegionSelected(e.target.value)
+	}
+
+	const handleMariachiUrl = (slug) => {
+		subscriptionMariachiLocal.unsubscribe()
+		router.push(`/mariachis/${slug}`)
+	}
+
+	const handleNewMariachi = () => {
+		subscriptionMariachiLocal.unsubscribe()
+		router.push(`/mariachis/nuevo`)
+	}
+	const handleReservas = (id) => {
+		subscriptionMariachiLocal.unsubscribe()
+		router.push({
+			pathname: "reservas/nuevo",
+			query: { mariachiId: id },
+		})
 	}
 
 	if (!mariachisDataSearch) {
@@ -163,9 +196,9 @@ const TableMariachis = () => {
 									}`}
 									onClick={() => setHideIconShowSearch(true)}
 								/>
-								<Link href={`mariachis/nuevo`} passHref>
+								<div onClick={handleNewMariachi}>
 									<ViewGridAddIcon className="w-7 cursor-pointer" />
-								</Link>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -286,9 +319,8 @@ const TableMariachis = () => {
 													dark:text-white cursor-pointer"
 										>
 											{/* {useTruncatedIdOrTel(mariachi._id)} */}
-											<Link
-												href={`/mariachis/${mariachi.slug.current}`}
-												passHref
+											<div
+												onClick={() => handleMariachiUrl(mariachi.slug.current)}
 											>
 												<a>
 													{mariachi?.logo ? (
@@ -308,7 +340,7 @@ const TableMariachis = () => {
 														/>
 													)}
 												</a>
-											</Link>
+											</div>
 										</span>
 									</th>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
@@ -373,15 +405,9 @@ const TableMariachis = () => {
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
 										{mariachi.stage[0] === "AFILIADO" ? (
-											<Link
-												href={{
-													pathname: "reservas/nuevo",
-													query: { mariachiId: mariachi._id },
-												}}
-												passHref
-											>
+											<div onClick={() => handleReservas(mariachi._id)}>
 												<BookingIcon className="fill-slate-900 dark:fill-slate-100 w-8 h-8 cursor-pointer" />
-											</Link>
+											</div>
 										) : (
 											<BookingIcon className="fill-slate-900/30 dark:fill-slate-100/30 w-8 h-8 cursor-not-allowed" />
 										)}

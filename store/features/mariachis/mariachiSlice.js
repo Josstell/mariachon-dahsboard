@@ -9,6 +9,7 @@ import axios from "axios"
 
 const initialState = {
 	mariachis: [],
+	mariachisSearch: [],
 	status: "idle",
 	statusGS: "idle",
 	error: null,
@@ -207,6 +208,25 @@ const mariachisSlice = createSlice({
 				state.mariachis.unshift(mariachiToUpdate)
 			}
 		},
+		setMariachisSearch: (state, action) => {
+			state.mariachisSearch = action.payload
+		},
+		setUpdatedMariachiSearch: (state, action) => {
+			const mariachiToUpdate = action.payload
+			const target = state.mariachisSearch.find(
+				(obj) => obj._id === mariachiToUpdate._id
+			)
+			Object.assign(target, mariachiToUpdate)
+		},
+		setNewMariachiSearch: (state, action) => {
+			const mariachiToUpdate = action.payload
+			const target = state.mariachisSearch.find(
+				(obj) => obj._id === mariachiToUpdate._id
+			)
+			if (!target) {
+				state.mariachisSearch.unshift(mariachiToUpdate)
+			}
+		},
 	},
 
 	extraReducers: {
@@ -276,6 +296,9 @@ export const {
 	setStatusGS,
 	setUpdatedMariachi,
 	setNewMariachi,
+	setMariachisSearch,
+	setUpdatedMariachiSearch,
+	setNewMariachiSearch,
 } = mariachisSlice.actions
 
 export const selectAllMariachis = (state) => state.mariachis.mariachis
@@ -286,3 +309,5 @@ export const selectError = (state) => state.mariachis.error
 
 export const selectMariachiBySlug = (state, slug) =>
 	state.mariachis.mariachis.find((mar) => mar.slug === slug)
+
+export const selectMariachisSearch = (state) => state.mariachis.mariachisSearch
