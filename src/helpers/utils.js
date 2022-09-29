@@ -91,7 +91,7 @@ export const createUrlWhatsApp = (reservationData) => {
 		reservationData?.reserva +
 		sl +
 		"*Nombre:* " +
-		reservationData?.client?.name +
+		reservationData?.host?.name +
 		sl +
 		"*Fecha:* " +
 		date.toLocaleDateString("es-MX", options) +
@@ -103,7 +103,7 @@ export const createUrlWhatsApp = (reservationData) => {
 		addressNorm +
 		sl +
 		"*Teléfono:* " +
-		reservationData?.client.tel +
+		reservationData?.host.tel +
 		sl +
 		"*Mariachi:* " +
 		reservationData?.orderItems?.mariachi?.name +

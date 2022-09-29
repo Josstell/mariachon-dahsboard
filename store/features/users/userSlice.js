@@ -117,8 +117,6 @@ export const addNewUser = createAsyncThunk(
 	async (newUser, { dispatch }) => {
 		// We send the initial data to the fake API server
 
-		console.log("add nuevo", newUser)
-
 		try {
 			const { data } = await axios.post("/api/users/add", newUser)
 
@@ -286,8 +284,13 @@ const usersSlice = createSlice({
 		// 	state.error = "¡Algo paso faver de intentarlo más tarde!"
 		// },
 		[addNewUser.fulfilled]: (state, action) => {
+			const userToAdd = action.payload?.payload?.userData
 			if (action.payload?.payload?.userData) {
+				const target = state.users.find((obj) => obj._id === userToAdd._id)
 				state.status = "succeeded"
+				if (!target) {
+					state.users.unshift(userToAdd)
+				}
 			} else {
 				state.status = "failed"
 				state.error = action.payload.data
@@ -304,8 +307,16 @@ const usersSlice = createSlice({
 			state.userUpdate = {}
 			const userAd = action.payload?.payload?.userData
 
+			const target = state.users.find((obj) => obj._id === userAd._id)
+
 			if (userAd) {
 				state.status = "succeeded"
+				if (userAd?.isAdmin) {
+					state.admin = userAd
+					Object.assign(target, userAd)
+				} else {
+					Object.assign(target, userAd)
+				}
 			} else {
 				state.statusGSUser = "failed"
 				state.error = "Error en la carga de google sheet"

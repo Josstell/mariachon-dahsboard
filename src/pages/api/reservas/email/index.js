@@ -88,9 +88,16 @@ export default handlerCors().post((req, res) => {
 	const templateEmail = process.env.TEMPLETE_ID_EMAIL_RESERVA
 
 	let emailToSend =
-		reservaDetails?.email === "" || !isEmailNoValid
+		req.body?.client?.email === "" || !isEmailNoValid
 			? ["informes@mariachon.com"]
-			: ["informes@mariachon.com", reservaDetails?.email]
+			: ["informes@mariachon.com", req.body?.client?.email]
+
+	if (
+		req.body?.host?.email !== req.body?.client?.email &&
+		req.body?.host?.email !== ""
+	) {
+		emailToSend.push(req.body?.host?.email)
+	}
 
 	const msg = {
 		to: emailToSend, // Change to your recipient

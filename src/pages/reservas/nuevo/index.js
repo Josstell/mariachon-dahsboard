@@ -307,6 +307,8 @@ const newBooking = () => {
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
 	const onSubmit = (dataForm) => {
+		console.log("DAta:", dataForm)
+
 		if (dataForm.clientId === "") {
 			toast.error("¡Falta asignar cliente¡")
 			return
@@ -324,6 +326,11 @@ const newBooking = () => {
 
 		const reservaAdd = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
+			host: {
+				name: dataForm.nameClient,
+				tel: dataForm.telClient,
+				email: dataForm.emailClient,
+			},
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
 			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 
@@ -351,6 +358,7 @@ const newBooking = () => {
 			// 	_type: "paymentResult",
 			// 	email_address: "xonitg@gmail.com",
 			// },
+
 			playlist: arrayPlayList,
 			shippingAddress: {
 				address: dataForm.address,
@@ -362,6 +370,8 @@ const newBooking = () => {
 			userName: dataForm.nameClient,
 			//_id: data._id,
 		}
+
+		console.log("DAta:", reservaAdd)
 
 		dispatch(addBooking({ ...reservaAdd, sendEmail: true }))
 	}

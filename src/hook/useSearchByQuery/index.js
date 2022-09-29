@@ -27,6 +27,8 @@ const useSearchByQuery = (
 
 	const dispatch = useDispatch()
 
+	console.log("data", dataOriginal)
+
 	useMemo(() => {
 		// regionSelected, byEtapes,userByType, query
 		if (typeElement === "user") {
@@ -168,9 +170,10 @@ const useSearchByQuery = (
 			} else {
 				filerQuerySelected = filterRegionSelected.filter((dat) => {
 					return (
-						`${dat.client.name}`.toLowerCase().includes(query.toLowerCase()) ||
+						`${dat.client?.name}`.toLowerCase().includes(query.toLowerCase()) ||
+						`${dat.host?.name}`.toLowerCase().includes(query.toLowerCase()) ||
 						`${dat.reserva}`.toLowerCase().includes(query.toLowerCase()) ||
-						`${dat.orderItems.mariachi.name}`
+						`${dat.orderItems?.mariachi.name}`
 							.toLowerCase()
 							.includes(query.toLowerCase())
 					)

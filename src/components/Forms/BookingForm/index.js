@@ -11,6 +11,7 @@ import { regions } from "../../../helpers/dataset"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { useSelector } from "react-redux"
 import AddNewUserComponent from "../UserForm/AddNewUser"
+import Separator from "../Smart/Utils"
 //import { setDispBookingTabActive } from "store/features/bookings/bookingSlice"
 
 const BookingForm = ({
@@ -136,9 +137,12 @@ const BookingForm = ({
 	// 	router.push("/reservas")
 	// }
 
+	const [userSelected, setUserSelected] = useState({})
+
 	const hangleGetClient = (e) => {
 		const userSelected = users.find((user) => user._id === e.target.value)
 		setUserbyId(userSelected)
+		setUserSelected(userSelected)
 	}
 
 	const hangleGetMariachi = (e) => {
@@ -165,9 +169,24 @@ const BookingForm = ({
 
 	const regionSelected = getValues("region") || "PUE"
 
+	const clientSelected = users.find(
+		(user) => user._id === getValues("clientId")
+	)
+
 	const mariachisIfPartner = mariachis.filter(
 		(mar) => mar.stage[0] === "AFILIADO" && mar.region === regionSelected
 	)
+
+	const paramsTel = {
+		required: true,
+		pattern: /^[0-9\b]+$/i,
+		minLength: 10,
+		maxLength: 10,
+	}
+
+	const paramsEmail = {
+		pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i,
+	}
 
 	return (
 		<>
@@ -184,6 +203,32 @@ const BookingForm = ({
 					setRole={setRole}
 					setAddUser={setAddUser}
 				/>
+				<p
+					className={`${
+						(!addUser || !activeFormTab?.client) && "hidden"
+					} mt-2 text-left font-bold text-slate-700 uppercase dark:text-slate-200`}
+				>
+					Cliente: {userSelected?.name || clientSelected?.name}
+				</p>
+
+				<Separator hidden={activeFormTab?.client} />
+
+				<p
+					className={`${
+						(!addUser || !activeFormTab?.client) && "hidden"
+					} mt-2 text-left font-bold text-slate-700 uppercase dark:text-slate-200`}
+				>
+					Dirigirse con:{" "}
+				</p>
+
+				<p
+					className={`${
+						addUser && "hidden"
+					} mt-2 text-center font-bold text-slate-700 uppercase dark:text-slate-200`}
+				>
+					Crear nuevo cliente{" "}
+				</p>
+
 				<Input
 					hidden={activeFormTab.client && addUser}
 					name="nameClient"
@@ -193,11 +238,13 @@ const BookingForm = ({
 					hidden={activeFormTab.client && addUser}
 					name="telClient"
 					label="Teléfono"
+					params={paramsTel}
 				/>
 				<Input
 					hidden={activeFormTab.client && addUser}
 					name="emailClient"
 					label="Correo electrónico"
+					params={paramsEmail}
 				/>
 
 				{/** Direccion */}

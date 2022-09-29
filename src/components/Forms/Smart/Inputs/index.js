@@ -45,13 +45,37 @@ export function Input({
 					El numéro tiene que ser de 10 cifras. <br />
 				</span>
 			) : null}
+
 			{name === "tel" && errors?.tel ? (
 				<span className="text-red-500 text-[10px]">
 					Número celular es requerido.
 				</span>
 			) : null}
 
+			{name === "telClient" && errors?.telClient?.type === "pattern" ? (
+				<span className="text-red-500 text-[10px]">
+					Por favor introduce solo numeros del 0-9. <br />
+				</span>
+			) : null}
+			{name === "telClient" &&
+			(errors?.telClient?.type === "minLength" ||
+				errors?.telClient?.type === "maxLength") ? (
+				<span className="text-red-500 text-[10px]">
+					El numéro tiene que ser de 10 cifras. <br />
+				</span>
+			) : null}
+			{name === "telClient" && errors?.telClient ? (
+				<span className="text-red-500 text-[10px]">
+					Número celular es requerido.
+				</span>
+			) : null}
+
 			{name === "email" && errors?.email?.type === "pattern" ? (
+				<span className="text-red-500 text-[10px]">
+					Correo no valido. <br />
+				</span>
+			) : null}
+			{name === "emailClient" && errors?.emailClient?.type === "pattern" ? (
 				<span className="text-red-500 text-[10px]">
 					Correo no valido. <br />
 				</span>

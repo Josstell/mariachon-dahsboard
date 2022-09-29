@@ -83,7 +83,7 @@ const TableUser = () => {
 	}
 
 	const handleUserUrl = (id) => {
-		subscriptionUser.unsubscribe()
+		subscriptionUserLocal.unsubscribe()
 		router.push(`/usuarios/${id.toString()}`)
 	}
 

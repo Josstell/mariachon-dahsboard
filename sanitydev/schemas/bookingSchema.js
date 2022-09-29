@@ -19,6 +19,16 @@ export default {
 			type: "string",
 		},
 		{
+			name: "host",
+			title: "Recibidos por:",
+			type: "object",
+			fields: [
+				{ name: "name", type: "string" },
+				{ name: "tel", type: "string" },
+				{ name: "email", type: "string" },
+			],
+		},
+		{
 			name: "reserva",
 			title: "Clave de reservación",
 			type: "string",

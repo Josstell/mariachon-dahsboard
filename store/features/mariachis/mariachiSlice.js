@@ -242,8 +242,15 @@ const mariachisSlice = createSlice({
 		},
 		[updateMariachi.fulfilled]: (state, action) => {
 			if (action.payload?.payload?.mariachiData) {
+				const mariachiToUpdate = action.payload?.payload?.mariachiData
+				const target = state.mariachis.find(
+					(obj) => obj._id === mariachiToUpdate._id
+				)
 				state.statusGS = "succeeded"
 				state.status = "succeeded"
+				if (target) {
+					Object.assign(target, mariachiToUpdate)
+				}
 			} else {
 				state.status = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."
@@ -262,6 +269,13 @@ const mariachisSlice = createSlice({
 			if (action.payload?.payload?.mariachiData) {
 				state.statusGS = "succeeded"
 				state.status = "succeeded"
+				const mariachiToUpdate = action.payload?.payload?.mariachiData
+				const target = state.mariachis.find(
+					(obj) => obj._id === mariachiToUpdate._id
+				)
+				if (!target) {
+					state.mariachis.unshift(mariachiToUpdate)
+				}
 			} else {
 				state.status = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente."

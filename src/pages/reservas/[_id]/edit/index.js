@@ -28,54 +28,6 @@ import { selectUserAdmin } from "store/features/users/userSlice"
 import toast, { Toaster } from "react-hot-toast"
 import { dateGral, optionsDate } from "src/helpers/utils"
 
-const deserva = {
-	dateAndTime: "2022-05-28T18:00:00.000Z",
-	message: "Llegar puntuales",
-	userName: "Jorge",
-
-	client: {
-		_id: "579d5856-7018-40d0-aa5d-980b35b06f2e",
-		email: "xonitg@gmail.com",
-		name: "Jorge Guzm",
-		tel: "2225110199",
-	},
-	orderItems: [
-		{
-			deposit: 500,
-			mariachi: {
-				_ref: "8f54aff9-d78b-4e0a-a43e-ba58442aa458",
-				_type: "reference",
-			},
-			price: 2500,
-			qty: 1,
-			service: ["hora"],
-			_key: "cd9553552f06",
-		},
-	],
-
-	paymentResult: {
-		email_address: "xonitg@gmail.com",
-		payment: ["cash"],
-	},
-	playlist: [
-		"Las mañanitas",
-		"Llamarada",
-		"Si tu te atreves",
-		"El rey",
-		"Motivos",
-		"19 noches y 500 dias",
-		"Gustito",
-	],
-
-	shippingAddress: {
-		address: "7 sur 307",
-		city: "Tianguismanalco",
-		region: "Puebla",
-	},
-	status: ["PE"],
-	_id: "082d1427-b8fb-4be2-9ade-b7fd8cc1dc98",
-}
-
 const reservaById = ({ id }) => {
 	const data = useSelector((state) =>
 		state.bookings.bookings.find((booking) => booking._id === id)
@@ -92,17 +44,15 @@ const reservaById = ({ id }) => {
 
 	const dataMariachi = useSelector(selectAllMariachis)
 
-	const [reservaData, setreservaData] = useState(
-		data === undefined ? deserva : data
-	)
+	const [reservaData, setreservaData] = useState(data)
 
 	const [mariachiSelected, setMariachiSelected] = useState({})
 
 	const [arrayPlayList, setArrayPlayList] = useState([])
 
-	const [userbyId, setUserbyId] = useState(reservaData.client)
+	const [userbyId, setUserbyId] = useState(reservaData?.client || "")
 	const [mariachibyId, setMariachibyId] = useState(
-		reservaData.orderItems.mariachi
+		reservaData?.orderItems?.mariachi || ""
 	)
 
 	const [loading, setLoading] = useState(false)
@@ -125,9 +75,12 @@ const reservaById = ({ id }) => {
 	}
 
 	useEffect(() => {
-		setValue("nameClient", userbyId?.name || data?.client?.name)
-		setValue("telClient", userbyId?.tel || data?.client?.tel)
-		setValue("emailClient", userbyId?.email || data?.client?.email)
+		setValue("nameClient", data?.host?.name || userbyId?.name)
+		setValue("telClient", data?.host?.tel || userbyId?.tel)
+		setValue(
+			"emailClient",
+			data?.host?.email === undefined ? userbyId?.email : data?.host?.email
+		)
 	}, [userbyId])
 
 	useEffect(() => {
@@ -172,10 +125,10 @@ const reservaById = ({ id }) => {
 	const dataReservaToCard = {
 		dateAndTime: watch("dateAndTime") || "",
 		client: {
-			_id: watch("clientId") || reservaData.client?._id,
-			name: watch("nameClient") || reservaData.client?.name,
-			tel: watch("telClient") || reservaData.client?.tel,
-			email: watch("emailClient") || reservaData.client?.email,
+			_id: watch("clientId"),
+			name: watch("nameClient"),
+			tel: watch("telClient"),
+			email: watch("emailClient"),
 		},
 		shippingAddress: {
 			address: watch("address") || "",
@@ -331,6 +284,11 @@ const reservaById = ({ id }) => {
 
 		const reservaUpdate = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
+			host: {
+				name: dataForm.nameClient,
+				tel: dataForm.telClient,
+				email: dataForm.emailClient,
+			},
 			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 			dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
 

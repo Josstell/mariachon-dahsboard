@@ -26,6 +26,7 @@ const query = groq`
 *[_type == "booking"  && !(_id in path('drafts.**'))]| order(_createdAt desc){
  _id,
  reserva,
+ host,
  dateCreated,
 dateModified,
 createdBy,
@@ -200,7 +201,6 @@ export const addBookingToGoogleSheet = createAsyncThunk(
 	(reserva, { dispatch }) => {
 		let reservaData = reserva
 
-		console.log("to ggogle", reserva)
 		//	`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
 		return axios
 			.post(`/api/google-sheet/add/reservation`, reservaData)
@@ -353,35 +353,48 @@ const bookingsSlice = createSlice({
 			console.log("update", action.payload)
 
 			if (action.payload?.payload?.payload?.reserva) {
+				const reservaData = action.payload?.payload?.payload?.reserva
+
+				const index = state.bookings.findIndex(
+					(booking) => booking._id === reservaData._id
+				)
 				state.statusBook = "succeeded"
 
-				// const reservaData = action.payload?.payload?.payload?.reserva
-
-				// const index = state.bookings.findIndex(
-				// 	(booking) => booking._id === reservaData._id
-				// )
-				// state.bookings[index] = reservaData
+				if (index) {
+					Object.assign(index, reservaData)
+				}
 			} else if (action.payload?.payload?.reserva) {
 				state.statusBook = "succeeded"
 				state.statusBEmail = "succeeded"
 
-				// const reservaData = action.payload?.payload?.reserva
+				const reservaData = action.payload?.payload?.reserva
 
-				// const index = state.bookings.findIndex(
-				// 	(booking) => booking._id === reservaData._id
-				// )
-				// state.bookings[index] = reservaData
+				const index = state.bookings.findIndex(
+					(booking) => booking._id === reservaData._id
+				)
+				if (index) {
+					Object.assign(index, reservaData)
+				}
 			} else {
 				state.statusBook = "failed"
 				state.error = "Algo paso, por favor intentelo nuevamente, nuevo."
 			}
 		},
 		[addBooking.fulfilled]: (state, action) => {
-			console.log(action.payload)
 			if (action?.payload?.payload?.payload?.reserva) {
+				const dataReserva = action?.payload?.payload?.payload?.reserva
+				const target = state.bookings.find((obj) => obj._id === dataReserva._id)
+				if (!target) {
+					state.bookings.unshift(dataReserva)
+				}
 				state.statusBook = "succeeded"
 				//	state.bookings.unshift(action?.payload?.payload?.payload?.reserva)
 			} else if (action?.payload?.payload?.reserva) {
+				const dataReserva = action?.payload?.payload?.reserva
+				const target = state.bookings.find((obj) => obj._id === dataReserva._id)
+				if (!target) {
+					state.bookings.unshift(dataReserva)
+				}
 				state.statusBook = "succeeded"
 				state.statusBEmail = "succeeded"
 
