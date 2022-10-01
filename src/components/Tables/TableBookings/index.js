@@ -358,6 +358,13 @@ const TableBookings = ({ userAdmin }) => {
 								>
 									Estado de reserva
 								</th>
+								{/* <th
+									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
+											bg-slate-50 text-slate-500 border-slate-100
+											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
+								>
+									Terminar/cancelar
+								</th> */}
 
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
@@ -481,7 +488,18 @@ const TableBookings = ({ userAdmin }) => {
 											<span
 												className={`text-red-500 font-extrabold ${
 													booking?.status[booking?.status.length - 1] ===
-														"Enviada" && "text-green-400"
+													"Agendado"
+														? "text-red-300"
+														: booking?.status[booking?.status.length - 1] ===
+														  "Actualizada"
+														? "text-red-500"
+														: booking?.status[booking?.status.length - 1] ===
+														  "Enviada"
+														? "text-yellow-500"
+														: booking?.status[booking?.status.length - 1] ===
+														  "Realizada"
+														? "text-green-500"
+														: "text-blue-500"
 												}`}
 											>
 												{booking?.status[
@@ -489,6 +507,11 @@ const TableBookings = ({ userAdmin }) => {
 												].toUpperCase()}
 											</span>
 										</td>
+										{/* <td
+											className={`border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 `}
+										>
+											Terminar/ cancelar
+										</td> */}
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 cursor-pointer">
 											{/* <a onClick={() => handleWhatsApp(booking)}>
 												{booking?.orderItems?.mariachi?.coordinator?.name}{" "}

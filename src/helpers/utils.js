@@ -33,13 +33,21 @@ export const typeOfPrice = ["regular", "minimo", "festivo"]
 export const mariachiCategory = ["basico", "normal", "premium"]
 export const byServices = ["Inactivo", "serenata", "hora", "contrato"]
 
-export const statusData = [
-	"Todos",
+export const statusReserva = [
 	"Agendado",
+	"Actualizada",
 	"Enviada",
 	"Realizada",
 	"Cancelada",
+]
+
+export const statusData = [
+	"Todos",
+	"Agendado",
 	"Actualizada",
+	"Enviada",
+	"Realizada",
+	"Cancelada",
 ]
 
 export const colorEtapes = {

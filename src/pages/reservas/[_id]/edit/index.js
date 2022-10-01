@@ -107,6 +107,7 @@ const reservaById = ({ id }) => {
 				? ""
 				: reservaData?.orderItems?.service
 		)
+		setValue("statusReserva", reservaData.status[0])
 		setValue("message", reservaData.message)
 		setValue(
 			"priceOptionSelected",
@@ -177,6 +178,13 @@ const reservaById = ({ id }) => {
 
 	useEffect(() => {
 		const items = dataReservaToCard.orderItems
+
+		if (
+			dataReservaToCard.orderItems.fee > 0 &&
+			reservaData.status[0] === "Enviada"
+		) {
+			setValue("statusReserva", "Realizada")
+		}
 		setreservaData({
 			...reservaData,
 			client: dataReservaToCard.client,
@@ -204,6 +212,7 @@ const reservaById = ({ id }) => {
 		dataReservaToCard.shippingAddress.cp,
 
 		dataReservaToCard.orderItems.deposit,
+		dataReservaToCard.orderItems.fee,
 		dataReservaToCard.orderItems.price,
 		dataReservaToCard.orderItems.members,
 		dataReservaToCard.orderItems.qty,
@@ -282,6 +291,19 @@ const reservaById = ({ id }) => {
 		setLoading(true)
 		toastIdRe = toast.loading("Cargando...")
 
+		let statusReservation = []
+
+		if (
+			dataForm.statusReserva === "Agendado" ||
+			dataForm.statusReserva === "Actualizada"
+		) {
+			statusReservation = ["Actualizada"]
+		} else if (dataForm.statusReserva === "Enviada") {
+			statusReservation = ["Enviada"]
+		} else {
+			statusReservation = [dataForm.statusReserva]
+		}
+
 		const reservaUpdate = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
 			host: {
@@ -324,7 +346,7 @@ const reservaById = ({ id }) => {
 				cp: dataForm.cp,
 				region: dataForm.region,
 			},
-			status: ["Actualizada"],
+			status: statusReservation,
 			userName: dataForm.nameClient,
 			_id: data._id,
 		}

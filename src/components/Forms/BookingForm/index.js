@@ -12,6 +12,7 @@ import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { useSelector } from "react-redux"
 import AddNewUserComponent from "../UserForm/AddNewUser"
 import Separator from "../Smart/Utils"
+import { statusReserva } from "src/helpers/utils"
 //import { setDispBookingTabActive } from "store/features/bookings/bookingSlice"
 
 const BookingForm = ({
@@ -397,6 +398,16 @@ const BookingForm = ({
 						</ol>
 					</div>
 				</div>
+
+				<Separator hidden={activeFormTab?.parameters} />
+
+				<RadioButton
+					hidden={activeFormTab.parameters}
+					name="statusReserva"
+					label={statusReserva}
+					type="radio"
+				/>
+				<Separator hidden={activeFormTab?.parameters} />
 
 				<Button
 					message={isSaving ? "Guardar" : "Actualizar"}
