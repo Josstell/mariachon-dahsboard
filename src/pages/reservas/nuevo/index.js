@@ -130,8 +130,8 @@ const newBooking = () => {
 		setValue("category_mariachi", reservaData?.orderItems?.categorySet)
 		setValue("fee", reservaData.orderItems.fee || 0)
 		setValue("qty", reservaData.orderItems.qty || 1)
-		setValue("price", reservaData.orderItems.price)
-		setValue("deposit", reservaData.orderItems.deposit)
+		setValue("price", reservaData.orderItems.price || 0)
+		setValue("deposit", reservaData.orderItems.deposit || 0)
 		setValue(
 			"service",
 			reservaData?.orderItems?.service === undefined
