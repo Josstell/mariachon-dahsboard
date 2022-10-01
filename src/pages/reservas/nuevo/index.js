@@ -129,7 +129,7 @@ const newBooking = () => {
 		setValue("members", reservaData.orderItems.members)
 		setValue("category_mariachi", reservaData?.orderItems?.categorySet)
 		setValue("fee", reservaData.orderItems.fee || 0)
-		setValue("qty", reservaData.orderItems.qty || 0)
+		setValue("qty", reservaData.orderItems.qty || 1)
 		setValue("price", reservaData.orderItems.price)
 		setValue("deposit", reservaData.orderItems.deposit)
 		setValue(
@@ -173,7 +173,7 @@ const newBooking = () => {
 			price: watch("price") || 0,
 			deposit: watch("deposit") || 0,
 			fee: watch("fee") || 0,
-			qty: watch("qty") || 0,
+			qty: watch("qty") || 1,
 			service: watch("service") || "",
 		},
 		message: watch("message") || "",
@@ -307,8 +307,6 @@ const newBooking = () => {
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
 	const onSubmit = (dataForm) => {
-		console.log("DAta:", dataForm)
-
 		if (dataForm.clientId === "") {
 			toast.error("¡Falta asignar cliente¡")
 			return
@@ -344,7 +342,7 @@ const newBooking = () => {
 					},
 					categorySet: dataForm.category_mariachi,
 					members: dataForm?.members * 1 || 0,
-					service: dataForm.service,
+					service: dataForm?.service,
 					price: (dataForm.price || 0) * 1,
 					deposit: (dataForm.deposit || 0) * 1,
 					qty: (dataForm.qty || 0) * 1,
