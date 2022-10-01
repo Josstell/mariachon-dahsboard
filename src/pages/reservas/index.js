@@ -24,10 +24,16 @@ const reservas = ({ session }) => {
 	return (
 		<Layout>
 			{userAdmin?.isAdmin ? (
-				<div className="flex  justify-center items-center">
-					<TableBookings userAdmin={userAdmin} />
-					{/* <HbookingCard /> */}
-					{/* <BookingCard /> */}
+				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
+					<div
+						className={`no-scrollbar overflow-auto   h-full  flex flex-col md:flex-row  md:justify-evenly
+							 items-center`}
+					>
+						{" "}
+						<TableBookings userAdmin={userAdmin} />
+						{/* <HbookingCard /> */}
+						{/* <BookingCard /> */}
+					</div>
 				</div>
 			) : (
 				<>

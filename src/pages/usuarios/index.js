@@ -42,8 +42,13 @@ const usuarios = ({ session }) => {
 	return (
 		<Layout>
 			{userAdmin.isAdmin ? (
-				<div className="flex  justify-center items-center">
-					<TableUser />
+				<div className={`no-scrollbar overflow-auto w-full  h-full  `}>
+					<div
+						className={`no-scrollbar overflow-auto h-[1024px] md:h-fit flex flex-col md:flex-row 
+							justify-evenly items-center`}
+					>
+						<TableUser />
+					</div>
 				</div>
 			) : (
 				<>

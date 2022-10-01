@@ -24,8 +24,13 @@ const mariachis = ({ session }) => {
 	return (
 		<Layout>
 			{userAdmin?.isAdmin ? (
-				<div className="flex justify-center items-center">
-					<TableMariachis />
+				<div className={`no-scrollbar overflow-auto w-full h-full  `}>
+					<div
+						className={`no-scrollbar overflow-auto   h-full  flex flex-col items-center md:flex-row   md:justify-center md:items-center
+							 `}
+					>
+						<TableMariachis />
+					</div>
 				</div>
 			) : (
 				<>
