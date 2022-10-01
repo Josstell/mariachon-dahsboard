@@ -489,17 +489,17 @@ const TableBookings = ({ userAdmin }) => {
 												className={`text-red-500 font-extrabold ${
 													booking?.status[booking?.status.length - 1] ===
 													"Agendado"
-														? "text-red-300"
+														? "text-blue-300"
 														: booking?.status[booking?.status.length - 1] ===
 														  "Actualizada"
-														? "text-red-500"
+														? "text-blue-500"
 														: booking?.status[booking?.status.length - 1] ===
 														  "Enviada"
 														? "text-yellow-500"
 														: booking?.status[booking?.status.length - 1] ===
 														  "Realizada"
 														? "text-green-500"
-														: "text-blue-500"
+														: "text-red-500"
 												}`}
 											>
 												{booking?.status[
