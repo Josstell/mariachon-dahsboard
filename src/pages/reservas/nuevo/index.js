@@ -307,6 +307,7 @@ const newBooking = () => {
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
 	const onSubmit = (dataForm) => {
+		console.log(dataForm)
 		if (dataForm.clientId === "") {
 			toast.error("¡Falta asignar cliente¡")
 			return
@@ -319,6 +320,19 @@ const newBooking = () => {
 			toast.error("No se asigno dirección del evento.")
 			return
 		}
+		if (dataForm.service === "") {
+			toast.error("Falta elegir servicio.")
+			return
+		}
+		if (dataForm.price < 500) {
+			toast.error("El precio  debe ser mayor a 0.")
+			return
+		}
+		if (dataForm.qty < 1) {
+			toast.error("La cantidad debe ser mayor a 0.")
+			return
+		}
+
 		setLoading(true)
 		toastIdRe = toast.loading("Cargando...")
 

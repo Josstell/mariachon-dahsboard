@@ -288,6 +288,18 @@ const reservaById = ({ id }) => {
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
 	const onSubmit = (dataForm) => {
+		if (dataForm.service === "") {
+			toast.error("Falta elegir servicio.")
+			return
+		}
+		if (dataForm.price < 500) {
+			toast.error("El precio  debe ser mayor a 0.")
+			return
+		}
+		if (dataForm.qty < 1) {
+			toast.error("La cantidad debe ser mayor a 0.")
+			return
+		}
 		setLoading(true)
 		toastIdRe = toast.loading("Cargando...")
 
@@ -360,7 +372,6 @@ const reservaById = ({ id }) => {
 		toast.success("Reserva actualizada correctamente", { id: toastIdRe })
 
 	useEffect(() => {
-		console.log("status:", status, statusBookGS, statusBEmail)
 		if (
 			status === "failed" ||
 			statusBookGS === "failed" ||
