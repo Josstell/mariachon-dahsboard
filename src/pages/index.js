@@ -51,8 +51,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 		const session = await getSession(ctx)
 
-		console.log("session!!", session)
-
 		//store.dispatch(setUsers(users))
 		if (!session) {
 			return {
