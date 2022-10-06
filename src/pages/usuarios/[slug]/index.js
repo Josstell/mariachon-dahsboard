@@ -33,7 +33,7 @@ const userById = ({ id }) => {
 	const users = useSelector(selectAllUsers)
 	const [loading, setLoading] = useState(false)
 	const [editCard, setEditCard] = useState(false)
-	const [dataUser] = useState(users.find((user) => user._id === id))
+	const [dataUser, setDatauser] = useState(userByApiUser?.result || {})
 
 	const router = useRouter()
 	const dispatch = useDispatch()
@@ -60,37 +60,36 @@ const userById = ({ id }) => {
 	}
 
 	useEffect(() => {
-		if (dataUser) {
+		if (dataUser !== {}) {
 			dispatch(setUserUpdate(dataUser))
-		}
-		if (!userAdmin.exist) {
-			router.push("/usuarios")
-		}
-		setValue("name", dataUser.name)
-		setValue("username", dataUser.username)
 
-		setValue("tel", dataUser.tel)
-		setValue("email", dataUser.email)
-		setValue("region", dataUser?.region || "")
+			setDatauser(userByApiUser?.result)
 
-		setValue(
-			"Cliente",
-			dataUser.categorySet.find((cat) => cat === "Cliente")
-		)
-		setValue(
-			"Mariachi",
-			dataUser.categorySet.find((cat) => cat === "Mariachi")
-		)
-		setValue(
-			"Coordinador",
-			dataUser.categorySet.find((cat) => cat === "Coordinador")
-		)
-		setValue(
-			"Admin",
-			dataUser.categorySet.find((cat) => cat === "Admin")
-		)
-		// 		//
-	}, [])
+			setValue("name", dataUser?.name)
+			setValue("username", dataUser?.username)
+
+			setValue("tel", dataUser?.tel)
+			setValue("email", dataUser?.email)
+			setValue("region", dataUser?.region || "")
+
+			setValue(
+				"Cliente",
+				dataUser?.categorySet?.find((cat) => cat === "Cliente")
+			)
+			setValue(
+				"Mariachi",
+				dataUser?.categorySet?.find((cat) => cat === "Mariachi")
+			)
+			setValue(
+				"Coordinador",
+				dataUser?.categorySet?.find((cat) => cat === "Coordinador")
+			)
+			setValue(
+				"Admin",
+				dataUser?.categorySet?.find((cat) => cat === "Admin")
+			)
+		} //
+	}, [isLoading])
 
 	const onSubmit = (dataForm) => {
 		setLoading(true)
@@ -100,7 +99,7 @@ const userById = ({ id }) => {
 
 		const updateUserData = {
 			...dataForm,
-			_id: dataUser._id,
+			_id: dataUser?._id,
 			categorySet: [
 				!!dataForm?.Cliente && dataForm?.Cliente,
 				!!dataForm?.Coordinador && dataForm?.Coordinador,
@@ -156,12 +155,12 @@ const userById = ({ id }) => {
 		tel: watch("tel"),
 		email: watch("email"),
 		region: watch("region"),
-		categorySet: dataUser?.categorySet[0] || "",
+		//categorySet: dataUser?.categorySet[0] || "",
 	}
 
-	if (!userAdmin.exist || router.isFallback) {
-		return <SpinnerLogo />
-	}
+	// if (!userAdmin.exist || router.isFallback) {
+	// 	return <SpinnerLogo />
+	// }
 
 	return (
 		<Layout>

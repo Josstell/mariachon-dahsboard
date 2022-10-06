@@ -250,9 +250,6 @@ const addNewMariachi = () => {
 							}`}
 						>
 							<MariachiTab>
-								{/* {status !== "idle" || statusGS !== "idle" ? (
-									<SpinnerLoadign />
-								) : ( */}
 								<MariachiForm
 									methods={methods}
 									onSubmit={onSubmit}

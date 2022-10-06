@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import toast, { Toaster } from "react-hot-toast"
 import { useDispatch, useSelector } from "react-redux"
-//import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import { regions } from "src/helpers/dataset"
 import { dateGral, optionsDate } from "src/helpers/utils"
 import {
@@ -144,9 +143,6 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 		pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i,
 	}
 
-	// if (!(status === "idle")) {
-	// 	return <SpinnerLoadign />
-	// }
 	return (
 		<div className="flex flex-col -mt-10">
 			<Form onSubmit={onSubmit} methods={methods}>
