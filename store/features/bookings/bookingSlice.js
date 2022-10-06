@@ -37,6 +37,10 @@ client->{
   tel,
   email
 },
+sendTo->{
+	_id,
+	name
+},
 dateAndTime,
   message,
   playlist,
@@ -113,15 +117,27 @@ export const updateBooking = createAsyncThunk(
 				const clientUpdated = users.find(
 					(user) => user._id === data.client._ref
 				)
+
+				const mariachiSended = data?.sendTo?._ref
+					? users.find((user) => user._id === data.sendTo._ref)
+					: false
+
 				const items = data.orderItems[0]
 
-				const dataReserva = {
+				let dataReserva = {
 					...data,
 					client: clientUpdated,
 					orderItems: {
 						...items,
 						mariachi: mariachiUpdated,
 					},
+				}
+
+				if (mariachiSended) {
+					dataReserva = {
+						...dataReserva,
+						sendTo: mariachiSended,
+					}
 				}
 
 				return dispatch(
