@@ -92,7 +92,7 @@ export const createUrlWhatsApp = (reservationData) => {
 			? "*Lista de canciones:* " + listSongs + sl
 			: ""
 
-	const url =
+	let url =
 		"https://wa.me/" +
 		mariachiCoordinatorPhone +
 		"?text=*Reserva:* " +
@@ -105,7 +105,7 @@ export const createUrlWhatsApp = (reservationData) => {
 		date.toLocaleDateString("es-MX", options) +
 		sl +
 		"*Hora:* " +
-		date.toLocaleTimeString() +
+		date.toLocaleTimeString("en-US") +
 		sl +
 		"*Dirección:* " +
 		addressNorm +
@@ -126,15 +126,16 @@ export const createUrlWhatsApp = (reservationData) => {
 		reservationData?.orderItems?.deposit +
 		sl +
 		"*Resta a pagar:* " +
-		pagado +
-		sl +
-		"*Mensaje:* " +
-		reservationData?.message +
-		sl +
-		"*Lista de canciones:*" +
-		listSongs +
-		sl +
-		"*Ubicación:* "
+		pagado
+
+	if (reservationData?.message !== "") {
+		url = url + sl + "*Mensaje:* " + reservationData?.message
+	}
+
+	if (listSongs !== "") {
+		url = url + sl + "*Lista de canciones:*" + listSongs
+	}
+	url = url + sl + "*Ubicación:* "
 
 	window.open(url, "_blank")
 

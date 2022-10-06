@@ -150,7 +150,11 @@ const TableBookings = ({ userAdmin }) => {
 
 	const getDateAndTime = (dateAndTime) => {
 		const date = new Date(dateAndTime)
-		return date.toLocaleDateString("es-MX", options)
+		return (
+			date.toLocaleDateString("es-MX", options) +
+			", " +
+			date.toLocaleTimeString("en-US")
+		)
 	}
 
 	const handleWhatsApp = (reservationData, sendMariachiValue) => {
