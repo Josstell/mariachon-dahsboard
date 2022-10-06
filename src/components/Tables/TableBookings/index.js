@@ -168,6 +168,10 @@ const TableBookings = ({ userAdmin }) => {
 			client: { _ref: reservationData?.client._id, _type: "reference" },
 			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 			dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
+			sendTo: {
+				_ref: sendMariachiValue,
+				_type: "reference",
+			},
 			orderItems: [
 				{
 					mariachi: {
@@ -358,14 +362,13 @@ const TableBookings = ({ userAdmin }) => {
 								>
 									Estado de reserva
 								</th>
-								{/* <th
+								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
 											bg-slate-50 text-slate-500 border-slate-100
 											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
 								>
-									Terminar/cancelar
-								</th> */}
-
+									Enviado a:
+								</th>
 								<th
 									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
 											bg-slate-50 text-slate-500 border-slate-100
@@ -373,18 +376,6 @@ const TableBookings = ({ userAdmin }) => {
 								>
 									<WhatsAppIcon className="fill-slate-900 dark:fill-slate-100 w-10 h-10 mx-16  " />
 								</th>
-								{/* <th
-									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
-											bg-slate-50 text-slate-500 border-slate-100
-											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
-								>
-									Borrar
-								</th> */}
-								{/* <th
-									className="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left 
-											bg-slate-50 text-slate-500 border-slate-100
-											dark:bg-slate-600 dark:text-slate-200 dark:border-slate-500"
-								></th> */}
 							</tr>
 						</thead>
 						<tbody>
@@ -486,7 +477,7 @@ const TableBookings = ({ userAdmin }) => {
 											className={`border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 `}
 										>
 											<span
-												className={`text-red-500 font-extrabold ${
+												className={`text-red-500 font-bold ${
 													booking?.status[booking?.status.length - 1] ===
 													"Agendado"
 														? "text-blue-300"
@@ -498,7 +489,7 @@ const TableBookings = ({ userAdmin }) => {
 														? "text-yellow-500"
 														: booking?.status[booking?.status.length - 1] ===
 														  "Realizada"
-														? "text-green-500"
+														? "text-green-400"
 														: "text-red-500"
 												}`}
 											>
@@ -512,6 +503,17 @@ const TableBookings = ({ userAdmin }) => {
 										>
 											Terminar/ cancelar
 										</td> */}
+										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+											{booking?.sendTo?.name ? (
+												<span className="text-green-500 font-extrabold uppercase">
+													{booking?.sendTo?.name}
+												</span>
+											) : (
+												<span className="text-red-500 font-bold uppercase ">
+													!No enviada!
+												</span>
+											)}
+										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 cursor-pointer">
 											{/* <a onClick={() => handleWhatsApp(booking)}>
 												{booking?.orderItems?.mariachi?.coordinator?.name}{" "}
@@ -524,6 +526,7 @@ const TableBookings = ({ userAdmin }) => {
 												handleWhatsApp={handleWhatsApp}
 											/>
 										</td>
+
 										{/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										<div className="flex items-center">
 											<span className="mr-2">60%</span>

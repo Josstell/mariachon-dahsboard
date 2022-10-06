@@ -125,6 +125,12 @@ export default {
 			type: "boolean",
 		},
 		{
+			name: "sendTo",
+			title: "Enviado a:",
+			type: "reference",
+			to: { type: "user" },
+		},
+		{
 			name: "createdBy",
 			title: "Creado Por:",
 			type: "reference",

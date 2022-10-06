@@ -48,6 +48,7 @@ export default handlerCors().post(async (req, res) => {
 				req.body?.orderItems?.deposit || 0,
 		categoria: req.body?.orderItems?.categorySet || "Normal",
 		mensaje: req.body?.message || "",
+		enviado: req.body?.sendTo?.name || "",
 		status: req.body?.status[0] || "",
 	}
 
@@ -79,7 +80,6 @@ export default handlerCors().post(async (req, res) => {
 	//return res.status(200).json(reservaDetails)
 
 	if (isDataAlreadySved === undefined) {
-		console.log("no guardada sheet")
 		try {
 			await sheet.addRow(reservaDetails)
 			return res.status(200).json({
