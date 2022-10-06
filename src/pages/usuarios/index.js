@@ -15,9 +15,17 @@ import Layout from "src/components/Layout"
 import { setStatus } from "store/features/mariachis/mariachiSlice"
 import { setStatusBooking } from "store/features/bookings/bookingSlice"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
+import { useGetUsersQuery } from "store/features/usersApi"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const usuarios = ({ session }) => {
+	const { data, isLoading } = useGetUsersQuery(undefined, {
+		refetchOnMountOrArgChange: true,
+		refetchOnFocus: true,
+		refetchOnReconnect: true,
+	})
+
+	console.log("Data from rtk query", data)
 	const userAdmin = useSelector(selectUserAdmin)
 	const dispatch = useDispatch()
 	const status = useSelector(selectStatusUser)

@@ -24,8 +24,12 @@ import {
 	setUserUpdate,
 	updateUser,
 } from "store/features/users/userSlice"
+import { useGetUserByIdQuery } from "store/features/usersApi"
 
 const userById = ({ id }) => {
+	const { data: userByApiUser, isLoading } = useGetUserByIdQuery(id)
+
+	console.log("Data from Api", userByApiUser)
 	const users = useSelector(selectAllUsers)
 	const [loading, setLoading] = useState(false)
 	const [editCard, setEditCard] = useState(false)
