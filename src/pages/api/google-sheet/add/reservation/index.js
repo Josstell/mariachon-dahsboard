@@ -25,6 +25,8 @@ export default handlerCors().post(async (req, res) => {
 		? new Date(req.body?.dateAndTime)
 		: new Date()
 
+	console.log("si llego", req.body)
+
 	let reservaDetails = {
 		id: req.body?.reserva,
 		clienteId: req.body?.client?._id || "",
