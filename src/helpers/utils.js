@@ -161,7 +161,7 @@ var getDayBefore = (datimeFormal) => {
 	var date = new Date(copy(datimeFormal))
 	var jourDate = datimeFormal.getDate()
 	days.day = datimeFormal
-	var dayBe = jourDate + 1
+	var dayBe = jourDate - 1
 	date.setDate(dayBe)
 	days.dayAfter = date
 	return days
@@ -183,9 +183,9 @@ export const timeConverterToCommonPeople = (dateFormal) => {
 			return (
 				timeFormal.toLocaleTimeString("es-US") +
 				" de la madrugada de " +
-				new Intl.DateTimeFormat("en-MX", options).format(dayBefore.day) +
+				new Intl.DateTimeFormat("en-MX", options).format(dayBefore.dayAfter) +
 				" para " +
-				new Intl.DateTimeFormat("en-MX", options).format(dayBefore.dayAfter)
+				new Intl.DateTimeFormat("en-MX", options).format(dayBefore.day)
 			)
 		case hour >= 6 && hour < 12:
 			return timeFormal.toLocaleTimeString("en-US") + " de la mañana."
