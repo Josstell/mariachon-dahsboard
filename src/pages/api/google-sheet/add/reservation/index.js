@@ -1,6 +1,7 @@
 import handlerCors from "src/helpers/api/allowCors"
 
 import { callApiGoogleSheet } from "src/helpers"
+import { timeConverterToCommonPeople } from "src/helpers/utils"
 //import NextCors from 'nextjs-cors'
 const { SPREADSHEET_ID_MARIACHON_MARIACHIS, SHEET_ID_RESERVAS } = process.env
 
@@ -33,9 +34,7 @@ export default handlerCors().post(async (req, res) => {
 		nombre_cliente: req.body?.client?.name || "",
 		tel: req.body?.client?.tel || "",
 		fecha: date.toLocaleDateString("es-MX", options),
-		hora: `${date.getHours()} : ${
-			date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-		}`,
+		hora: date ? timeConverterToCommonPeople(date) : "",
 		direccion: req.body?.shippingAddress?.address || "",
 		region: req.body?.shippingAddress?.region || "",
 		mariachi: req.body?.orderItems?.mariachi?.name || "",

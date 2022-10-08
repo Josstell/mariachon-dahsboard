@@ -1,5 +1,6 @@
 import sgMail from "@sendgrid/mail"
 import handlerCors from "src/helpers/api/allowCors"
+import { timeConverterToCommonPeople } from "src/helpers/utils"
 
 sgMail.setApiKey(process.env.API_KEY_SENDING_GRID)
 
@@ -31,9 +32,7 @@ export default handlerCors().post((req, res) => {
 		email: req.body?.client?.email || "",
 		tel: req.body?.client?.tel || "",
 		fecha: date.toLocaleDateString("es-MX", options),
-		hora: `${date.getHours()} : ${
-			date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-		}`,
+		hora: date ? timeConverterToCommonPeople(date) : "",
 		direccion: req.body?.shippingAddress?.address || "",
 		region: req.body?.shippingAddress?.region || "",
 		mariachi: req.body?.orderItems?.mariachi?.name.toUpperCase() || "",
