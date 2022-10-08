@@ -7,7 +7,12 @@ import { SelectSimple } from "src/components/Forms/Smart/Inputs"
 import GetLogoWithName from "src/components/GetLogoWithName"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
-import { createUrlWhatsApp, dateGral, optionsDate } from "src/helpers/utils"
+import {
+	createUrlWhatsApp,
+	dateGral,
+	optionsDate,
+	timeConverterToCommonPeople,
+} from "src/helpers/utils"
 import {
 	selectAllBookings,
 	selectBookingsSearch,
@@ -153,7 +158,7 @@ const TableBookings = ({ userAdmin }) => {
 		return (
 			date.toLocaleDateString("es-MX", options) +
 			", " +
-			date.toLocaleTimeString("en-US")
+			timeConverterToCommonPeople(date)
 		)
 	}
 
@@ -161,7 +166,7 @@ const TableBookings = ({ userAdmin }) => {
 		if (sendMariachiValue === 0) {
 			return
 		}
-		toastIdUpWhats = toast.loading("Cargando...")
+		//toastIdUpWhats = toast.loading("Cargando...")
 
 		const coorSelected = users.find((user) => user._id === sendMariachiValue)
 

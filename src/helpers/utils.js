@@ -105,7 +105,7 @@ export const createUrlWhatsApp = (reservationData) => {
 		date.toLocaleDateString("es-MX", options) +
 		sl +
 		"*Hora:* " +
-		date.toLocaleTimeString("en-US") +
+		timeConverterToCommonPeople(reservationData?.dateAndTime) +
 		sl +
 		"*Dirección:* " +
 		addressNorm +
@@ -115,7 +115,10 @@ export const createUrlWhatsApp = (reservationData) => {
 		sl +
 		"*Mariachi:* " +
 		reservationData?.orderItems?.mariachi?.name +
-		sl +
+		" con " +
+		reservationData?.orderItems?.mariachi?.members +
+		" integrantes"
+	sl +
 		"*Servicio:* " +
 		reservationData?.orderItems?.service +
 		sl +
@@ -140,4 +143,55 @@ export const createUrlWhatsApp = (reservationData) => {
 	window.open(url, "_blank")
 
 	return url
+}
+
+/** *****************************
+ *  Time algorithm
+ * ***************************/
+
+function copy(x) {
+	return JSON.parse(JSON.stringify(x))
+}
+
+var getDayBefore = (datimeFormal) => {
+	const days = {
+		day: "",
+		dayAfter: "",
+	}
+	var date = new Date(copy(datimeFormal))
+	var jourDate = datimeFormal.getDate()
+	days.day = datimeFormal
+	var dayBe = jourDate - 1
+	date.setDate(dayBe)
+	days.dayAfter = date
+	return days
+}
+
+export const timeConverterToCommonPeople = (dateFormal) => {
+	var timeFormal = new Date(dateFormal)
+	var hour = timeFormal.getHours()
+	var min = timeFormal.getMinutes()
+
+	if (hour === 0) {
+		hour = 24
+	}
+
+	switch (true) {
+		case hour >= 0 && hour < 6:
+			const options = { weekday: "long" }
+			var dayBefore = getDayBefore(timeFormal)
+			return (
+				timeFormal.toLocaleTimeString("es-US") +
+				" de la madrugada de " +
+				new Intl.DateTimeFormat("en-MX", options).format(dayBefore.dayAfter) +
+				" para " +
+				new Intl.DateTimeFormat("en-MX", options).format(dayBefore.day)
+			)
+		case hour >= 6 && hour < 12:
+			return timeFormal.toLocaleTimeString("en-US") + " de la mañana."
+		case hour >= 12 && hour < 19:
+			return timeFormal.toLocaleTimeString("en-US") + " de la tarde."
+		case hour >= 19 && hour <= 23:
+			return timeFormal.toLocaleTimeString("en-US") + " de la noche."
+	}
 }
