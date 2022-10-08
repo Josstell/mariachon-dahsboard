@@ -363,7 +363,7 @@ const reservaById = ({ id }) => {
 			_id: data._id,
 		}
 
-		dispatch(updateBooking({ ...reservaUpdate, sendEmail: false }))
+		dispatch(updateBooking({ ...reservaUpdate, sendEmail: true }))
 	}
 
 	let toastIdRe
