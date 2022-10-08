@@ -140,7 +140,7 @@ export const createUrlWhatsApp = (reservationData) => {
 	}
 	url = url + sl + "*Ubicación:* "
 
-	//window.open(url, "_blank")
+	window.open(url, "_blank")
 
 	return url
 }
