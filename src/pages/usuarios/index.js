@@ -15,6 +15,7 @@ import Layout from "src/components/Layout"
 import { setStatus } from "store/features/mariachis/mariachiSlice"
 import { setStatusBooking } from "store/features/bookings/bookingSlice"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
+import { getRunningOperationPromises, getUsers } from "store/features/usersApi"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const usuarios = ({ session }) => {
@@ -80,6 +81,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		await store.dispatch(setStatusUser("idle"))
 		await store.dispatch(setStatus("idle"))
 		await store.dispatch(setStatusBooking("idle"))
+
+		await store.dispatch(getUsers.initiate())
+
+		await Promise.all(getRunningOperationPromises())
 
 		// if (!(existAdmin.users.admin.name !== undefined)) {
 		// 	console.log("Existe dentro: ", existAdmin.users.admin.name)

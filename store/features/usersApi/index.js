@@ -21,6 +21,8 @@ export const usersSanityApi = createApi({
 	refetchOnMountOrArgChange: true,
 	refetchOnFocus: true,
 	refetchOnReconnect: true,
+	pollingInterval: 3000,
+
 	extractRehydrationInfo(action, { reducerPath }) {
 		if (action.type === HYDRATE) {
 			return action.payload[reducerPath]
@@ -30,7 +32,7 @@ export const usersSanityApi = createApi({
 		getUsers: builder.query({
 			query: () => `?query=${queryUser}`,
 		}),
-		getUserById: builder.query({
+		getUserAPIById: builder.query({
 			query: (id) => `?query=${queryUserById}&%24id="${id}"`,
 		}),
 	}),
@@ -38,6 +40,10 @@ export const usersSanityApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetUsersQuery, useGetUserByIdQuery } = usersSanityApi
+export const {
+	useGetUsersQuery,
+	useGetUserAPIByIdQuery,
+	util: { getRunningOperationPromises },
+} = usersSanityApi
 
-export const { getUsers } = usersSanityApi.endpoints
+export const { getUsers, getUserAPIById } = usersSanityApi.endpoints

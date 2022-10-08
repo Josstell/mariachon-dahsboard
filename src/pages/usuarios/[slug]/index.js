@@ -14,7 +14,6 @@ import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import { dateGral, optionsDate } from "src/helpers/utils"
 import { wrapper } from "store"
 import {
-	selectAllUsers,
 	selectError,
 	selectStatusGSUser,
 	selectStatusUser,
@@ -24,16 +23,22 @@ import {
 	setUserUpdate,
 	updateUser,
 } from "store/features/users/userSlice"
-import { useGetUserByIdQuery } from "store/features/usersApi"
+import {
+	getRunningOperationPromises,
+	getUserAPIById,
+	useGetUserAPIByIdQuery,
+} from "store/features/usersApi"
 
 const userById = ({ id }) => {
-	const { data: userByApiUser, isLoading } = useGetUserByIdQuery(id)
+	const {
+		data: userByApiUser,
+		isLoading,
+		isFetching,
+	} = useGetUserAPIByIdQuery(id)
 
-	console.log("Data from Api", userByApiUser)
-	const users = useSelector(selectAllUsers)
 	const [loading, setLoading] = useState(false)
 	const [editCard, setEditCard] = useState(false)
-	const [dataUser, setDatauser] = useState(userByApiUser?.result || {})
+	const [dataUser, setDatauser] = useState(userByApiUser.result)
 
 	const router = useRouter()
 	const dispatch = useDispatch()
@@ -63,7 +68,7 @@ const userById = ({ id }) => {
 		if (dataUser !== {}) {
 			dispatch(setUserUpdate(dataUser))
 
-			setDatauser(userByApiUser?.result)
+			//setDatauser(userByApiUser?.result)
 
 			setValue("name", dataUser?.name)
 			setValue("username", dataUser?.username)
@@ -89,7 +94,7 @@ const userById = ({ id }) => {
 				dataUser?.categorySet?.find((cat) => cat === "Admin")
 			)
 		} //
-	}, [isLoading])
+	}, [])
 
 	const onSubmit = (dataForm) => {
 		setLoading(true)
@@ -115,7 +120,6 @@ const userById = ({ id }) => {
 					? dataForm.name.split(" ").join("").toLocaleLowerCase()
 					: dataForm.username,
 		}
-		console.log(updateUserData)
 
 		dispatch(setUserUpdate(updateUserData))
 		dispatch(updateUser(updateUserData))
@@ -227,7 +231,7 @@ export default userById
 // }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-	() => async (ctx) => {
+	(store) => async (ctx) => {
 		// 		const query = groq`*[_type == "user" && _id == $id][0]{
 		//   _id,
 		//   categorySet,
@@ -241,6 +245,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		// 	`
 
 		const session = await getSession(ctx)
+
+		const id = ctx.params.slug
+
+		await store.dispatch(getUserAPIById.initiate(id))
+
+		await Promise.all(getRunningOperationPromises())
 
 		// const users = await client.fetch(query, {
 		// 	id: ctx.params.slug,

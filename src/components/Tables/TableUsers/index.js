@@ -23,7 +23,7 @@ import { regions } from "src/helpers/dataset"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
 import { subscriptionUser } from "@lib/sanity"
 import { useRouter } from "next/router"
-import { useGetUsersQuery } from "store/features/usersApi"
+import { useGetUsersQuery, usersSanityApi } from "store/features/usersApi"
 import SpinnerLoading from "src/components/Spinners/SpinnerLoading"
 import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
@@ -36,11 +36,24 @@ import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 const TableUser = () => {
 	const router = useRouter()
 
-	const { data: usersApi, isLoading } = useGetUsersQuery(undefined, {
+	const {
+		data: usersApi,
+		isLoading,
+		isSuccess,
+		isFetching,
+	} = useGetUsersQuery(undefined, {
 		refetchOnMountOrArgChange: true,
 		refetchOnFocus: true,
 		refetchOnReconnect: true,
 	})
+
+	// const {
+	// 	data: usersApi,
+	// 	isLoading,
+	// 	isSuccess,
+	// } = useSelector(usersSanityApi.endpoints.getUsers.select())
+
+	console.log("estados", isLoading, isSuccess, isFetching)
 
 	const dispatch = useDispatch()
 
@@ -140,7 +153,7 @@ const TableUser = () => {
 						<div className="relative w-full px-4 max-w-full flex flex-row justify-between divide-x-2 md:divide-x-0 pr-2 ">
 							<h3 className="font-semibold text-lg text-slate-700 dark:text-white flex flex-col justify-center items-center ">
 								<span>Usuarios</span>
-								{isLoading ? (
+								{isFetching ? (
 									<SpinnerCircular />
 								) : (
 									<div className="flex justify-center items-center">
