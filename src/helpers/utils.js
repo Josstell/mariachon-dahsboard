@@ -140,7 +140,7 @@ export const createUrlWhatsApp = (reservationData) => {
 	}
 	url = url + sl + "*Ubicación:* "
 
-	window.open(url, "_blank")
+	//window.open(url, "_blank")
 
 	return url
 }
@@ -170,7 +170,6 @@ var getDayBefore = (datimeFormal) => {
 export const timeConverterToCommonPeople = (dateFormal) => {
 	var timeFormal = new Date(dateFormal)
 	var hour = timeFormal.getHours()
-	var min = timeFormal.getMinutes()
 
 	if (hour === 0) {
 		hour = 24
@@ -180,12 +179,13 @@ export const timeConverterToCommonPeople = (dateFormal) => {
 		case hour >= 0 && hour < 6:
 			const options = { weekday: "long" }
 			var dayBefore = getDayBefore(timeFormal)
+
 			return (
 				timeFormal.toLocaleTimeString("es-US") +
 				" de la madrugada de " +
-				new Intl.DateTimeFormat("en-MX", options).format(dayBefore.dayAfter) +
+				dayBefore.dayAfter.toLocaleDateString("es-MX", options) +
 				" para " +
-				new Intl.DateTimeFormat("en-MX", options).format(dayBefore.day)
+				dayBefore.day.toLocaleDateString("es-MX", options)
 			)
 		case hour >= 6 && hour < 12:
 			return timeFormal.toLocaleTimeString("en-US") + " de la mañana."

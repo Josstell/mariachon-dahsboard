@@ -203,7 +203,7 @@ const TableBookings = ({ userAdmin }) => {
 			status: ["Enviada"],
 		}
 
-		dispatch(updateBooking({ ...reservaUpdate, sendEmail: false }))
+		//	dispatch(updateBooking({ ...reservaUpdate, sendEmail: false }))
 	}
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
