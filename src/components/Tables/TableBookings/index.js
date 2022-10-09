@@ -166,7 +166,7 @@ const TableBookings = ({ userAdmin }) => {
 		if (sendMariachiValue === 0) {
 			return
 		}
-		//toastIdUpWhats = toast.loading("Cargando...")
+		toastIdUpWhats = toast.loading("Cargando...")
 
 		const coorSelected = users.find((user) => user._id === sendMariachiValue)
 
