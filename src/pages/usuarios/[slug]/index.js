@@ -30,15 +30,12 @@ import {
 } from "store/features/usersApi"
 
 const userById = ({ id }) => {
-	const {
-		data: userByApiUser,
-		isLoading,
-		isFetching,
-	} = useGetUserAPIByIdQuery(id)
+	const { data: dataUser, isLoading, isFetching } = useGetUserAPIByIdQuery(id)
 
 	const [loading, setLoading] = useState(false)
 	const [editCard, setEditCard] = useState(false)
-	const [dataUser, setDatauser] = useState(userByApiUser.result)
+	//const [dataUser, setDatauser] = useState(userByApiUser)
+	console.log(dataUser)
 
 	const router = useRouter()
 	const dispatch = useDispatch()
@@ -54,21 +51,17 @@ const userById = ({ id }) => {
 
 	const { setValue, watch } = methods
 
-	useEffect(() => {
-		if (dataUser === undefined) {
-			router.push("/usuarios")
-		}
-	}, [])
-
-	if (dataUser === undefined) {
-		return <SpinnerLogo />
-	}
+	// useEffect(() => {
+	// 	if (dataUser === undefined) {
+	// 		router.push("/usuarios")
+	// 	}
+	// }, [])
 
 	useEffect(() => {
 		if (dataUser !== {}) {
 			dispatch(setUserUpdate(dataUser))
 
-			//setDatauser(userByApiUser?.result)
+			//setDatauser(userByApiUser)
 
 			setValue("name", dataUser?.name)
 			setValue("username", dataUser?.username)
@@ -94,7 +87,7 @@ const userById = ({ id }) => {
 				dataUser?.categorySet?.find((cat) => cat === "Admin")
 			)
 		} //
-	}, [])
+	}, [dataUser])
 
 	const onSubmit = (dataForm) => {
 		setLoading(true)
@@ -165,6 +158,10 @@ const userById = ({ id }) => {
 	// if (!userAdmin.exist || router.isFallback) {
 	// 	return <SpinnerLogo />
 	// }
+
+	if (isLoading) {
+		return <SpinnerLogo />
+	}
 
 	return (
 		<Layout>

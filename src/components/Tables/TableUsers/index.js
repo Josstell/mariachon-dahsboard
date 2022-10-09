@@ -63,9 +63,7 @@ const TableUser = () => {
 
 	const subscriptionUserLocal = subscriptionUser.subscribe((update) => {
 		const userDataset = update.result
-		const isAlreadyUser = usersApi?.result.find(
-			(user) => user._id === userDataset._id
-		)
+		const isAlreadyUser = usersApi.find((user) => user._id === userDataset._id)
 
 		const isAlreadyUserSearch = usersSearch.find(
 			(user) => user._id === userDataset._id
@@ -139,7 +137,7 @@ const TableUser = () => {
 			>
 				<div className={!hideIconShowSearch && "hidden"}>
 					<SearchWithModalMariachis
-						dataOriginal={usersApi?.result || []}
+						dataOriginal={usersApi || []}
 						mariachiDataSearch={usersDataSearch}
 						setMariachisDataSearch={setUsersDataSearch}
 						setHideIconShowSearch={setHideIconShowSearch}

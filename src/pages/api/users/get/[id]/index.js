@@ -5,21 +5,22 @@ import { getUsersApiAxios } from "src/apis/sanity/users"
 export default handlerCors().get(async (req, res) => {
 	const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
 
-	const queryUserById = `*[_type=="user"&&_id==$id][0]`
-	const _id = req.body.id
+	const queryUserById = encodeURIComponent(`*[_type=="user"&&_id==$id][0]`)
+	// `*[_type=="user"&&_id==$id][0]
 
-	const queryParams = {
-		query: queryUserById,
-		$id: _id,
+	const { id } = req.query
+
+	console.log("request", id)
+
+	const params = {
+		$id: JSON.stringify(id),
 	}
 
-	console.log(queryParams)
-
 	try {
-		const resp = await getUsersApiAxios.get(`/query/${dataset}`, {
-			params: queryParams,
-		})
-
+		const resp = await getUsersApiAxios.get(
+			`/query/${dataset}?query=${queryUserById}`,
+			{ params }
+		)
 		res.send(resp.data.result)
 	} catch (error) {
 		res.status(401).send({ message: error })
