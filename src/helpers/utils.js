@@ -117,8 +117,8 @@ export const createUrlWhatsApp = (reservationData) => {
 		reservationData?.orderItems?.mariachi?.name +
 		" con " +
 		reservationData?.orderItems?.mariachi?.members +
-		" integrantes"
-	sl +
+		" integrantes" +
+		sl +
 		"*Servicio:* " +
 		reservationData?.orderItems?.service +
 		sl +
@@ -170,10 +170,6 @@ var getDayBefore = (datimeFormal) => {
 export const timeConverterToCommonPeople = (dateFormal) => {
 	var timeFormal = new Date(dateFormal)
 	var hour = timeFormal.getHours()
-
-	if (hour === 0) {
-		hour = 24
-	}
 
 	switch (true) {
 		case hour >= 0 && hour < 6:
