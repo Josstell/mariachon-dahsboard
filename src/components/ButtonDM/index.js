@@ -9,7 +9,6 @@ const ButtonDM = () => {
 		setTheme(theme === "dark" ? "light" : "dark")
 	}
 
-	console.log("el tema", theme)
 	return (
 		<div className="mr-5" onClick={handleDarkMode}>
 			{theme === "dark" ? (

@@ -12,7 +12,7 @@ import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import BookingTa from "src/components/Tabs/ReservaTabs"
 import {
-	addBooking,
+	addBookingToGoogleSheet,
 	selectError,
 	selectStatusBEmail,
 	selectStatusBook,
@@ -27,6 +27,7 @@ import { selectAllUsers, selectUserAdmin } from "store/features/users/userSlice"
 import toast, { Toaster } from "react-hot-toast"
 import { nanoid } from "@reduxjs/toolkit"
 import { dateGral, optionsDate } from "src/helpers/utils"
+import { useAddUpdateNewBookingMutation } from "store/features/bookingsApi"
 
 const data = {
 	dateAndTime: new Date(),
@@ -70,6 +71,10 @@ const data = {
 
 const newBooking = () => {
 	const router = useRouter()
+
+	const [createBooking, { error: errorAdd, isSuccess: isSuccessAdd }] =
+		useAddUpdateNewBookingMutation()
+
 	const status = useSelector(selectStatusBook)
 	const statusBookGS = useSelector(selectStatusBookGS)
 	const statusBEmail = useSelector(selectStatusBEmail)
@@ -307,7 +312,6 @@ const newBooking = () => {
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
 	const onSubmit = (dataForm) => {
-		console.log(dataForm)
 		if (dataForm.clientId === "") {
 			toast.error("¡Falta asignar cliente¡")
 			return
@@ -381,11 +385,24 @@ const newBooking = () => {
 			status: ["Agendado"],
 			userName: dataForm.nameClient,
 			//_id: data._id,
+			reserva: nanoid(),
+			_type: "booking",
 		}
 
-		console.log("DAta:", reservaAdd)
+		const createMutations = [
+			{
+				createOrReplace: {
+					...reservaAdd,
+				},
+			},
+		]
 
-		dispatch(addBooking({ ...reservaAdd, sendEmail: true }))
+		Promise.all([createBooking(createMutations)])
+			.then((addPromise) => {
+				const dataToAdd = addPromise[0].data.results[0].document
+				dispatch(addBookingToGoogleSheet({ ...dataToAdd, sendEmail: true }))
+			})
+			.catch((err) => console.log(err))
 	}
 
 	let toastIdRe
@@ -399,7 +416,8 @@ const newBooking = () => {
 		if (
 			status === "failed" ||
 			statusBookGS === "failed" ||
-			statusBEmail === "failed"
+			statusBEmail === "failed" ||
+			errorAdd
 		) {
 			toast.dismiss(toastIdRe)
 
@@ -410,9 +428,10 @@ const newBooking = () => {
 			setLoading(false)
 		}
 		if (
-			status === "succeeded" &&
+			//status === "succeeded" &&
 			statusBookGS === "succeeded" &&
-			statusBEmail === "succeeded"
+			statusBEmail === "succeeded" &&
+			isSuccessAdd
 		) {
 			dispatch(setStatusBooking("idle"))
 			dispatch(setStatusBookingGS("idle"))
@@ -423,7 +442,7 @@ const newBooking = () => {
 
 			router.push("/reservas")
 		}
-	}, [router, status, statusBookGS, statusBEmail])
+	}, [router, status, statusBookGS, isSuccessAdd, errorAdd, statusBEmail])
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />

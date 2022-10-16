@@ -9,6 +9,8 @@ import {
 	setNewUserSearch,
 	setUpdatedUser,
 	setUpdatedUserSearch,
+	setUsers,
+	setUsersSearch,
 } from "store/features/users/userSlice"
 
 import { ViewGridAddIcon } from "@heroicons/react/outline"
@@ -22,6 +24,10 @@ import { regions } from "src/helpers/dataset"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
 import { subscriptionUser } from "@lib/sanity"
 import { useRouter } from "next/router"
+import { useGetUsersQuery } from "store/features/usersApi"
+import SpinnerLoading from "src/components/Spinners/SpinnerLoading"
+import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
+import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 
 // const query = groq`
 // *[_type == "user" && !(_id in path('drafts.**'))  ] | order(_createdAt desc)
@@ -30,36 +36,59 @@ import { useRouter } from "next/router"
 
 const TableUser = () => {
 	const router = useRouter()
-
 	const dispatch = useDispatch()
-	const usersDataAll = useSelector(selectAllUsers)
+
+	const {
+		data: usersApi,
+		isLoading,
+		isFetching,
+		isSuccess,
+	} = useGetUsersQuery(undefined, {
+		refetchOnMountOrArgChange: true,
+		refetchOnFocus: true,
+		refetchOnReconnect: true,
+	})
+
+	// useEffect(() => {
+	// 	if (isSuccess) {
+	// 		dispatch(setUsers(usersApi.result))
+	// 	}
+	// }, [isFetching, isSuccess])
+
+	// const {
+	// 	data: usersApi,
+	// 	isLoading,
+	// 	isSuccess,
+	// } = useSelector(usersSanityApi.endpoints.getUsers.select())
+
+	//const dispatch = useDispatch()
 
 	const usersSearch = useSelector(selectUsersSearch)
 
 	/*********************************************************************/
 
-	const subscriptionUserLocal = subscriptionUser.subscribe((update) => {
-		const userDataset = update.result
-		const isAlreadyUser = usersDataAll.find(
-			(user) => user._id === userDataset._id
-		)
+	// const subscriptionUserLocal = subscriptionUser.subscribe((update) => {
+	// 	const userDataset = update.result
+	// 	const isAlreadyUser = usersApi?.result.find(
+	// 		(user) => user._id === userDataset._id
+	// 	)
 
-		const isAlreadyUserSearch = usersSearch.find(
-			(user) => user._id === userDataset._id
-		)
+	// 	const isAlreadyUserSearch = usersSearch.find(
+	// 		(user) => user._id === userDataset._id
+	// 	)
 
-		if (isAlreadyUser) {
-			dispatch(setUpdatedUser(userDataset))
-		} else if (!isAlreadyUser) {
-			dispatch(setNewUser(userDataset))
-		}
+	// 	// if (isAlreadyUser) {
+	// 	// 	dispatch(setUpdatedUser(userDataset))
+	// 	// } else if (!isAlreadyUser) {
+	// 	// 	dispatch(setNewUser(userDataset))
+	// 	// }
 
-		if (isAlreadyUserSearch) {
-			dispatch(setUpdatedUserSearch(userDataset))
-		} else if (!isAlreadyUser) {
-			dispatch(setNewUserSearch(userDataset))
-		}
-	})
+	// 	// if (isAlreadyUserSearch) {
+	// 	// 	dispatch(setUpdatedUserSearch(userDataset))
+	// 	// } else if (!isAlreadyUser) {
+	// 	// 	dispatch(setNewUserSearch(userDataset))
+	// 	// }
+	// })
 
 	//console.log("isListening", isListening)
 
@@ -73,30 +102,39 @@ const TableUser = () => {
 
 	const [regionSelected, setRegionSelected] = useState("All")
 
-	useEffect(() => {
-		setUsersDataSearch(usersSearch)
-		//	setDataset({})
-	}, [usersDataAll, subscriptionUserLocal])
+	// useEffect(() => {
+	// 	// 	//setUsersDataSearch(usersSearch)
+	// 	console.log("esta cargando", isLoading, usersApi?.result)
+	// 	if (!isLoading && usersSearch !== []) {
+	// 		console.log("entor")
+	// 		dispatch(setUsersSearch(usersApi?.result))
+	// 	}
+	// 	// 	//	setDataset({})
+	// }, [isLoading, usersSearch, subscriptionUserLocal])
 
 	const handleGetRegion = (e) => {
 		setRegionSelected(e.target.value)
 	}
 
 	const handleUserUrl = (id) => {
-		subscriptionUserLocal.unsubscribe()
+		//	subscriptionUserLocal.unsubscribe()
 		router.push(`/usuarios/${id.toString()}`)
 	}
 
 	const handleNewUser = () => {
-		subscriptionUserLocal.unsubscribe()
+		//	subscriptionUserLocal.unsubscribe()
 		router.push(`/usuarios/nuevo`)
 	}
 	const handleReservas = (id) => {
-		subscriptionUserLocal.unsubscribe()
+		//	subscriptionUserLocal.unsubscribe()
 		router.push({
 			pathname: "reservas/nuevo",
 			query: { client: id },
 		})
+	}
+
+	if (isLoading) {
+		return <SpinnerLogo />
 	}
 
 	return (
@@ -107,7 +145,7 @@ const TableUser = () => {
 			>
 				<div className={!hideIconShowSearch && "hidden"}>
 					<SearchWithModalMariachis
-						dataOriginal={usersDataAll}
+						dataOriginal={usersApi?.result || []}
 						mariachiDataSearch={usersDataSearch}
 						setMariachisDataSearch={setUsersDataSearch}
 						setHideIconShowSearch={setHideIconShowSearch}
@@ -121,10 +159,14 @@ const TableUser = () => {
 						<div className="relative w-full px-4 max-w-full flex flex-row justify-between divide-x-2 md:divide-x-0 pr-2 ">
 							<h3 className="font-semibold text-lg text-slate-700 dark:text-white flex flex-col justify-center items-center ">
 								<span>Usuarios</span>
-								<div className="flex justify-center items-center">
-									<TotalSum className="fill-slate-900 dark:fill-slate-100 w-5 h-5 mt-1" />
-									<span className="text-sm "> {usersDataSearch.length}</span>
-								</div>
+								{isFetching ? (
+									<SpinnerCircular />
+								) : (
+									<div className="flex justify-center items-center">
+										<TotalSum className="fill-slate-900 dark:fill-slate-100 w-5 h-5 mt-1" />
+										<span className="text-sm "> {usersDataSearch.length}</span>
+									</div>
+								)}
 							</h3>
 							<div className="flex flex-row justify-between items-center pl-2 ">
 								<div className="mr-2">

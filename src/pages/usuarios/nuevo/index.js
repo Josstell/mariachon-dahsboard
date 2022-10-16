@@ -9,7 +9,7 @@ import toast, { Toaster } from "react-hot-toast"
 
 import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import {
-	addNewUser,
+	addClientToGoogleSheet,
 	selectError,
 	selectStatusGSUser,
 	selectStatusUser,
@@ -19,11 +19,16 @@ import {
 } from "store/features/users/userSlice"
 
 import { nanoid } from "@reduxjs/toolkit"
+
 import { useRouter } from "next/router"
-import { dateGral, optionsDate } from "src/helpers/utils"
+import { dateGral, optionsDate, userExist } from "src/helpers/utils"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
+import { useAddUpdateNewUserMutation } from "store/features/usersApi"
 
 const addnewuser = () => {
+	const [createUser, { error: errorAdd, isSuccess: isSuccessAdd }] =
+		useAddUpdateNewUserMutation()
+
 	const [loading, setLoading] = useState(false)
 	const [editCard, setEditCard] = useState(false)
 
@@ -63,7 +68,7 @@ const addnewuser = () => {
 		toast.success("Usuario actualizado correctamente", { id: toastIdUs })
 
 	useEffect(() => {
-		if (status === "failed" || statusGSUser === "failed") {
+		if (status === "failed" || statusGSUser === "failed" || errorAdd) {
 			toast.dismiss(toastIdUs)
 
 			notifyError()
@@ -71,7 +76,11 @@ const addnewuser = () => {
 			dispatch(setStatusGSUser("idle"))
 			setLoading(false)
 		}
-		if (status === "succeeded" && statusGSUser === "succeeded") {
+		if (
+			//status === "succeeded" &&
+			statusGSUser === "succeeded" &&
+			isSuccessAdd
+		) {
 			toast.dismiss(toastIdUs)
 
 			dispatch(setStatusUser("idle"))
@@ -82,11 +91,29 @@ const addnewuser = () => {
 
 			setTimeout(() => router.push("/usuarios"), 1000)
 		}
-	}, [status, statusGSUser, error, notifyError, dispatch, router])
+	}, [
+		status,
+		statusGSUser,
+		isSuccessAdd,
+		errorAdd,
+		error,
+		notifyError,
+		dispatch,
+		router,
+	])
 
-	const onSubmit = (dataFormUser) => {
+	const onSubmit = async (dataFormUser) => {
 		setLoading(true)
 		toastIdUs = toast.loading("Cargando...")
+
+		const existAlready = await userExist(dataFormUser?.email, dataFormUser.tel)
+
+		if (existAlready) {
+			toast.error(existAlready.message)
+			toast.dismiss(toastIdUs)
+			setLoading(false)
+			return
+		}
 
 		const data = {
 			...dataFormUser,
@@ -95,7 +122,7 @@ const addnewuser = () => {
 				dataFormUser.Mariachi,
 				dataFormUser.Coordinador,
 				dataFormUser.Admin,
-			],
+			] || ["Cliente"],
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
 			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 			stage: ["PROSPECTO"],
@@ -107,14 +134,34 @@ const addnewuser = () => {
 
 		const dataNew = {
 			...data,
+			_type: "user",
+
 			email:
 				data.email === "" ? `noemail${nanoid()}@mariachon.com.mx` : data.email,
 			categorySet:
 				data?.categorySet === undefined
 					? []
 					: data?.categorySet?.filter((cat) => cat !== false),
+			slug: {
+				current: dataFormUser.name.split(" ").join("-").toLocaleLowerCase(),
+			},
+			region: dataFormUser?.region || "",
+
+			uid: "",
+			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 		}
-		dispatch(addNewUser(dataNew))
+		//dispatch(addNewUser(dataNew))
+		const createMutations = [
+			{
+				createOrReplace: dataNew,
+			},
+		]
+
+		Promise.all([createUser(createMutations)])
+			.then((addPromise) => {
+				dispatch(addClientToGoogleSheet(addPromise[0].data.results[0].document))
+			})
+			.catch((err) => console.log(err))
 	}
 
 	const userUpdat = {

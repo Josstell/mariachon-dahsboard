@@ -3,25 +3,37 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import toast, { Toaster } from "react-hot-toast"
 import { useDispatch, useSelector } from "react-redux"
-//import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
 import { regions } from "src/helpers/dataset"
-import { dateGral, optionsDate } from "src/helpers/utils"
 import {
+	dateGral,
+	optionsDate,
+	transformDataUserToAdd,
+} from "src/helpers/utils"
+import {
+	addClientToGoogleSheet,
 	addNewUser,
 	selectError,
+	selectStatusGSUser,
 	selectStatusUser,
 	selectUserAdmin,
+	setNewUser,
 	setStatusUser,
 } from "store/features/users/userSlice"
+import { useAddUpdateNewUserMutation } from "store/features/usersApi"
 import Form from "../Smart/Form"
 import { Button, Checkbox, Input, Select } from "../Smart/Inputs"
 
 const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 	const regionData = regions.response.estado
+
+	const [createUser, { error: errorAdd, isSuccess: isSuccessAdd }] =
+		useAddUpdateNewUserMutation()
 	//const router = useRouter()
 	const userAdmin = useSelector(selectUserAdmin)
 
 	const status = useSelector(selectStatusUser)
+	const statusGSUser = useSelector(selectStatusGSUser)
+
 	const error = useSelector(selectError)
 
 	const dispatch = useDispatch()
@@ -63,7 +75,7 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 		toast.success("Usuario creado correctamente", { id: toastIdUs })
 
 	useEffect(() => {
-		if (status === "failed") {
+		if (status === "failed" || statusGSUser === "failed" || errorAdd) {
 			setAddUser(!addUser)
 
 			dispatch(setStatusUser("idle"))
@@ -71,14 +83,14 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 			notifyError()
 			setLoading(false)
 		}
-		if (status === "succeeded") {
+		if (statusGSUser === "succeeded" && isSuccessAdd) {
 			setAddUser(!addUser)
 			dispatch(setStatusUser("idle"))
 			toast.dismiss(toastIdUs)
 			notifySuccess()
 			setLoading(false)
 		}
-	}, [status])
+	}, [status, statusGSUser, isSuccessAdd, errorAdd, error])
 
 	const onSubmit = (dataFormUser) => {
 		setLoading(true)
@@ -111,25 +123,25 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 					: data?.categorySet?.filter((cat) => cat !== false),
 		}
 
-		dispatch(addNewUser(dataUpdate))
+		const createMutations = [
+			{
+				createOrReplace: transformDataUserToAdd(dataUpdate),
+			},
+		]
 
+		Promise.all([createUser(createMutations)])
+			.then((addPromise) => {
+				console.log(addPromise[0].data.results[0])
+				const userAdded = {
+					...dataUpdate,
+					_id: addPromise[0].data.transactionId,
+				}
+				dispatch(setNewUser(addPromise[0].data.results[0].document))
+				dispatch(addClientToGoogleSheet(userAdded))
+				dispatch(setStatusUser("succeeded"))
+			})
+			.catch((err) => console.log(err))
 		// 	//Creando variable session para recargar datos
-
-		// 	dispatch(
-		// 		setUserUpdate({
-		// 			...dataForm,
-		// 			_id: data._id,
-		// 			categorySet: data?.categorySet || "",
-		// 		})
-		// 	)
-		// 	dispatch(
-		// 		updateUser({
-		// 			...dataForm,
-		// 			_id: data._id,
-		// 			categorySet: data?.categorySet || "",
-		// 		})
-		// 	)
-		// 	setLoading(false)
 	}
 
 	const params = { required: true }
@@ -144,9 +156,6 @@ const AddNewUserComponent = ({ setAddUser, addUser, role }) => {
 		pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i,
 	}
 
-	// if (!(status === "idle")) {
-	// 	return <SpinnerLoadign />
-	// }
 	return (
 		<div className="flex flex-col -mt-10">
 			<Form onSubmit={onSubmit} methods={methods}>

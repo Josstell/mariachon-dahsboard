@@ -78,7 +78,6 @@ const SearchWithModalMariachis = ({
 	}
 
 	const handleBookingByDate = (e) => {
-		console.log("Fecha!!!!", e.target.value)
 		setByDateBooking(e.target.value)
 	}
 
