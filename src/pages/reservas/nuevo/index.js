@@ -312,7 +312,6 @@ const newBooking = () => {
 	// }, [dataReservaToCard.orderItems.mariachi.categorySet])
 
 	const onSubmit = (dataForm) => {
-		console.log(dataForm)
 		if (dataForm.clientId === "") {
 			toast.error("¡Falta asignar cliente¡")
 			return
@@ -386,27 +385,22 @@ const newBooking = () => {
 			status: ["Agendado"],
 			userName: dataForm.nameClient,
 			//_id: data._id,
+			reserva: nanoid(),
+			_type: "booking",
 		}
 
 		const createMutations = [
 			{
 				createOrReplace: {
 					...reservaAdd,
-					_type: "booking",
-					reserva: nanoid(),
 				},
 			},
 		]
 
 		Promise.all([createBooking(createMutations)])
 			.then((addPromise) => {
-				dispatch(
-					addBookingToGoogleSheet({
-						...reservaAdd,
-						_id: addPromise[0].data.transactionId,
-						sendEmail: false,
-					})
-				)
+				const dataToAdd = addPromise[0].data.results[0].document
+				dispatch(addBookingToGoogleSheet({ ...dataToAdd, sendEmail: true }))
 			})
 			.catch((err) => console.log(err))
 	}

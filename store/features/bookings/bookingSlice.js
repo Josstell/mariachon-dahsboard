@@ -214,17 +214,50 @@ export const addBooking = createAsyncThunk(
 
 export const addBookingToGoogleSheet = createAsyncThunk(
 	"bookings/addBookingToGoogleSheet",
-	(reserva, { dispatch }) => {
-		let reservaData = reserva
+	(reserva, { getState, dispatch }) => {
+		const {
+			users: { users },
+			mariachis: { mariachis },
+		} = getState()
+
+		const data = reserva
+
+		const mariachiUpdated = mariachis.find(
+			(mar) => mar._id === data.orderItems[0].mariachi._ref
+		)
+		const clientUpdated = users.find((user) => user._id === data.client._ref)
+
+		const mariachiSended = data?.sendTo?._ref
+			? users.find((user) => user._id === data.sendTo._ref)
+			: false
+
+		const items = data.orderItems[0]
+
+		let dataReserva = {
+			...data,
+			client: clientUpdated,
+			orderItems: {
+				...items,
+				mariachi: mariachiUpdated,
+			},
+		}
+
+		if (mariachiSended) {
+			dataReserva = {
+				...dataReserva,
+				sendTo: mariachiSended,
+			}
+		}
 
 		//	`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/reservation`,
+
 		return axios
-			.post(`/api/google-sheet/add/reservation`, reservaData)
+			.post(`/api/google-sheet/add/reservation`, dataReserva)
 			.then((response) => {
 				if (reserva.sendEmail) {
-					return dispatch(sendBooking(reservaData))
+					return dispatch(sendBooking(dataReserva))
 				} else {
-					return { data: response.data, reserva: reservaData }
+					return { data: response.data, reserva: dataReserva }
 				}
 			})
 			.catch((error) => {

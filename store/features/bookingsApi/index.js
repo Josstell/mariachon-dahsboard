@@ -165,7 +165,7 @@ export const bookingsSanityApi = createApi({
 		}),
 		addUpdateNewBooking: builder.mutation({
 			query: (mutations) => ({
-				url: `/mutate/${dataset}`,
+				url: `/mutate/${dataset}?returnDocuments=true`,
 				method: "POST",
 				body: { mutations },
 			}),

@@ -376,7 +376,6 @@ const reservaById = ({ id }) => {
 			_id: data?.result._id,
 		}
 
-<<<<<<< HEAD
 		const createMutations = [
 			{
 				patch: {
@@ -390,20 +389,14 @@ const reservaById = ({ id }) => {
 
 		Promise.all([updateBookingApi(createMutations)])
 			.then((updatePromise) => {
-				console.log("update", updatePromise)
-				dispatch(
-					addBookingToGoogleSheet({
-						...reservaUpdate,
-						sendEmail: false,
-					})
-				)
+				const dataToUpdate = updatePromise[0].data.results[0].document
+
+				dispatch(addBookingToGoogleSheet({ ...dataToUpdate, sendEmail: true }))
 			})
 			.catch((err) => console.log(err))
 
 		//dispatch(updateBooking({ ...reservaUpdate, sendEmail: true }))
-=======
-		dispatch(updateBooking({ ...reservaUpdate, sendEmail: false }))
->>>>>>> main
+		//	dispatch(updateBooking({ ...reservaUpdate, sendEmail: false }))
 	}
 
 	let toastIdRe

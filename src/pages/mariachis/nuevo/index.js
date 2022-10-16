@@ -109,6 +109,8 @@ const addNewMariachi = () => {
 		region: watch("region"),
 		city: watch("city"),
 		cp: watch("cp"),
+		coordinator: watch("coordinator"),
+
 		members: watch("members"),
 		service: {
 			hora: {

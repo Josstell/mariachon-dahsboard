@@ -131,12 +131,8 @@ const userById = ({ id }) => {
 		]
 
 		Promise.all([updateUserApi(createMutations)])
-			.then(() => {
-				dispatch(
-					addClientToGoogleSheet({
-						...updateUserData,
-					})
-				)
+			.then((addPromise) => {
+				dispatch(addClientToGoogleSheet(addPromise[0].data.results[0].document))
 			})
 			.catch((err) => console.log(err))
 	}

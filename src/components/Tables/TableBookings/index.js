@@ -240,13 +240,9 @@ const TableBookings = ({ userAdmin }) => {
 		//dispatch(updateMariachi(dataMariachiToSend))
 
 		Promise.all([updateBookingApi(createMutations)])
-			.then(() => {
-				dispatch(
-					addBookingToGoogleSheet({
-						...reservaUpdate,
-						sendEmail: false,
-					})
-				)
+			.then((updatePromise) => {
+				const dataToUpdate = updatePromise[0].data.results[0].document
+				dispatch(addBookingToGoogleSheet({ ...dataToUpdate, sendEmail: false }))
 			})
 			.catch((err) => console.log(err))
 	}

@@ -159,12 +159,7 @@ const addnewuser = () => {
 
 		Promise.all([createUser(createMutations)])
 			.then((addPromise) => {
-				dispatch(
-					addClientToGoogleSheet({
-						...dataNew,
-						_id: addPromise[0].data.transactionId,
-					})
-				)
+				dispatch(addClientToGoogleSheet(addPromise[0].data.results[0].document))
 			})
 			.catch((err) => console.log(err))
 	}

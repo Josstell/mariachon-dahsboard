@@ -3,10 +3,9 @@ import React, { useEffect } from "react"
 import { getSession } from "next-auth/react"
 import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
 import { wrapper } from "../../../store"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import {
 	fetchUsersNew,
-	selectStatusUser,
 	selectUserAdmin,
 	setStatusUser,
 } from "../../../store/features/users/userSlice"
@@ -76,6 +75,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 					permanent: false,
 				},
 			}
+		}
+
+		if (!store.getState().users.users.length) {
+			await store.dispatch(fetchUsersNew(session))
 		}
 
 		await store.dispatch(setStatusUser("idle"))
