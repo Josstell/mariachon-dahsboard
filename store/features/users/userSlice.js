@@ -26,7 +26,6 @@ export const fetchUsersNew = createAsyncThunk(
 		try {
 			const users = await client.fetch(query)
 			if (!(users.length === 0)) {
-				console.log("si entra!!!!!!", users.length)
 				const userAdmin = users.find(
 					(user) => user.email === session.user.email
 				)
@@ -55,7 +54,6 @@ export const fetchUsersNew = createAsyncThunk(
 				}
 			} else {
 				const sesuser = session.user
-				console.log("Session", session)
 				return {
 					users: [sesuser],
 					admin: { ...session.user, exist: false, isAdmin: false },
@@ -82,8 +80,6 @@ export const updateUser = createAsyncThunk(
 	async (user, { dispatch }) => {
 		// We send the initial data to the fake API server
 
-		console.log("actualizar usuario", user)
-
 		try {
 			const { data } = await axios.put("/api/users/update", user)
 
@@ -94,7 +90,6 @@ export const updateUser = createAsyncThunk(
 				exist: true,
 				isAdmin: admin === "Admin" ? true : false,
 			}
-			console.log("data!!!", userData)
 			return dispatch(addClientToGoogleSheet(userData))
 		} catch (error) {
 			const text = {
@@ -207,6 +202,9 @@ const usersSlice = createSlice({
 			const data = action.data
 			state.admin = { ...state.admin, data }
 		},
+		setUsers: (state, action) => {
+			state.users = action.payload
+		},
 		setUserUpdate: (state, action) => {
 			state.userUpdate = action.payload
 		},
@@ -232,10 +230,10 @@ const usersSlice = createSlice({
 		},
 		setNewUser: (state, action) => {
 			const userToUpdate = action.payload
-			const target = state.users.find((obj) => obj._id === userToUpdate._id)
-			if (!target) {
-				state.users.unshift(userToUpdate)
-			}
+			//const target = state.users.find((obj) => obj._id === userToUpdate._id)
+			state.users.unshift(userToUpdate)
+			// if (!target) {
+			// }
 		},
 		setUsersSearch: (state, action) => {
 			state.usersSearch = action.payload
@@ -371,6 +369,7 @@ const usersSlice = createSlice({
 export default usersSlice.reducer
 export const {
 	setAdminUser,
+	setUsers,
 	setUserUpdate,
 	setStatusUser,
 	getUserById,

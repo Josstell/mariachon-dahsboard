@@ -47,13 +47,6 @@ export default handlerCors().post(async (req, res) => {
 		telE: req.body?.tel,
 	})
 
-	// const existUser2 = await client.fetch(
-	// 	`*[_type == "user" && tel == $tel][0]`,
-	// 	{
-	// 		tel: req.body.tel,
-	// 	}
-	// )
-
 	if (existUser === null) {
 		try {
 			const { data } = await axios.post(

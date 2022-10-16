@@ -14,7 +14,7 @@ import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import { dateGral, optionsDate } from "src/helpers/utils"
 import { wrapper } from "store"
 import {
-	selectAllUsers,
+	addClientToGoogleSheet,
 	selectError,
 	selectStatusGSUser,
 	selectStatusUser,
@@ -24,12 +24,23 @@ import {
 	setUserUpdate,
 	updateUser,
 } from "store/features/users/userSlice"
+import {
+	getRunningOperationPromises,
+	getUserAPIById,
+	useAddUpdateNewUserMutation,
+	useAddUpdateNewUserQuery,
+	useGetUserAPIByIdQuery,
+} from "store/features/usersApi"
 
 const userById = ({ id }) => {
-	const users = useSelector(selectAllUsers)
+	const { data: dataUser, isLoading } = useGetUserAPIByIdQuery(id)
+
+	const [updateUserApi, { error: errorUp, isSuccess: isSuccessUp }] =
+		useAddUpdateNewUserMutation()
+
 	const [loading, setLoading] = useState(false)
 	const [editCard, setEditCard] = useState(false)
-	const [dataUser] = useState(users.find((user) => user._id === id))
+	//const [dataUser, setDatauser] = useState(userByApiUser)
 
 	const router = useRouter()
 	const dispatch = useDispatch()
@@ -45,48 +56,43 @@ const userById = ({ id }) => {
 
 	const { setValue, watch } = methods
 
-	useEffect(() => {
-		if (dataUser === undefined) {
-			router.push("/usuarios")
-		}
-	}, [])
-
-	if (dataUser === undefined) {
-		return <SpinnerLogo />
-	}
+	// useEffect(() => {
+	// 	if (dataUser === undefined) {
+	// 		router.push("/usuarios")
+	// 	}
+	// }, [])
 
 	useEffect(() => {
-		if (dataUser) {
-			dispatch(setUserUpdate(dataUser))
-		}
-		if (!userAdmin.exist) {
-			router.push("/usuarios")
-		}
-		setValue("name", dataUser.name)
-		setValue("username", dataUser.username)
+		if (dataUser.result !== {}) {
+			dispatch(setUserUpdate(dataUser.result))
 
-		setValue("tel", dataUser.tel)
-		setValue("email", dataUser.email)
-		setValue("region", dataUser?.region || "")
+			//setDatauser(userByApiUser)
 
-		setValue(
-			"Cliente",
-			dataUser.categorySet.find((cat) => cat === "Cliente")
-		)
-		setValue(
-			"Mariachi",
-			dataUser.categorySet.find((cat) => cat === "Mariachi")
-		)
-		setValue(
-			"Coordinador",
-			dataUser.categorySet.find((cat) => cat === "Coordinador")
-		)
-		setValue(
-			"Admin",
-			dataUser.categorySet.find((cat) => cat === "Admin")
-		)
-		// 		//
-	}, [])
+			setValue("name", dataUser?.result?.name)
+			setValue("username", dataUser?.result?.username)
+
+			setValue("tel", dataUser?.result?.tel)
+			setValue("email", dataUser?.result?.email)
+			setValue("region", dataUser?.result?.region || "")
+
+			setValue(
+				"Cliente",
+				dataUser?.result?.categorySet?.find((cat) => cat === "Cliente")
+			)
+			setValue(
+				"Mariachi",
+				dataUser?.result?.categorySet?.find((cat) => cat === "Mariachi")
+			)
+			setValue(
+				"Coordinador",
+				dataUser?.result?.categorySet?.find((cat) => cat === "Coordinador")
+			)
+			setValue(
+				"Admin",
+				dataUser?.result?.categorySet?.find((cat) => cat === "Admin")
+			)
+		} //
+	}, [dataUser])
 
 	const onSubmit = (dataForm) => {
 		setLoading(true)
@@ -96,7 +102,7 @@ const userById = ({ id }) => {
 
 		const updateUserData = {
 			...dataForm,
-			_id: dataUser._id,
+			_id: dataUser?.result?._id,
 			categorySet: [
 				!!dataForm?.Cliente && dataForm?.Cliente,
 				!!dataForm?.Coordinador && dataForm?.Coordinador,
@@ -112,10 +118,23 @@ const userById = ({ id }) => {
 					? dataForm.name.split(" ").join("").toLocaleLowerCase()
 					: dataForm.username,
 		}
-		console.log(updateUserData)
 
-		dispatch(setUserUpdate(updateUserData))
-		dispatch(updateUser(updateUserData))
+		//dispatch(setUserUpdate(updateUserData))
+		//dispatch(updateUser(updateUserData))
+		const createMutations = [
+			{
+				patch: {
+					id: updateUserData._id,
+					set: updateUserData,
+				},
+			},
+		]
+
+		Promise.all([updateUserApi(createMutations)])
+			.then((addPromise) => {
+				dispatch(addClientToGoogleSheet(addPromise[0].data.results[0].document))
+			})
+			.catch((err) => console.log(err))
 	}
 
 	let toastIdUs
@@ -125,7 +144,7 @@ const userById = ({ id }) => {
 		toast.success("Usuario actualizado correctamente", { id: toastIdUs })
 
 	useEffect(() => {
-		if (status === "failed" || statusGSUser === "failed") {
+		if (status === "failed" || statusGSUser === "failed" || errorUp) {
 			toast.dismiss(toastIdUs)
 
 			notifyError()
@@ -133,7 +152,11 @@ const userById = ({ id }) => {
 			dispatch(setStatusGSUser("idle"))
 			setLoading(false)
 		}
-		if (status === "succeeded" && statusGSUser === "succeeded") {
+		if (
+			//status === "succeeded" &&
+			statusGSUser === "succeeded" &&
+			isSuccessUp
+		) {
 			toast.dismiss(toastIdUs)
 
 			dispatch(setStatusUser("idle"))
@@ -144,7 +167,16 @@ const userById = ({ id }) => {
 
 			setTimeout(() => router.push("/usuarios"), 1000)
 		}
-	}, [status, statusGSUser, error, notifyError, dispatch, router])
+	}, [
+		status,
+		statusGSUser,
+		isSuccessUp,
+		errorUp,
+		error,
+		notifyError,
+		dispatch,
+		router,
+	])
 
 	const userUpdat = {
 		name: watch("name"),
@@ -152,10 +184,14 @@ const userById = ({ id }) => {
 		tel: watch("tel"),
 		email: watch("email"),
 		region: watch("region"),
-		categorySet: dataUser?.categorySet[0] || "",
+		//categorySet: dataUser?.categorySet[0] || "",
 	}
 
-	if (!userAdmin.exist || router.isFallback) {
+	// if (!userAdmin.exist || router.isFallback) {
+	// 	return <SpinnerLogo />
+	// }
+
+	if (isLoading) {
 		return <SpinnerLogo />
 	}
 
@@ -172,7 +208,7 @@ const userById = ({ id }) => {
 							<div className="m-auto md:m-0">
 								<UserForm
 									methods={methods}
-									data={dataUser}
+									data={dataUser.result}
 									onSubmit={onSubmit}
 									loading={loading}
 								/>
@@ -224,7 +260,7 @@ export default userById
 // }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-	() => async (ctx) => {
+	(store) => async (ctx) => {
 		// 		const query = groq`*[_type == "user" && _id == $id][0]{
 		//   _id,
 		//   categorySet,
@@ -238,6 +274,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		// 	`
 
 		const session = await getSession(ctx)
+
+		const id = ctx.params.slug
+
+		await store.dispatch(getUserAPIById.initiate(id))
+
+		await Promise.all(getRunningOperationPromises())
 
 		// const users = await client.fetch(query, {
 		// 	id: ctx.params.slug,

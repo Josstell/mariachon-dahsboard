@@ -148,17 +148,29 @@ export const addMariachi = createAsyncThunk(
 
 export const addMariachiToGoogleSheet = createAsyncThunk(
 	"mariachis/addMariachiToGoogleSheet",
-	async (mariachi) => {
+	async (mariachi, { getState }) => {
+		const {
+			users: { users },
+		} = getState()
+
+		const coordinatorUpdated = users.find(
+			(user) => user._id === mariachi.coordinator._ref
+		)
+
+		const mariachiData = {
+			...mariachi,
+			coordinator: coordinatorUpdated,
+		}
 		try {
 			//`${NEXT_PUBLIC_URL_API}/api/google-sheet/add/mariachi`,
 			const { data } = await axios.post(
 				`/api/google-sheet/add/mariachi`,
-				mariachi
+				mariachiData
 			)
 
 			return {
 				data,
-				mariachiData: mariachi,
+				mariachiData: mariachiData,
 			}
 		} catch (error) {
 			const text = {
@@ -185,6 +197,9 @@ const mariachisSlice = createSlice({
 		// },
 		setDispMariachiTabActive: (state, action) => {
 			state.mariachiTabActive = action.payload
+		},
+		setMariachis: (state, action) => {
+			state.mariachis = action.payload
 		},
 		setStatus: (state, action) => {
 			state.status = action.payload
@@ -305,6 +320,7 @@ const mariachisSlice = createSlice({
 
 export default mariachisSlice.reducer
 export const {
+	setMariachis,
 	setDispMariachiTabActive,
 	setStatus,
 	setStatusGS,

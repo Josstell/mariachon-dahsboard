@@ -27,8 +27,6 @@ const useSearchByQuery = (
 
 	const dispatch = useDispatch()
 
-	console.log("data", dataOriginal)
-
 	useMemo(() => {
 		// regionSelected, byEtapes,userByType, query
 		if (typeElement === "user") {
@@ -237,6 +235,7 @@ const useSearchByQuery = (
 		typeOfPrices,
 		statusReserva,
 		byDateBooking,
+		dataOriginal,
 	])
 
 	return [setQuery, filteredData, setFilteredData]

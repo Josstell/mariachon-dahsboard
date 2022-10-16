@@ -20,8 +20,6 @@ export default function Home() {
 	//const userUpdate = useSelector(selectUserUpdate)
 	const dispatch = useDispatch()
 
-	console.log("update", userAdmin)
-
 	useEffect(() => {
 		if (!userAdmin.exist) {
 			dispatch(addNewUser(userAdmin))
@@ -60,12 +58,13 @@ export const getServerSideProps = wrapper.getServerSideProps(
 				},
 			}
 		}
-		await store.dispatch(fetchUsersNew(session))
 
-		await store.dispatch(fetchMariachis(true))
-		await store.dispatch(fetchBookings(true))
+		if (!store.getState().users.users.length) {
 
-		console.log("entramos de new")
+			await store.dispatch(fetchUsersNew(session))
+		}
+		// await store.dispatch(fetchMariachis(true))
+		// await store.dispatch(fetchBookings(true))
 
 		return {
 			props: {},

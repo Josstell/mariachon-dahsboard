@@ -12,21 +12,36 @@ import { wrapper } from "store"
 import { selectUserAdmin } from "store/features/users/userSlice"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import {
+	addMariachiToGoogleSheet,
 	selectError,
 	selectStatus,
 	selectStatusGS,
 	setStatus,
 	setStatusGS,
-	updateMariachi,
 } from "store/features/mariachis/mariachiSlice"
 import toast, { Toaster } from "react-hot-toast"
-import { dateGral, optionsDate } from "src/helpers/utils"
+import {
+	dateGral,
+	optionsDate,
+	transformDataMariachiToUpdate,
+} from "src/helpers/utils"
 import { nanoid } from "@reduxjs/toolkit"
+import {
+	getMariachiAPIById,
+	getRunningOperationPromises,
+	useAddUpdateNewMariachiMutation,
+	useGetMariachiAPIByIdQuery,
+} from "store/features/mariachisAPI"
 
 const mariachiById = ({ slug }) => {
-	const data = useSelector((state) =>
-		state.mariachis.mariachis.find((mar) => mar.slug.current === slug)
-	)
+	// const data .result?= useSelector((state) =>
+	// 	state.mariachis.mariachis.find((mar) => mar.slug.current === slug)
+	// )
+
+	const { data, isLoading } = useGetMariachiAPIByIdQuery(slug)
+
+	const [updateMariachiApi, { error: errorUp, isSuccess: isSuccessUp }] =
+		useAddUpdateNewMariachiMutation()
 
 	const router = useRouter()
 
@@ -36,10 +51,10 @@ const mariachiById = ({ slug }) => {
 	const error = useSelector(selectError)
 	const dispatch = useDispatch()
 
-	const [arrayImages, setArrayImages] = useState(data?.images || [])
-	const [arrayVideos, setArrayVideos] = useState(data?.videos || [])
+	const [arrayImages, setArrayImages] = useState(data?.result?.images || [])
+	const [arrayVideos, setArrayVideos] = useState(data?.result?.videos || [])
 	const [crewElements, setCrewElements] = useState(
-		data?.crew?.filter((_, index) => index > 0) || []
+		data?.result?.crew?.filter((_, index) => index > 0) || []
 	)
 	const [loading, setLoading] = useState(false)
 
@@ -52,19 +67,19 @@ const mariachiById = ({ slug }) => {
 		defaultValues: {
 			services: [
 				{
-					minimo: data?.service?.hora?.minimo || 0,
-					regular: data?.service?.hora?.regular || 0,
-					festivo: data?.service?.hora?.festivo || 0,
+					minimo: data?.result?.service?.hora?.minimo || 0,
+					regular: data?.result?.service?.hora?.regular || 0,
+					festivo: data?.result?.service?.hora?.festivo || 0,
 				},
 				{
-					minimo: data?.service?.serenata?.minimo || 0,
-					regular: data?.service?.serenata?.regular || 0,
-					festivo: data?.service?.serenata?.festivo || 0,
+					minimo: data?.result?.service?.serenata?.minimo || 0,
+					regular: data?.result?.service?.serenata?.regular || 0,
+					festivo: data?.result?.service?.serenata?.festivo || 0,
 				},
 				{
-					minimo: data?.service?.contrato?.minimo || 0,
-					regular: data?.service?.contrato?.regular || 0,
-					festivo: data?.service?.contrato?.festivo || 0,
+					minimo: data?.result?.service?.contrato?.minimo || 0,
+					regular: data?.result?.service?.contrato?.regular || 0,
+					festivo: data?.result?.service?.contrato?.festivo || 0,
 				},
 			],
 		},
@@ -72,13 +87,13 @@ const mariachiById = ({ slug }) => {
 
 	const { watch, setValue } = methods
 
-	useEffect(() => {
-		if (data === undefined) {
-			router.push("/mariachis")
-		}
-	}, [])
+	// useEffect(() => {
+	// 	if (data.result === undefined) {
+	// 		router.push("/mariachis")
+	// 	}
+	// }, [])
 
-	if (data === undefined) {
+	if (isLoading) {
 		return <SpinnerLogo />
 	}
 
@@ -87,22 +102,22 @@ const mariachiById = ({ slug }) => {
 			router.push("/")
 		}
 
-		setValue("name", data?.name)
-		setValue("tel", data?.tel)
-		setValue("description", data?.description)
-		setValue("address", data?.address)
-		setValue("region", data?.region || "")
-		setValue("city", data?.city || "")
-		setValue("cp", data?.cp || "")
+		setValue("name", data?.result?.name)
+		setValue("tel", data?.result?.tel)
+		setValue("description", data?.result?.description)
+		setValue("address", data?.result?.address)
+		setValue("region", data?.result?.region || "")
+		setValue("city", data?.result?.city || "")
+		setValue("cp", data?.result?.cp || "")
 
-		setValue("members", data?.members || "No definido")
-		setValue("hora", data?.service?.hora)
-		setValue("serenata", data?.service?.serenata)
-		setValue("contrato", data?.service?.contrato)
-		setValue("category_mariachi", data?.categorySet[0])
-		setValue("coordinator", data?.coordinator._id)
+		setValue("members", data?.result?.members || "No definido")
+		setValue("hora", data?.result?.service?.hora)
+		setValue("serenata", data?.result?.service?.serenata)
+		setValue("contrato", data?.result?.service?.contrato)
+		setValue("category_mariachi", data?.result?.categorySet[0])
+		setValue("coordinator", data?.result?.coordinator._id)
 		setValue("elements", "")
-		setValue("stage", data?.stage[0] || "PROSPECTO")
+		setValue("stage", data?.result?.stage[0] || "PROSPECTO")
 
 		//
 	}, [data])
@@ -157,7 +172,7 @@ const mariachiById = ({ slug }) => {
 
 		const dataMariachiToSend = {
 			...dataForm,
-			_id: data._id,
+			_id: data?.result?._id,
 			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 			dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
 			coordinator: { _ref: dataForm.coordinator, _type: "reference" },
@@ -187,7 +202,24 @@ const mariachiById = ({ slug }) => {
 			stage: [dataForm?.stage],
 		}
 
-		dispatch(updateMariachi(dataMariachiToSend))
+		const createMutations = [
+			{
+				patch: {
+					id: dataMariachiToSend._id,
+					set: transformDataMariachiToUpdate(dataMariachiToSend),
+				},
+			},
+		]
+
+		//dispatch(updateMariachi(dataMariachiToSend))
+
+		Promise.all([updateMariachiApi(createMutations)])
+			.then((updatePromise) => {
+				dispatch(
+					addMariachiToGoogleSheet(updatePromise[0].data.results[0].document)
+				)
+			})
+			.catch((err) => console.log(err))
 	}
 
 	let toastId
@@ -196,7 +228,7 @@ const mariachiById = ({ slug }) => {
 		toast.success("Mariachi actualizado correctamente", { id: toastId })
 
 	useEffect(() => {
-		if (status === "failed") {
+		if (status === "failed" || errorUp || statusGS === "failed") {
 			toast.dismiss(toastId)
 
 			notifyError()
@@ -204,7 +236,11 @@ const mariachiById = ({ slug }) => {
 
 			dispatch(setStatus("idle"))
 		}
-		if (status === "succeeded" && statusGS === "succeeded") {
+		if (
+			//status === "succeeded" &&
+			statusGS === "succeeded" &&
+			isSuccessUp
+		) {
 			dispatch(setStatus("idle"))
 			dispatch(setStatusGS("idle"))
 			toast.dismiss(toastId)
@@ -216,11 +252,11 @@ const mariachiById = ({ slug }) => {
 			//dispatch(setStatus("idle"))
 			router.push("/mariachis")
 		}
-	}, [status, error, statusGS])
+	}, [status, error, statusGS, isSuccessUp, errorUp])
 
-	if (!userAdmin.exist || router.isFallback) {
-		return <SpinnerLogo />
-	}
+	// if (!userAdmin.exist || router.isFallback) {
+	// 	return <SpinnerLogo />
+	// }
 
 	return (
 		<Layout>
@@ -300,7 +336,7 @@ export default mariachiById
 // }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-	() => async (ctx) => {
+	(store) => async (ctx) => {
 		// 	const query = groq`*[_type == "mariachi" && slug.current == $slug][0]{
 		//   _id,
 		//   slug{
@@ -335,11 +371,15 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 		const session = await getSession(ctx)
 
-		// const data = users.filter((est) => est._id.toString() === ctx.params.slug)
+		// const data .result?= users.filter((est) => est._id.toString() === ctx.params.slug)
 
-		// const data = await store
+		// const data .result?= await store
 		// 	.dispatch(selectAllUsers())
 		// 	.filter((est) => est.slug.toString() === params.slug)
+
+		await store.dispatch(getMariachiAPIById.initiate(ctx.params.slug))
+
+		await Promise.all(getRunningOperationPromises())
 
 		return {
 			props: {
@@ -347,7 +387,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 				session: session,
 			},
 
-			//	props: { data: data[0] }, // will be passed to the page component as props
+			//	props: { data:.result? data[.result?0] }, // will be passed to the page component as props
 		}
 	}
 )

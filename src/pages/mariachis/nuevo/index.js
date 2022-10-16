@@ -15,6 +15,7 @@ import {
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import {
 	addMariachi,
+	addMariachiToGoogleSheet,
 	selectError,
 	selectStatus,
 	selectStatusGS,
@@ -22,11 +23,20 @@ import {
 	setStatusGS,
 } from "store/features/mariachis/mariachiSlice"
 import toast, { Toaster } from "react-hot-toast"
-import { dateGral, optionsDate } from "src/helpers/utils"
+import {
+	dateGral,
+	mariachiExist,
+	optionsDate,
+	transformDataMariachiToAdd,
+} from "src/helpers/utils"
 import { nanoid } from "@reduxjs/toolkit"
+import { useAddUpdateNewMariachiMutation } from "store/features/mariachisAPI"
 
 const addNewMariachi = () => {
 	const router = useRouter()
+
+	const [createMariachi, { error: errorAdd, isSuccess: isSuccessAdd }] =
+		useAddUpdateNewMariachiMutation()
 
 	const [arrayImages, setArrayImages] = useState([])
 	const [arrayVideos, setArrayVideos] = useState([])
@@ -99,6 +109,8 @@ const addNewMariachi = () => {
 		region: watch("region"),
 		city: watch("city"),
 		cp: watch("cp"),
+		coordinator: watch("coordinator"),
+
 		members: watch("members"),
 		service: {
 			hora: {
@@ -140,7 +152,10 @@ const addNewMariachi = () => {
 		setValue("members", crewElements.length + 1)
 	}, [crewElements])
 
-	const onSubmit = (dataForm) => {
+	const onSubmit = async (dataForm) => {
+		setLoading(true)
+		toastId = toast.loading("Cargando...")
+
 		if (dataForm.name == "") {
 			toast.error("¡Asignar nombre al grupo!")
 			return
@@ -149,8 +164,18 @@ const addNewMariachi = () => {
 			toast.error("¡Falta elegir coordinator!")
 			return
 		}
-		setLoading(true)
-		toastId = toast.loading("Cargando...")
+		const existAlready = await mariachiExist(
+			dataForm.name,
+			dataForm?.tel || null,
+			dataForm?.region
+		)
+
+		if (existAlready) {
+			toast.dismiss(toastId)
+			setLoading(false)
+			toast.error(existAlready.message)
+			return
+		}
 
 		let dataElements = []
 		crewElements.forEach((element) => {
@@ -197,14 +222,19 @@ const addNewMariachi = () => {
 			videos: arrayVideos,
 		}
 
-		//	console.log("Data Form Mariachi", dataMariachiToCard)
+		const createMutations = [
+			{
+				createOrReplace: transformDataMariachiToAdd(dataMariachiToCard),
+			},
+		]
 
-		dispatch(
-			addMariachi({
-				...dataMariachiToCard,
+		Promise.all([createMariachi(createMutations)])
+			.then((addPromise) => {
+				dispatch(
+					addMariachiToGoogleSheet(addPromise[0].data.results[0].document)
+				)
 			})
-		)
-		//	dispatch(addMariachiToGoogleSheet(dataMariachiToCard))
+			.catch((err) => console.log(err))
 	}
 
 	let toastId
@@ -213,14 +243,18 @@ const addNewMariachi = () => {
 		toast.success("Mariachi creado correctamente", { id: toastId })
 
 	useEffect(() => {
-		if (status === "failed") {
+		if (status === "failed" || statusGS === "failed" || errorAdd) {
 			toast.dismiss(toastId)
 			notifyError()
 			setLoading(false)
 
 			dispatch(setStatus("idle"))
 		}
-		if (status === "succeeded" && statusGS === "succeeded") {
+		if (
+			//status === "succeeded" &&
+			statusGS === "succeeded" &&
+			isSuccessAdd
+		) {
 			dispatch(setStatus("idle"))
 			dispatch(setStatusGS("idle"))
 			toast.dismiss(toastId)
@@ -229,7 +263,7 @@ const addNewMariachi = () => {
 
 			router.push("/mariachis")
 		}
-	}, [status, statusGS, error])
+	}, [status, statusGS, isSuccessAdd, errorAdd, error])
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
@@ -250,9 +284,6 @@ const addNewMariachi = () => {
 							}`}
 						>
 							<MariachiTab>
-								{/* {status !== "idle" || statusGS !== "idle" ? (
-									<SpinnerLoadign />
-								) : ( */}
 								<MariachiForm
 									methods={methods}
 									onSubmit={onSubmit}

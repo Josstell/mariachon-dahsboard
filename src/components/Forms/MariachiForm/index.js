@@ -180,7 +180,6 @@ export default function MariachiForm({
 		})
 	}, [setError])
 
-	console.log("form errors", errors)
 
 	return (
 		<>

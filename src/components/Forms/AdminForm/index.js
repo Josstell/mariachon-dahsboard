@@ -1,5 +1,5 @@
 import React from "react"
-import SpinnerLoadign from "src/components/Spinners/SpinnerLoading"
+import SpinnerLoading from "src/components/Spinners/SpinnerLoading"
 
 const AdminForm = ({ register, handleSubmit, onSubmit, errors, loading }) => {
 	return (
@@ -94,7 +94,7 @@ const AdminForm = ({ register, handleSubmit, onSubmit, errors, loading }) => {
 			>
 				Actualizar datos
 			</button>
-			{loading && <SpinnerLoadign />}
+			{loading && <SpinnerLoading />}
 		</form>
 	)
 }
