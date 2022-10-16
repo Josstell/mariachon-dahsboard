@@ -14,7 +14,6 @@ import {
 } from "store/features/users/userSlice"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import {
-	addMariachi,
 	addMariachiToGoogleSheet,
 	selectError,
 	selectStatus,

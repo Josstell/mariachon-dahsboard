@@ -11,7 +11,6 @@ import {
 } from "src/helpers/utils"
 import {
 	addClientToGoogleSheet,
-	addNewUser,
 	selectError,
 	selectStatusGSUser,
 	selectStatusUser,

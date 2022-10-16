@@ -1,14 +1,10 @@
 import { getSession } from "next-auth/react"
 import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
 
-import {
-	fetchMariachis,
-	setStatus,
-} from "store/features/mariachis/mariachiSlice"
+import { setStatus } from "store/features/mariachis/mariachiSlice"
 import { wrapper } from "../../../store"
 import TableMariachis from "src/components/Tables/TableMariachis"
 import Layout from "../../components/Layout"
-import useFetchUsers from "src/hook/useFetchUsers"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import {
 	fetchUsersNew,
@@ -23,7 +19,7 @@ import {
 import { useSelector } from "react-redux"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
-const mariachis = ({ session }) => {
+const mariachis = () => {
 	//const userAdmin = useFetchUsers(session)
 	const userAdmin = useSelector(selectUserAdmin)
 
@@ -89,7 +85,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		// 	}
 		// }
 		return {
-			props: { session: session },
+			props: {},
 		}
 	}
 )

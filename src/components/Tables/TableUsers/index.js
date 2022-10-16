@@ -1,17 +1,6 @@
 import Image from "next/image"
-import React, { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import React, { useState } from "react"
 import GetLogoWithName from "src/components/GetLogoWithName"
-import {
-	selectAllUsers,
-	selectUsersSearch,
-	setNewUser,
-	setNewUserSearch,
-	setUpdatedUser,
-	setUpdatedUserSearch,
-	setUsers,
-	setUsersSearch,
-} from "store/features/users/userSlice"
 
 import { ViewGridAddIcon } from "@heroicons/react/outline"
 //import Search from "src/components/Search"
@@ -22,10 +11,8 @@ import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal
 
 import { regions } from "src/helpers/dataset"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
-import { subscriptionUser } from "@lib/sanity"
 import { useRouter } from "next/router"
 import { useGetUsersQuery } from "store/features/usersApi"
-import SpinnerLoading from "src/components/Spinners/SpinnerLoading"
 import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 
@@ -36,18 +23,18 @@ import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 
 const TableUser = () => {
 	const router = useRouter()
-	const dispatch = useDispatch()
 
 	const {
 		data: usersApi,
 		isLoading,
 		isFetching,
-		isSuccess,
 	} = useGetUsersQuery(undefined, {
 		refetchOnMountOrArgChange: true,
 		refetchOnFocus: true,
 		refetchOnReconnect: true,
 	})
+
+	console.log(usersApi, isLoading)
 
 	// useEffect(() => {
 	// 	if (isSuccess) {
@@ -63,7 +50,7 @@ const TableUser = () => {
 
 	//const dispatch = useDispatch()
 
-	const usersSearch = useSelector(selectUsersSearch)
+	//const usersSearch = useSelector(selectUsersSearch)
 
 	/*********************************************************************/
 

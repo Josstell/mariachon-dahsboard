@@ -1,6 +1,5 @@
 import handlerCors from "src/helpers/api/allowCors"
 import axios from "axios"
-import client from "@lib/sanity"
 
 export default handlerCors().get(async (req, res) => {
 	const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID

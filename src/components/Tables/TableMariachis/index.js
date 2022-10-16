@@ -3,27 +3,20 @@
 import { ViewGridAddIcon } from "@heroicons/react/outline"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { SelectSimple } from "src/components/Forms/Smart/Inputs"
 import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
 import GetLogoWithName from "src/components/GetLogoWithName"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import BookingIcon from "src/components/SVG/Icons/BookingIcon"
 import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
-import {
-	selectAllMariachis,
-	selectMariachisSearch,
-	setMariachis,
-	setNewMariachi,
-	setNewMariachiSearch,
-	setUpdatedMariachi,
-	setUpdatedMariachiSearch,
-} from "store/features/mariachis/mariachiSlice"
+import { setMariachis } from "store/features/mariachis/mariachiSlice"
 
 import { regions } from "src/helpers/dataset"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
-import { subscriptionMariachi } from "@lib/sanity"
-import { selectAllUsers } from "store/features/users/userSlice"
+
+import { useGetMariachisQuery } from "store/features/mariachisAPI"
+import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 import { useRouter } from "next/router"
 import { useGetMariachisQuery } from "store/features/mariachisAPI"
 import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
@@ -52,7 +45,7 @@ const TableMariachis = () => {
 	//const mariachisData = useSelector(selectAllMariachis)
 	//const usersData = useSelector(selectAllUsers)
 
-	const mariachisSearch = useSelector(selectMariachisSearch)
+	//const mariachisSearch = useSelector(selectMariachisSearch)
 
 	/*********************************************************************/
 
