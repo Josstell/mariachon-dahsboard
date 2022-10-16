@@ -376,6 +376,7 @@ const reservaById = ({ id }) => {
 			_id: data?.result._id,
 		}
 
+<<<<<<< HEAD
 		const createMutations = [
 			{
 				patch: {
@@ -400,6 +401,9 @@ const reservaById = ({ id }) => {
 			.catch((err) => console.log(err))
 
 		//dispatch(updateBooking({ ...reservaUpdate, sendEmail: true }))
+=======
+		dispatch(updateBooking({ ...reservaUpdate, sendEmail: false }))
+>>>>>>> main
 	}
 
 	let toastIdRe
