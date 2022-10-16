@@ -186,6 +186,9 @@ const mariachisSlice = createSlice({
 		setDispMariachiTabActive: (state, action) => {
 			state.mariachiTabActive = action.payload
 		},
+		setMariachis: (state, action) => {
+			state.mariachis = action.payload
+		},
 		setStatus: (state, action) => {
 			state.status = action.payload
 		},
@@ -305,6 +308,7 @@ const mariachisSlice = createSlice({
 
 export default mariachisSlice.reducer
 export const {
+	setMariachis,
 	setDispMariachiTabActive,
 	setStatus,
 	setStatusGS,

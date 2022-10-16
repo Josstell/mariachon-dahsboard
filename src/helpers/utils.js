@@ -1,17 +1,57 @@
 import client from "@lib/sanity"
 
-export const userExist = async (email) => {
-	const existUser = await client.fetch(
-		`*[_type == "user" && email == $email][0]`,
-		{
-			email: email,
-		}
-	)
-	if (existUser) {
-		return res.status(401).send({ message: "Email aleardy exists" })
-	}
+export const userExist = async (email, tel) => {
+	const queryExist = `*[_type == "user" && (email == $emailE || tel == $telE)  ][0]`
 
-	return false
+	const existUser = await client.fetch(queryExist, {
+		emailE: email,
+		telE: tel,
+	})
+
+	if (existUser === null) {
+		return false
+	} else if (existUser?.email === email && existUser.tel !== tel) {
+		return { message: "Email ya existe!" }
+	} else if (existUser?.email !== email && existUser?.tel === tel) {
+		return { message: "Teléfono ya existe!" }
+	} else if (existUser?.email === email && existUser?.tel === tel) {
+		return { message: "Email y teléfono ya existen!" }
+	}
+}
+
+export const mariachiExist = async (name, tel, region) => {
+	const queryExist = `*[_type == "mariachi" && ((name == $nameE && region == $regionE) || tel == $telE  )][0]`
+
+	const existMariachi = await client.fetch(queryExist, {
+		nameE: name,
+		telE: tel,
+		regionE: region,
+	})
+
+	if (existMariachi === null) {
+		return false
+	} else if (
+		existMariachi?.name.toUpperCase() === name.toUpperCase() &&
+		existMariachi?.region.toUpperCase() === region.toUpperCase() &&
+		existMariachi.tel !== tel
+	) {
+		return {
+			message: `Este nombre ya existe en esta región, -${existMariachi.region}-`,
+		}
+	} else if (
+		existMariachi?.name.toUpperCase() !== name.toUpperCase() &&
+		existMariachi?.tel === tel
+	) {
+		return { message: "Teléfono principal ya existé!" }
+	} else if (
+		existMariachi?.name.toUpperCase() === name.toUpperCase() &&
+		existMariachi?.tel === tel &&
+		existMariachi?.region === region
+	) {
+		return { message: "Nombre y teléfono ya existen en esta región!" }
+	} else {
+		return false
+	}
 }
 
 export const optionsDate = {
@@ -189,5 +229,56 @@ export const timeConverterToCommonPeople = (dateFormal) => {
 			return timeFormal.toLocaleTimeString("en-US") + " de la tarde."
 		case hour >= 19 && hour <= 23:
 			return timeFormal.toLocaleTimeString("en-US") + " de la noche."
+	}
+}
+
+export const transformDataMariachiToUpdate = (dataMariachi) => {
+	return {
+		name: dataMariachi?.name,
+		tel: dataMariachi?.tel,
+		region: dataMariachi?.region || "",
+		city: dataMariachi?.city,
+		cp: dataMariachi?.cp,
+		address: dataMariachi?.address || "",
+		categorySet: [dataMariachi?.category_mariachi],
+		description: dataMariachi?.description,
+		coordinator: dataMariachi?.coordinator,
+		members: parseInt(dataMariachi?.members) || 0,
+		images: dataMariachi?.images || [],
+		videos: dataMariachi?.videos || [],
+		service: dataMariachi?.service,
+		modifiedBy: dataMariachi?.modifiedBy,
+		stage: dataMariachi?.stage,
+		crew: dataMariachi?.crew || [],
+	}
+}
+
+export const transformDataUserToAdd = (dataUser) => {
+	return {
+		_type: "user",
+		name: dataUser.name,
+		username: dataUser.name.split(" ").join("").toLocaleLowerCase(),
+		email: dataUser.email,
+		tel: dataUser.tel || "",
+		categorySet: dataUser?.categorySet || ["Cliente"],
+		region: dataUser?.region || "",
+
+		uid: dataUser?.uid || "",
+		stage: dataUser?.stage,
+
+		slug: { current: dataUser?.name.split(" ").join("-").toLocaleLowerCase() },
+		createdBy: dataUser?.createdBy,
+		dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
+	}
+}
+
+export const transformDataMariachiToAdd = (dataMariachi) => {
+	return {
+		...dataMariachi,
+		_type: "mariachi",
+
+		slug: {
+			current: dataMariachi.name.split(" ").join("-").toLocaleLowerCase(),
+		},
 	}
 }

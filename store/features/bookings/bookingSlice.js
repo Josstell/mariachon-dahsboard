@@ -422,7 +422,11 @@ const bookingsSlice = createSlice({
 		},
 		[addBookingToGoogleSheet.fulfilled]: (state, action) => {
 			if (action?.payload?.reserva) {
+				const reserva = action.payload.reserva
 				state.statusBookGS = "succeeded"
+				if (!reserva.sendEmail) {
+					state.statusBEmail = "succeeded"
+				}
 			} else if (action?.payload?.payload?.reserva) {
 				state.statusBookGS = "succeeded"
 			} else {
@@ -431,8 +435,6 @@ const bookingsSlice = createSlice({
 			}
 		},
 		[sendBooking.fulfilled]: (state, action) => {
-			console.log("send email", action.payload)
-
 			if (action?.payload?.reserva) {
 				state.statusBEmail = "succeeded"
 			} else {

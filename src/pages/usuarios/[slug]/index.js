@@ -14,6 +14,7 @@ import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import { dateGral, optionsDate } from "src/helpers/utils"
 import { wrapper } from "store"
 import {
+	addClientToGoogleSheet,
 	selectError,
 	selectStatusGSUser,
 	selectStatusUser,
@@ -26,16 +27,20 @@ import {
 import {
 	getRunningOperationPromises,
 	getUserAPIById,
+	useAddUpdateNewUserMutation,
+	useAddUpdateNewUserQuery,
 	useGetUserAPIByIdQuery,
 } from "store/features/usersApi"
 
 const userById = ({ id }) => {
-	const { data: dataUser, isLoading, isFetching } = useGetUserAPIByIdQuery(id)
+	const { data: dataUser, isLoading } = useGetUserAPIByIdQuery(id)
+
+	const [updateUserApi, { error: errorUp, isSuccess: isSuccessUp }] =
+		useAddUpdateNewUserMutation()
 
 	const [loading, setLoading] = useState(false)
 	const [editCard, setEditCard] = useState(false)
 	//const [dataUser, setDatauser] = useState(userByApiUser)
-	console.log(dataUser)
 
 	const router = useRouter()
 	const dispatch = useDispatch()
@@ -58,33 +63,33 @@ const userById = ({ id }) => {
 	// }, [])
 
 	useEffect(() => {
-		if (dataUser !== {}) {
-			dispatch(setUserUpdate(dataUser))
+		if (dataUser.result !== {}) {
+			dispatch(setUserUpdate(dataUser.result))
 
 			//setDatauser(userByApiUser)
 
-			setValue("name", dataUser?.name)
-			setValue("username", dataUser?.username)
+			setValue("name", dataUser?.result?.name)
+			setValue("username", dataUser?.result?.username)
 
-			setValue("tel", dataUser?.tel)
-			setValue("email", dataUser?.email)
-			setValue("region", dataUser?.region || "")
+			setValue("tel", dataUser?.result?.tel)
+			setValue("email", dataUser?.result?.email)
+			setValue("region", dataUser?.result?.region || "")
 
 			setValue(
 				"Cliente",
-				dataUser?.categorySet?.find((cat) => cat === "Cliente")
+				dataUser?.result?.categorySet?.find((cat) => cat === "Cliente")
 			)
 			setValue(
 				"Mariachi",
-				dataUser?.categorySet?.find((cat) => cat === "Mariachi")
+				dataUser?.result?.categorySet?.find((cat) => cat === "Mariachi")
 			)
 			setValue(
 				"Coordinador",
-				dataUser?.categorySet?.find((cat) => cat === "Coordinador")
+				dataUser?.result?.categorySet?.find((cat) => cat === "Coordinador")
 			)
 			setValue(
 				"Admin",
-				dataUser?.categorySet?.find((cat) => cat === "Admin")
+				dataUser?.result?.categorySet?.find((cat) => cat === "Admin")
 			)
 		} //
 	}, [dataUser])
@@ -97,7 +102,7 @@ const userById = ({ id }) => {
 
 		const updateUserData = {
 			...dataForm,
-			_id: dataUser?._id,
+			_id: dataUser?.result?._id,
 			categorySet: [
 				!!dataForm?.Cliente && dataForm?.Cliente,
 				!!dataForm?.Coordinador && dataForm?.Coordinador,
@@ -114,8 +119,26 @@ const userById = ({ id }) => {
 					: dataForm.username,
 		}
 
-		dispatch(setUserUpdate(updateUserData))
-		dispatch(updateUser(updateUserData))
+		//dispatch(setUserUpdate(updateUserData))
+		//dispatch(updateUser(updateUserData))
+		const createMutations = [
+			{
+				patch: {
+					id: updateUserData._id,
+					set: updateUserData,
+				},
+			},
+		]
+
+		Promise.all([updateUserApi(createMutations)])
+			.then(() => {
+				dispatch(
+					addClientToGoogleSheet({
+						...updateUserData,
+					})
+				)
+			})
+			.catch((err) => console.log(err))
 	}
 
 	let toastIdUs
@@ -125,7 +148,7 @@ const userById = ({ id }) => {
 		toast.success("Usuario actualizado correctamente", { id: toastIdUs })
 
 	useEffect(() => {
-		if (status === "failed" || statusGSUser === "failed") {
+		if (status === "failed" || statusGSUser === "failed" || errorUp) {
 			toast.dismiss(toastIdUs)
 
 			notifyError()
@@ -133,7 +156,11 @@ const userById = ({ id }) => {
 			dispatch(setStatusGSUser("idle"))
 			setLoading(false)
 		}
-		if (status === "succeeded" && statusGSUser === "succeeded") {
+		if (
+			//status === "succeeded" &&
+			statusGSUser === "succeeded" &&
+			isSuccessUp
+		) {
 			toast.dismiss(toastIdUs)
 
 			dispatch(setStatusUser("idle"))
@@ -144,7 +171,16 @@ const userById = ({ id }) => {
 
 			setTimeout(() => router.push("/usuarios"), 1000)
 		}
-	}, [status, statusGSUser, error, notifyError, dispatch, router])
+	}, [
+		status,
+		statusGSUser,
+		isSuccessUp,
+		errorUp,
+		error,
+		notifyError,
+		dispatch,
+		router,
+	])
 
 	const userUpdat = {
 		name: watch("name"),
@@ -176,7 +212,7 @@ const userById = ({ id }) => {
 							<div className="m-auto md:m-0">
 								<UserForm
 									methods={methods}
-									data={dataUser}
+									data={dataUser.result}
 									onSubmit={onSubmit}
 									loading={loading}
 								/>

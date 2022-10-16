@@ -13,6 +13,7 @@ import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import {
 	selectAllMariachis,
 	selectMariachisSearch,
+	setMariachis,
 	setNewMariachi,
 	setNewMariachiSearch,
 	setUpdatedMariachi,
@@ -24,12 +25,32 @@ import TotalSum from "src/components/SVG/Icons/TotalSum"
 import { subscriptionMariachi } from "@lib/sanity"
 import { selectAllUsers } from "store/features/users/userSlice"
 import { useRouter } from "next/router"
+import { useGetMariachisQuery } from "store/features/mariachisAPI"
+import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 
 const TableMariachis = () => {
-	const dispatch = useDispatch()
 	const router = useRouter()
-	const mariachisData = useSelector(selectAllMariachis)
-	const usersData = useSelector(selectAllUsers)
+	const dispatch = useDispatch()
+
+	const {
+		data: mariachisData,
+		isLoading,
+		isFetching,
+		isSuccess,
+	} = useGetMariachisQuery(undefined, {
+		refetchOnMountOrArgChange: true,
+		refetchOnFocus: true,
+		refetchOnReconnect: true,
+	})
+
+	useEffect(() => {
+		if (isSuccess) {
+			dispatch(setMariachis(mariachisData.result))
+		}
+	}, [isFetching, isSuccess])
+
+	//const mariachisData = useSelector(selectAllMariachis)
+	//const usersData = useSelector(selectAllUsers)
 
 	const mariachisSearch = useSelector(selectMariachisSearch)
 
@@ -37,49 +58,43 @@ const TableMariachis = () => {
 
 	//const params = { ownerId: session._id }
 
-	const subscriptionMariachiLocal = subscriptionMariachi.subscribe((update) => {
-		const dataset = update.result
-
-		const isAlreadyMariachi = mariachisData.find(
-			(mariachi) => mariachi._id === dataset._id
-		)
-
-		const isAlreadyMariachiSearch = mariachisSearch.find(
-			(mariachi) => mariachi._id === dataset._id
-		)
-
-		const coordinatorUpdated = usersData.find(
-			(user) => user._id === dataset.coordinator._ref
-		)
-
-		const mariachiData = {
-			...dataset,
-			coordinator: coordinatorUpdated,
-		}
-
-		if (mariachiData.coordinator && isAlreadyMariachi) {
-			dispatch(setUpdatedMariachi(mariachiData))
-		} else if (mariachiData.coordinator && !isAlreadyMariachi) {
-			dispatch(setNewMariachi(mariachiData))
-		}
-
-		if (mariachiData.coordinator && isAlreadyMariachiSearch) {
-			dispatch(setUpdatedMariachiSearch(mariachiData))
-		} else if (mariachiData.coordinator && !isAlreadyMariachiSearch) {
-			dispatch(setNewMariachiSearch(mariachiData))
-		}
-	})
+	//const subscriptionMariachiLocal = subscriptionMariachi.subscribe((update) => {
+	// const dataset = update.result
+	// const isAlreadyMariachi = mariachisData.find(
+	// 	(mariachi) => mariachi._id === dataset._id
+	// )
+	// const isAlreadyMariachiSearch = mariachisSearch.find(
+	// 	(mariachi) => mariachi._id === dataset._id
+	// )
+	// const coordinatorUpdated = usersData.find(
+	// 	(user) => user._id === dataset.coordinator._ref
+	// )
+	// const mariachiData = {
+	// 	...dataset,
+	// 	coordinator: coordinatorUpdated,
+	// }
+	// if (mariachiData.coordinator && isAlreadyMariachi) {
+	// 	dispatch(setUpdatedMariachi(mariachiData))
+	// } else if (mariachiData.coordinator && !isAlreadyMariachi) {
+	// 	dispatch(setNewMariachi(mariachiData))
+	// }
+	// if (mariachiData.coordinator && isAlreadyMariachiSearch) {
+	// 	dispatch(setUpdatedMariachiSearch(mariachiData))
+	// } else if (mariachiData.coordinator && !isAlreadyMariachiSearch) {
+	// 	dispatch(setNewMariachiSearch(mariachiData))
+	// }
+	//})
 
 	/*********************************************************************/
 	const regionData = regions.response.estado
 
 	const [mariachisDataSearch, setMariachisDataSearch] = useState(
-		mariachisData || []
+		mariachisData.result || []
 	)
 
-	useEffect(() => {
-		setMariachisDataSearch(mariachisSearch)
-	}, [mariachisData, subscriptionMariachiLocal])
+	// useEffect(() => {
+	// 	setMariachisDataSearch(mariachisSearch)
+	// }, [mariachisData, subscriptionMariachiLocal])
 
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
@@ -129,23 +144,23 @@ const TableMariachis = () => {
 	}
 
 	const handleMariachiUrl = (slug) => {
-		subscriptionMariachiLocal.unsubscribe()
+		//subscriptionMariachiLocal.unsubscribe()
 		router.push(`/mariachis/${slug}`)
 	}
 
 	const handleNewMariachi = () => {
-		subscriptionMariachiLocal.unsubscribe()
+		//subscriptionMariachiLocal.unsubscribe()
 		router.push(`/mariachis/nuevo`)
 	}
 	const handleReservas = (id) => {
-		subscriptionMariachiLocal.unsubscribe()
+		//subscriptionMariachiLocal.unsubscribe()
 		router.push({
 			pathname: "reservas/nuevo",
 			query: { mariachiId: id },
 		})
 	}
 
-	if (!mariachisDataSearch) {
+	if (isLoading) {
 		return <SpinnerLogo />
 	}
 
@@ -157,7 +172,7 @@ const TableMariachis = () => {
 			>
 				<div className={!hideIconShowSearch && "hidden"}>
 					<SearchWithModalMariachis
-						dataOriginal={mariachisData}
+						dataOriginal={mariachisData?.result || []}
 						mariachiDataSearch={mariachisDataSearch}
 						setMariachisDataSearch={setMariachisDataSearch}
 						setHideIconShowSearch={setHideIconShowSearch}
@@ -171,13 +186,16 @@ const TableMariachis = () => {
 						<div className="relative w-full px-4 max-w-full flex justify-between items-center divide-x-2 md:divide-x-0 pr-2">
 							<h3 className="font-semibold text-xs md:text-lg text-slate-700 dark:text-white  flex flex-col justify-center items-center">
 								<span>Mariachis</span>
-								<div className="flex justify-center items-center">
-									<TotalSum className="fill-slate-900 dark:fill-slate-100 w-5 h-5 mt-1" />
-									<span className="text-sm ">
-										{" "}
-										{mariachisDataSearch.length}
-									</span>
-								</div>{" "}
+								{isFetching ? (
+									<SpinnerCircular />
+								) : (
+									<div className="flex justify-center items-center">
+										<TotalSum className="fill-slate-900 dark:fill-slate-100 w-5 h-5 mt-1" />
+										<span className="text-sm ">
+											{mariachisDataSearch.length}
+										</span>
+									</div>
+								)}
 							</h3>
 							<div className="flex flex-row justify-between items-center pl-2 ">
 								<div className="mr-2">

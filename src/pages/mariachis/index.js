@@ -10,12 +10,22 @@ import TableMariachis from "src/components/Tables/TableMariachis"
 import Layout from "../../components/Layout"
 import useFetchUsers from "src/hook/useFetchUsers"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
-import { setStatusUser } from "store/features/users/userSlice"
+import {
+	fetchUsersNew,
+	selectUserAdmin,
+	setStatusUser,
+} from "store/features/users/userSlice"
 import { setStatusBooking } from "store/features/bookings/bookingSlice"
+import {
+	getMariachis,
+	getRunningOperationPromises,
+} from "store/features/mariachisAPI"
+import { useSelector } from "react-redux"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
 const mariachis = ({ session }) => {
-	const userAdmin = useFetchUsers(session)
+	//const userAdmin = useFetchUsers(session)
+	const userAdmin = useSelector(selectUserAdmin)
 
 	if (!userAdmin.exist) {
 		return <SpinnerLogo />
@@ -57,12 +67,19 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			}
 		}
 
-		await store.dispatch(fetchMariachis(true))
+		//await store.dispatch(fetchMariachis(true))
+
+		if (!store.getState().users.users.length) {
+			await store.dispatch(fetchUsersNew(session))
+		}
 
 		await store.dispatch(setStatusUser("idle"))
 		await store.dispatch(setStatus("idle"))
 		await store.dispatch(setStatusBooking("idle"))
 
+		await store.dispatch(getMariachis.initiate())
+
+		await Promise.all(getRunningOperationPromises())
 		// if (!existAdmin.users.admin) {
 		// 	return {
 		// 		redirect: {

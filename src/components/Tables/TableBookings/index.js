@@ -14,6 +14,7 @@ import {
 	timeConverterToCommonPeople,
 } from "src/helpers/utils"
 import {
+	addBookingToGoogleSheet,
 	selectAllBookings,
 	selectBookingsSearch,
 	selectError,
@@ -37,13 +38,31 @@ import toast, { Toaster } from "react-hot-toast"
 import { useRouter } from "next/router"
 import { subscriptionBooking } from "@lib/sanity"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
+import {
+	useAddUpdateNewBookingMutation,
+	useGetBookingsQuery,
+} from "store/features/bookingsApi"
+import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 
 const TableBookings = ({ userAdmin }) => {
 	const dispatch = useDispatch()
 
-	const BookingData = useSelector(selectAllBookings)
-	const mariachiData = useSelector(selectAllMariachis)
-	const usersData = useSelector(selectAllUsers)
+	const {
+		data: BookingData,
+		isLoading,
+		isFetching,
+	} = useGetBookingsQuery(undefined, {
+		refetchOnMountOrArgChange: true,
+		refetchOnFocus: true,
+		refetchOnReconnect: true,
+	})
+
+	const [updateBookingApi, { error: errorUp, isSuccess: isSuccessUp }] =
+		useAddUpdateNewBookingMutation()
+
+	//const BookingData = useSelector(selectAllBookings)
+	//const mariachiData = useSelector(selectAllMariachis)
+	//const usersData = useSelector(selectAllUsers)
 
 	const BookingsSearch = useSelector(selectBookingsSearch)
 
@@ -51,47 +70,47 @@ const TableBookings = ({ userAdmin }) => {
 
 	//const params = { ownerId: session._id }
 
-	const subscriptionBookingLocal = subscriptionBooking.subscribe((update) => {
-		const reservaListen = update.result
+	// const subscriptionBookingLocal = subscriptionBooking.subscribe((update) => {
+	// 	const reservaListen = update.result
 
-		const isBookingAlready = BookingData.find(
-			(booking) => booking._id === reservaListen._id
-		)
+	// 	const isBookingAlready = BookingData.find(
+	// 		(booking) => booking._id === reservaListen._id
+	// 	)
 
-		const isBookingAlreadySearch = BookingsSearch.find(
-			(booking) => booking._id === reservaListen._id
-		)
+	// 	const isBookingAlreadySearch = BookingsSearch.find(
+	// 		(booking) => booking._id === reservaListen._id
+	// 	)
 
-		const clientAdded = usersData.find(
-			(user) => user._id === reservaListen.client._ref
-		)
-		const mariachiUpdated = mariachiData.find(
-			(mar) => mar._id === reservaListen.orderItems[0].mariachi._ref
-		)
-		const items = reservaListen.orderItems[0]
+	// 	const clientAdded = usersData.find(
+	// 		(user) => user._id === reservaListen.client._ref
+	// 	)
+	// 	const mariachiUpdated = mariachiData.find(
+	// 		(mar) => mar._id === reservaListen.orderItems[0].mariachi._ref
+	// 	)
+	// 	const items = reservaListen.orderItems[0]
 
-		const dataReserva = {
-			...reservaListen,
-			client: clientAdded,
-			reserva: reservaListen.reserva,
-			orderItems: {
-				...items,
-				mariachi: mariachiUpdated,
-			},
-		}
+	// 	const dataReserva = {
+	// 		...reservaListen,
+	// 		client: clientAdded,
+	// 		reserva: reservaListen.reserva,
+	// 		orderItems: {
+	// 			...items,
+	// 			mariachi: mariachiUpdated,
+	// 		},
+	// 	}
 
-		if (dataReserva.orderItems.mariachi && isBookingAlready) {
-			dispatch(setUpdateBooking(dataReserva))
-		} else if (dataReserva.orderItems.mariachi && !isBookingAlready) {
-			dispatch(setNewBooking(dataReserva))
-		}
+	// 	if (dataReserva.orderItems.mariachi && isBookingAlready) {
+	// 		dispatch(setUpdateBooking(dataReserva))
+	// 	} else if (dataReserva.orderItems.mariachi && !isBookingAlready) {
+	// 		dispatch(setNewBooking(dataReserva))
+	// 	}
 
-		if (dataReserva.orderItems.mariachi && isBookingAlreadySearch) {
-			dispatch(setUpdateBookingSearch(dataReserva))
-		} else if (dataReserva.orderItems.mariachi && !isBookingAlreadySearch) {
-			dispatch(setNewBookingSearch(dataReserva))
-		}
-	})
+	// 	if (dataReserva.orderItems.mariachi && isBookingAlreadySearch) {
+	// 		dispatch(setUpdateBookingSearch(dataReserva))
+	// 	} else if (dataReserva.orderItems.mariachi && !isBookingAlreadySearch) {
+	// 		dispatch(setNewBookingSearch(dataReserva))
+	// 	}
+	// })
 
 	/*********************************************************************/
 
@@ -105,12 +124,12 @@ const TableBookings = ({ userAdmin }) => {
 	const error = useSelector(selectError)
 
 	const [bookingsDataSearch, setBookingsDataSearch] = useState(
-		BookingData || []
+		BookingData.result || []
 	)
 
-	useEffect(() => {
-		setBookingsDataSearch(BookingsSearch)
-	}, [BookingData, subscriptionBookingLocal])
+	// useEffect(() => {
+	// 	setBookingsDataSearch(BookingsSearch)
+	// }, [BookingData, subscriptionBookingLocal])
 
 	let toastIdUpWhats
 	const notifyError = () => toast.error(error, { id: toastIdUpWhats })
@@ -118,7 +137,7 @@ const TableBookings = ({ userAdmin }) => {
 		toast.success("Reserva actualizada correctamente", { id: toastIdUpWhats })
 
 	useEffect(() => {
-		if (status === "failed" || statusBookGS === "failed") {
+		if (status === "failed" || statusBookGS === "failed" || errorUp) {
 			toast.dismiss(toastIdUpWhats)
 
 			notifyError()
@@ -126,7 +145,11 @@ const TableBookings = ({ userAdmin }) => {
 			dispatch(setStatusBookingGS("idle"))
 		}
 
-		if (status === "succeeded" && statusBookGS === "succeeded") {
+		if (
+			//status === "succeeded" &&
+			statusBookGS === "succeeded" &&
+			isSuccessUp
+		) {
 			dispatch(setStatusBooking("idle"))
 			dispatch(setStatusBookingGS("idle"))
 			toast.dismiss(toastIdUpWhats)
@@ -134,7 +157,7 @@ const TableBookings = ({ userAdmin }) => {
 
 			router.push("/reservas")
 		}
-	}, [status, statusBookGS])
+	}, [status, statusBookGS, isSuccessUp, errorUp])
 
 	const BookingsData = useSelector(selectAllBookings)
 
@@ -203,22 +226,43 @@ const TableBookings = ({ userAdmin }) => {
 			status: ["Enviada"],
 		}
 
-		dispatch(updateBooking({ ...reservaUpdate, sendEmail: false }))
+		//dispatch(updateBooking({ ...reservaUpdate, sendEmail: false }))
+
+		const createMutations = [
+			{
+				patch: {
+					id: reservaUpdate._id,
+					set: reservaUpdate,
+				},
+			},
+		]
+
+		//dispatch(updateMariachi(dataMariachiToSend))
+
+		Promise.all([updateBookingApi(createMutations)])
+			.then(() => {
+				dispatch(
+					addBookingToGoogleSheet({
+						...reservaUpdate,
+						sendEmail: false,
+					})
+				)
+			})
+			.catch((err) => console.log(err))
 	}
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
 	const handleReservaUrl = (id) => {
-		console.log("to", id)
-		subscriptionBookingLocal.unsubscribe()
+		//	subscriptionBookingLocal.unsubscribe()
 		router.push(`/reservas/${id.toString()}/edit`)
 	}
 
 	const handleNewReserva = () => {
-		subscriptionBookingLocal.unsubscribe()
+		//	subscriptionBookingLocal.unsubscribe()
 		router.push(`/reservas/nuevo`)
 	}
 
-	if (!BookingsData) {
+	if (isLoading) {
 		return <SpinnerLogo />
 	}
 
@@ -230,7 +274,7 @@ const TableBookings = ({ userAdmin }) => {
 			>
 				<div className={!hideIconShowSearch && "hidden"}>
 					<SearchWithModalMariachis
-						dataOriginal={BookingData}
+						dataOriginal={BookingData?.result || []}
 						mariachiDataSearch={bookingsDataSearch}
 						setMariachisDataSearch={setBookingsDataSearch}
 						setHideIconShowSearch={setHideIconShowSearch}
@@ -245,10 +289,16 @@ const TableBookings = ({ userAdmin }) => {
 						<div className="relative w-full px-4 max-w-full flex justify-between divide-x-2 md:divide-x-0 pr-2">
 							<h3 className="font-semibold text-xs md:text-lg text-slate-700 dark:text-white  flex flex-col justify-center items-center">
 								<span>Reserva</span>
-								<div className="flex justify-center items-center">
-									<TotalSum className="fill-slate-900 dark:fill-slate-100 w-5 h-5 mt-1" />
-									<span className="text-sm ">{bookingsDataSearch.length}</span>
-								</div>
+								{isFetching ? (
+									<SpinnerCircular />
+								) : (
+									<div className="flex justify-center items-center">
+										<TotalSum className="fill-slate-900 dark:fill-slate-100 w-5 h-5 mt-1" />
+										<span className="text-sm ">
+											{bookingsDataSearch.length}
+										</span>
+									</div>
+								)}
 							</h3>
 
 							<div className="flex flex-row justify-between items-center pl-2 ">

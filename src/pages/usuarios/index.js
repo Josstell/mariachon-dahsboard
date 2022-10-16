@@ -20,21 +20,21 @@ import { getRunningOperationPromises, getUsers } from "store/features/usersApi"
 
 const usuarios = ({ session }) => {
 	const userAdmin = useSelector(selectUserAdmin)
-	const dispatch = useDispatch()
-	const status = useSelector(selectStatusUser)
+	// const dispatch = useDispatch()
+	// const status = useSelector(selectStatusUser)
 
-	useEffect(() => {
-		if (status === "succeeded") {
-			dispatch(setStatusUser("idle"))
-		}
-	}, [status])
+	// useEffect(() => {
+	// 	if (status === "succeeded") {
+	// 		dispatch(setStatusUser("idle"))
+	// 	}
+	// }, [status])
 
-	useEffect(() => {
-		if (!userAdmin.exist) {
-			dispatch(fetchUsersNew(session))
-		}
-		//	router.push("/")
-	}, [userAdmin, dispatch, session])
+	// useEffect(() => {
+	// 	if (!userAdmin.exist) {
+	// 		dispatch(fetchUsersNew(session))
+	// 	}
+	// 	//	router.push("/")
+	// }, [userAdmin, dispatch, session])
 
 	if (!userAdmin.exist) {
 		return <SpinnerLogo />

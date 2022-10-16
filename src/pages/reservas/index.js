@@ -9,13 +9,23 @@ import Layout from "../../components/Layout"
 import TableBookings from "src/components/Tables/TableBookings"
 import useFetchUsers from "src/hook/useFetchUsers"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
-import { setStatusUser } from "store/features/users/userSlice"
-import { setStatus } from "store/features/mariachis/mariachiSlice"
+import {
+	fetchUsersNew,
+	selectUserAdmin,
+	setStatusUser,
+} from "store/features/users/userSlice"
+import { setMariachis, setStatus } from "store/features/mariachis/mariachiSlice"
+import {
+	getBookings,
+	getRunningOperationPromises,
+} from "store/features/bookingsApi"
+import { useSelector } from "react-redux"
+import { getMariachis } from "store/features/mariachisAPI"
 // import HbookingCard from "src/components/Cards/BookingCard/HbookingCard"
 // import BookingCard from "src/components/Cards/BookingCard"
 
-const reservas = ({ session }) => {
-	const userAdmin = useFetchUsers(session)
+const reservas = () => {
+	const userAdmin = useSelector(selectUserAdmin)
 
 	if (!userAdmin.exist) {
 		return <SpinnerLogo />
@@ -60,11 +70,22 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			}
 		}
 
-		await store.dispatch(fetchBookings(true))
+		if (!store.getState().users.users.length) {
+			await store.dispatch(fetchUsersNew(session))
+		}
+
+		if (!store.getState().mariachis.mariachis.length) {
+			const { data } = await store.dispatch(getMariachis.initiate())
+			await store.dispatch(setMariachis(data.result))
+		}
 
 		await store.dispatch(setStatusUser("idle"))
 		await store.dispatch(setStatus("idle"))
 		await store.dispatch(setStatusBooking("idle"))
+
+		await store.dispatch(getBookings.initiate())
+
+		await Promise.all(getRunningOperationPromises())
 		// if (!existAdmin.users.admin) {
 		// 	return {
 		// 		redirect: {
@@ -74,7 +95,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		// 	}
 		// }
 		return {
-			props: { session: session },
+			props: {},
 		}
 	}
 )

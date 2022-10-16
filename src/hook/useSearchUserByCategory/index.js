@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
-import { selectStatusUser } from "store/features/users/userSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { selectStatusUser, setStatusUser } from "store/features/users/userSlice"
 
 const useSearchUserByCategory = (users, categorySelected) => {
 	const [coorSelect, setCoorSelect] = useState([])
 
 	const status = useSelector(selectStatusUser)
+
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 		const categories = []
@@ -30,6 +32,7 @@ const useSearchUserByCategory = (users, categorySelected) => {
 			})
 
 			setCoorSelect(categories)
+			dispatch(setStatusUser("idle"))
 		}
 	}, [status])
 

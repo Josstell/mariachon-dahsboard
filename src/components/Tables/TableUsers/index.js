@@ -9,6 +9,7 @@ import {
 	setNewUserSearch,
 	setUpdatedUser,
 	setUpdatedUserSearch,
+	setUsers,
 	setUsersSearch,
 } from "store/features/users/userSlice"
 
@@ -23,7 +24,7 @@ import { regions } from "src/helpers/dataset"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
 import { subscriptionUser } from "@lib/sanity"
 import { useRouter } from "next/router"
-import { useGetUsersQuery, usersSanityApi } from "store/features/usersApi"
+import { useGetUsersQuery } from "store/features/usersApi"
 import SpinnerLoading from "src/components/Spinners/SpinnerLoading"
 import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
@@ -35,17 +36,24 @@ import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 
 const TableUser = () => {
 	const router = useRouter()
+	const dispatch = useDispatch()
 
 	const {
 		data: usersApi,
 		isLoading,
-		isSuccess,
 		isFetching,
+		isSuccess,
 	} = useGetUsersQuery(undefined, {
 		refetchOnMountOrArgChange: true,
 		refetchOnFocus: true,
 		refetchOnReconnect: true,
 	})
+
+	// useEffect(() => {
+	// 	if (isSuccess) {
+	// 		dispatch(setUsers(usersApi.result))
+	// 	}
+	// }, [isFetching, isSuccess])
 
 	// const {
 	// 	data: usersApi,
@@ -53,34 +61,34 @@ const TableUser = () => {
 	// 	isSuccess,
 	// } = useSelector(usersSanityApi.endpoints.getUsers.select())
 
-	console.log("estados", isLoading, isSuccess, isFetching)
-
-	const dispatch = useDispatch()
+	//const dispatch = useDispatch()
 
 	const usersSearch = useSelector(selectUsersSearch)
 
 	/*********************************************************************/
 
-	const subscriptionUserLocal = subscriptionUser.subscribe((update) => {
-		const userDataset = update.result
-		const isAlreadyUser = usersApi.find((user) => user._id === userDataset._id)
+	// const subscriptionUserLocal = subscriptionUser.subscribe((update) => {
+	// 	const userDataset = update.result
+	// 	const isAlreadyUser = usersApi?.result.find(
+	// 		(user) => user._id === userDataset._id
+	// 	)
 
-		const isAlreadyUserSearch = usersSearch.find(
-			(user) => user._id === userDataset._id
-		)
+	// 	const isAlreadyUserSearch = usersSearch.find(
+	// 		(user) => user._id === userDataset._id
+	// 	)
 
-		if (isAlreadyUser) {
-			dispatch(setUpdatedUser(userDataset))
-		} else if (!isAlreadyUser) {
-			dispatch(setNewUser(userDataset))
-		}
+	// 	// if (isAlreadyUser) {
+	// 	// 	dispatch(setUpdatedUser(userDataset))
+	// 	// } else if (!isAlreadyUser) {
+	// 	// 	dispatch(setNewUser(userDataset))
+	// 	// }
 
-		if (isAlreadyUserSearch) {
-			dispatch(setUpdatedUserSearch(userDataset))
-		} else if (!isAlreadyUser) {
-			dispatch(setNewUserSearch(userDataset))
-		}
-	})
+	// 	// if (isAlreadyUserSearch) {
+	// 	// 	dispatch(setUpdatedUserSearch(userDataset))
+	// 	// } else if (!isAlreadyUser) {
+	// 	// 	dispatch(setNewUserSearch(userDataset))
+	// 	// }
+	// })
 
 	//console.log("isListening", isListening)
 
@@ -109,16 +117,16 @@ const TableUser = () => {
 	}
 
 	const handleUserUrl = (id) => {
-		subscriptionUserLocal.unsubscribe()
+		//	subscriptionUserLocal.unsubscribe()
 		router.push(`/usuarios/${id.toString()}`)
 	}
 
 	const handleNewUser = () => {
-		subscriptionUserLocal.unsubscribe()
+		//	subscriptionUserLocal.unsubscribe()
 		router.push(`/usuarios/nuevo`)
 	}
 	const handleReservas = (id) => {
-		subscriptionUserLocal.unsubscribe()
+		//	subscriptionUserLocal.unsubscribe()
 		router.push({
 			pathname: "reservas/nuevo",
 			query: { client: id },
@@ -137,7 +145,7 @@ const TableUser = () => {
 			>
 				<div className={!hideIconShowSearch && "hidden"}>
 					<SearchWithModalMariachis
-						dataOriginal={usersApi || []}
+						dataOriginal={usersApi?.result || []}
 						mariachiDataSearch={usersDataSearch}
 						setMariachisDataSearch={setUsersDataSearch}
 						setHideIconShowSearch={setHideIconShowSearch}

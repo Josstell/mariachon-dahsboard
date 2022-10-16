@@ -13,6 +13,7 @@ import MariachiForbiden from "src/components/SVG/Icons/MariachiForbiden"
 import BookingTa from "src/components/Tabs/ReservaTabs"
 import { wrapper } from "store"
 import {
+	addBookingToGoogleSheet,
 	selectError,
 	selectStatusBEmail,
 	selectStatusBook,
@@ -20,18 +21,28 @@ import {
 	setStatusBooking,
 	setStatusBookingEmail,
 	setStatusBookingGS,
-	updateBooking,
 } from "store/features/bookings/bookingSlice"
 import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { selectUserAdmin } from "store/features/users/userSlice"
 
 import toast, { Toaster } from "react-hot-toast"
 import { dateGral, optionsDate } from "src/helpers/utils"
+import {
+	getBookingAPIById,
+	getRunningOperationPromises,
+	useAddUpdateNewBookingMutation,
+	useGetBookingAPIByIdQuery,
+} from "store/features/bookingsApi"
 
 const reservaById = ({ id }) => {
-	const data = useSelector((state) =>
-		state.bookings.bookings.find((booking) => booking._id === id)
-	)
+	// const data = useSelector((state) =>
+	// 	state.bookings.bookings.find((booking) => booking._id === id)
+	// )
+
+	const { data, isLoading } = useGetBookingAPIByIdQuery(id)
+
+	const [updateBookingApi, { error: errorUp, isSuccess: isSuccessUp }] =
+		useAddUpdateNewBookingMutation()
 
 	const router = useRouter()
 	const status = useSelector(selectStatusBook)
@@ -44,7 +55,7 @@ const reservaById = ({ id }) => {
 
 	const dataMariachi = useSelector(selectAllMariachis)
 
-	const [reservaData, setreservaData] = useState(data)
+	const [reservaData, setreservaData] = useState(data?.result || {})
 
 	const [mariachiSelected, setMariachiSelected] = useState({})
 
@@ -64,22 +75,24 @@ const reservaById = ({ id }) => {
 
 	const { setValue, watch, getValues } = methods
 
-	useEffect(() => {
-		if (data === undefined) {
-			router.push("/reservas")
-		}
-	}, [])
+	// useEffect(() => {
+	// 	if (data?.result === undefined) {
+	// 		router.push("/reservas")
+	// 	}
+	// }, [])
 
-	if (data === undefined) {
+	if (isLoading) {
 		return <SpinnerLogo />
 	}
 
 	useEffect(() => {
-		setValue("nameClient", data?.host?.name || userbyId?.name)
-		setValue("telClient", data?.host?.tel || userbyId?.tel)
+		setValue("nameClient", data?.result?.host?.name || userbyId?.name)
+		setValue("telClient", data?.result?.host?.tel || userbyId?.tel)
 		setValue(
 			"emailClient",
-			data?.host?.email === undefined ? userbyId?.email : data?.host?.email
+			data?.result?.host?.email === undefined
+				? userbyId?.email
+				: data?.result?.host?.email
 		)
 	}, [userbyId])
 
@@ -118,9 +131,9 @@ const reservaById = ({ id }) => {
 	}, [])
 
 	useEffect(() => {
-		const play = data.playlist[0] === "" ? [] : data.playlist
+		const play = data?.result?.playlist[0] === "" ? [] : data?.result.playlist
 		setArrayPlayList(play)
-		setreservaData(data)
+		setreservaData(data?.result)
 	}, [])
 
 	const dataReservaToCard = {
@@ -159,7 +172,7 @@ const reservaById = ({ id }) => {
 
 		if (dataReservaToCard.orderItems.mariachi._id === undefined) {
 			const marSeleected = dataMariachi.find(
-				(dat) => dat._id === data.orderItems.mariachi._id
+				(dat) => dat._id === data?.result.orderItems.mariachi._id
 			)
 			setMariachiSelected(marSeleected)
 			setValue("members", marSeleected?.members)
@@ -343,7 +356,7 @@ const reservaById = ({ id }) => {
 					priceOptionSelected: dataForm.priceOptionSelected,
 
 					qty: (dataForm.qty || 0) * 1,
-					_key: data.orderItems._key,
+					_key: data?.result?.orderItems._key,
 					_type: "orderItem",
 				},
 			],
@@ -360,10 +373,33 @@ const reservaById = ({ id }) => {
 			},
 			status: statusReservation,
 			userName: dataForm.nameClient,
-			_id: data._id,
+			_id: data?.result._id,
 		}
 
-		dispatch(updateBooking({ ...reservaUpdate, sendEmail: true }))
+		const createMutations = [
+			{
+				patch: {
+					id: reservaUpdate._id,
+					set: reservaUpdate,
+				},
+			},
+		]
+
+		//dispatch(updateMariachi(dataMariachiToSend))
+
+		Promise.all([updateBookingApi(createMutations)])
+			.then((updatePromise) => {
+				console.log("update", updatePromise)
+				dispatch(
+					addBookingToGoogleSheet({
+						...reservaUpdate,
+						sendEmail: false,
+					})
+				)
+			})
+			.catch((err) => console.log(err))
+
+		//dispatch(updateBooking({ ...reservaUpdate, sendEmail: true }))
 	}
 
 	let toastIdRe
@@ -375,7 +411,8 @@ const reservaById = ({ id }) => {
 		if (
 			status === "failed" ||
 			statusBookGS === "failed" ||
-			statusBEmail === "failed"
+			statusBEmail === "failed" ||
+			errorUp
 		) {
 			toast.dismiss(toastIdRe)
 
@@ -387,9 +424,10 @@ const reservaById = ({ id }) => {
 		}
 
 		if (
-			status === "succeeded" &&
+			//status === "succeeded" &&
 			statusBookGS === "succeeded" &&
-			statusBEmail === "succeeded"
+			statusBEmail === "succeeded" &&
+			isSuccessUp
 		) {
 			dispatch(setStatusBooking("idle"))
 			dispatch(setStatusBookingGS("idle"))
@@ -399,7 +437,7 @@ const reservaById = ({ id }) => {
 
 			router.push("/reservas")
 		}
-	}, [router, status, statusBookGS, statusBEmail])
+	}, [router, status, statusBookGS, isSuccessUp, errorUp, statusBEmail])
 
 	if (!userAdmin.exist || router.isFallback) {
 		return <SpinnerLogo />
@@ -433,7 +471,7 @@ const reservaById = ({ id }) => {
 								"w-full h-full m-auto md:w-4/12 md:h-5/6	mb-24 md:mb-10 "
 							}
 						>
-							<BookingCard reserva={reservaData} data={data} />
+							<BookingCard reserva={reservaData} data={data?.result} />
 						</div>
 					</div>
 				</div>
@@ -468,7 +506,7 @@ const reservaById = ({ id }) => {
 // }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-	() => async (ctx) => {
+	(store) => async (ctx) => {
 		// 		const query = groq`*[_type == "booking" && _id == $id][0]{
 		//  _id,
 		// client->{
@@ -529,6 +567,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		// const data = await store
 		// 	.dispatch(selectAllUsers())
 		// 	.filter((est) => est.slug.toString() === params.slug)
+		await store.dispatch(getBookingAPIById.initiate(ctx.params._id))
+
+		await Promise.all(getRunningOperationPromises())
 
 		return {
 			props: {
