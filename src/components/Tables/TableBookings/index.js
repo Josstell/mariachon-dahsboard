@@ -208,7 +208,6 @@ const TableBookings = ({ userAdmin }) => {
 	const [hideIconShowSearch, setHideIconShowSearch] = useState(false)
 
 	const handleReservaUrl = (id) => {
-		console.log("to", id)
 		subscriptionBookingLocal.unsubscribe()
 		router.push(`/reservas/${id.toString()}/edit`)
 	}
