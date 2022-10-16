@@ -109,7 +109,7 @@ export const mariachisSanityApi = createApi({
 		}),
 		addUpdateNewMariachi: builder.mutation({
 			query: (mutations) => ({
-				url: `/mutate/${dataset}?returnIds=true`,
+				url: `/mutate/${dataset}?returnDocuments=true`,
 				method: "POST",
 				body: { mutations },
 			}),
