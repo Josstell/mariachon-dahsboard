@@ -72,7 +72,8 @@ export const createUrlWhatsApp = (reservationData) => {
 	const mariachiCoordinatorPhone = "52" + reservationData?.coordinator?.tel
 	const date = new Date(reservationData?.dateAndTime)
 	const remainder =
-		reservationData?.orderItems?.price - reservationData?.orderItems?.deposit
+		reservationData?.orderItems?.price * reservationData?.orderItems?.qty -
+		reservationData?.orderItems?.deposit
 	const pagado = remainder === 0 ? " *PAGADO*" : "$ " + remainder
 	const sl = "%0A" // new line
 
@@ -121,9 +122,11 @@ export const createUrlWhatsApp = (reservationData) => {
 		sl +
 		"*Servicio:* " +
 		reservationData?.orderItems?.service +
+		"x" +
+		reservationData?.orderItems?.qty +
 		sl +
-		"*Precio:* $" +
-		reservationData?.orderItems?.price +
+		"*Precio total:* $" +
+		reservationData?.orderItems?.price * reservationData?.orderItems?.qty +
 		sl +
 		"*Deposito:* $" +
 		reservationData?.orderItems?.deposit +
