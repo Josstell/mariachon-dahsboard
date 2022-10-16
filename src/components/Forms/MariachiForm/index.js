@@ -169,7 +169,7 @@ export default function MariachiForm({
 
 	const {
 		setError,
-		formState: { errors },
+		//formState: { errors },
 	} = methods
 
 	useEffect(() => {
@@ -179,7 +179,6 @@ export default function MariachiForm({
 			},
 		})
 	}, [setError])
-
 
 	return (
 		<>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 
 import { getSession } from "next-auth/react"
 import MariachiForbiden from "../../components/SVG/Icons/MariachiForbiden"
@@ -17,7 +17,7 @@ import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import { getRunningOperationPromises, getUsers } from "store/features/usersApi"
 //const Layout = dynamic(() => import("../../components/Layout"), { ssr: false })
 
-const usuarios = ({ session }) => {
+const usuarios = () => {
 	const userAdmin = useSelector(selectUserAdmin)
 	// const dispatch = useDispatch()
 	// const status = useSelector(selectStatusUser)

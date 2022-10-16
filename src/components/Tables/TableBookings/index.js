@@ -15,18 +15,11 @@ import {
 } from "src/helpers/utils"
 import {
 	addBookingToGoogleSheet,
-	selectAllBookings,
-	selectBookingsSearch,
 	selectError,
 	selectStatusBook,
 	selectStatusBookGS,
-	setNewBooking,
-	setNewBookingSearch,
 	setStatusBooking,
 	setStatusBookingGS,
-	setUpdateBooking,
-	setUpdateBookingSearch,
-	updateBooking,
 } from "store/features/bookings/bookingSlice"
 import { selectAllUsers } from "store/features/users/userSlice"
 
@@ -36,8 +29,7 @@ import WhatsAppIcon from "src/components/SVG/Icons/WhatsAppIcon"
 import TotalSum from "src/components/SVG/Icons/TotalSum"
 import toast, { Toaster } from "react-hot-toast"
 import { useRouter } from "next/router"
-import { subscriptionBooking } from "@lib/sanity"
-import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
+
 import {
 	useAddUpdateNewBookingMutation,
 	useGetBookingsQuery,
@@ -63,8 +55,6 @@ const TableBookings = ({ userAdmin }) => {
 	//const BookingData = useSelector(selectAllBookings)
 	//const mariachiData = useSelector(selectAllMariachis)
 	//const usersData = useSelector(selectAllUsers)
-
-	const BookingsSearch = useSelector(selectBookingsSearch)
 
 	/*********************************************************************/
 
@@ -159,7 +149,7 @@ const TableBookings = ({ userAdmin }) => {
 		}
 	}, [status, statusBookGS, isSuccessUp, errorUp])
 
-	const BookingsData = useSelector(selectAllBookings)
+	//const BookingsData = useSelector(selectAllBookings)
 
 	const users = useSelector(selectAllUsers)
 

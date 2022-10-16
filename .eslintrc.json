@@ -8,7 +8,8 @@
   "extends": [
     "eslint:recommended",
     "next",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "plugin:react-hooks/recommended"
   ],
   "plugins": [
     "react-hooks"

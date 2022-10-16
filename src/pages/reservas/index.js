@@ -1,13 +1,9 @@
 import { getSession } from "next-auth/react"
 
 import { wrapper } from "store"
-import {
-	fetchBookings,
-	setStatusBooking,
-} from "store/features/bookings/bookingSlice"
+import { setStatusBooking } from "store/features/bookings/bookingSlice"
 import Layout from "../../components/Layout"
 import TableBookings from "src/components/Tables/TableBookings"
-import useFetchUsers from "src/hook/useFetchUsers"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
 import {
 	fetchUsersNew,

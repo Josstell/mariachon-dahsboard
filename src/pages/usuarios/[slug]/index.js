@@ -22,13 +22,11 @@ import {
 	setStatusGSUser,
 	setStatusUser,
 	setUserUpdate,
-	updateUser,
 } from "store/features/users/userSlice"
 import {
 	getRunningOperationPromises,
 	getUserAPIById,
 	useAddUpdateNewUserMutation,
-	useAddUpdateNewUserQuery,
 	useGetUserAPIByIdQuery,
 } from "store/features/usersApi"
 

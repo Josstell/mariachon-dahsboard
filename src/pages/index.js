@@ -12,8 +12,6 @@ import {
 	selectUserAdmin,
 } from "../../store/features/users/userSlice"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchMariachis } from "store/features/mariachis/mariachiSlice"
-import { fetchBookings } from "store/features/bookings/bookingSlice"
 
 export default function Home() {
 	const userAdmin = useSelector(selectUserAdmin)
@@ -60,7 +58,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		}
 
 		if (!store.getState().users.users.length) {
-
 			await store.dispatch(fetchUsersNew(session))
 		}
 		// await store.dispatch(fetchMariachis(true))
