@@ -215,14 +215,8 @@ const mariachiById = ({ slug }) => {
 
 		Promise.all([updateMariachiApi(createMutations)])
 			.then((updatePromise) => {
-				console.log("update", updatePromise)
-				console.log(dataMariachiToSend)
-
 				dispatch(
-					addMariachiToGoogleSheet({
-						...dataMariachiToSend,
-						_id: data?.result?._id,
-					})
+					addMariachiToGoogleSheet(updatePromise[0].data.results[0].document)
 				)
 			})
 			.catch((err) => console.log(err))

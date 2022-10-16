@@ -231,10 +231,7 @@ const addNewMariachi = () => {
 		Promise.all([createMariachi(createMutations)])
 			.then((addPromise) => {
 				dispatch(
-					addMariachiToGoogleSheet({
-						...dataMariachiToCard,
-						_id: addPromise[0].data.transactionId,
-					})
+					addMariachiToGoogleSheet(addPromise[0].data.results[0].document)
 				)
 			})
 			.catch((err) => console.log(err))
