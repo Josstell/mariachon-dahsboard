@@ -18,8 +18,6 @@ import TotalSum from "src/components/SVG/Icons/TotalSum"
 import { useGetMariachisQuery } from "store/features/mariachisAPI"
 import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 import { useRouter } from "next/router"
-import { useGetMariachisQuery } from "store/features/mariachisAPI"
-import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 
 const TableMariachis = () => {
 	const router = useRouter()

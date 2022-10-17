@@ -18,6 +18,8 @@
     "eslint react/prop-types":0,
     "react-hooks/rules-of-hooks":0,
     "eslint no-mixed-spaces-and-tabs":0,
-    "no-mixed-spaces-and-tabs":0
+    "no-mixed-spaces-and-tabs":0,
+    "eslint-disable-next-line":0,
+    "react-hooks/exhaustive-deps":0
   }
 }
