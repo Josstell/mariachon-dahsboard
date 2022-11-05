@@ -24,6 +24,7 @@ import { nanoid } from "@reduxjs/toolkit"
 import AddNewUserComponent from "../UserForm/AddNewUser"
 import { etapesData } from "src/helpers/utils"
 import Separator from "../Smart/Utils"
+import UploadImageVideo from "../Upload"
 
 export default function MariachiForm({
 	methods,
@@ -169,6 +170,7 @@ export default function MariachiForm({
 
 	const {
 		setError,
+
 		//formState: { errors },
 	} = methods
 
@@ -323,8 +325,16 @@ export default function MariachiForm({
 					type="text"
 				/>
 				<Separator hidden={activeFormTab.gral} />
+
 				<div className={`${!activeFormTab.gral && "hidden"}`}>
-					<div
+					<h2 className="text-2xl text-left">Fotos</h2>
+					<UploadImageVideo
+						file="image"
+						methods={methods}
+						arrayImages={arrayImages}
+						setArrayImages={setArrayImages}
+					/>
+					{/* <div
 						className={`flex justify-between items-center   my-6 relative ${
 							!activeFormTab.gral && "hidden"
 						}`}
@@ -337,9 +347,8 @@ export default function MariachiForm({
 								className="font-extrabold w-3 h-3 mx-1"
 							/>
 						</div>
-					</div>
-
-					{arrayImages.length === 0 || showAdd ? (
+					</div> */}
+					{/* {arrayImages.length === 0 || showAdd ? (
 						<div className={`flex justify-between items-center `}>
 							<div className="flex flex-col">
 								<div className=" items-center border-b border-teal-500 py-2">
@@ -369,9 +378,8 @@ export default function MariachiForm({
 								Agregar
 							</button>
 						</div>
-					) : null}
-
-					{arrayImages.length > 0 &&
+					) : null} */}
+					{/* {arrayImages.length > 0 &&
 						arrayImages.map((image) => {
 							return (
 								<div className="my-2" key={image._key || image.key}>
@@ -394,12 +402,17 @@ export default function MariachiForm({
 									</div>
 								</div>
 							)
-						})}
-
+						})} */}
 					<Separator hidden={activeFormTab.gral} />
-
+					<h2 className="text-2xl text-left">Videos</h2>
+					<UploadImageVideo
+						file="video"
+						methods={methods}
+						arrayImages={arrayVideos}
+						setArrayImages={setArrayVideos}
+					/>
 					{/** videos */}
-					<div className={`${!activeFormTab.gral && "hidden"}`}>
+					{/* <div className={`${!activeFormTab.gral && "hidden"}`}>
 						<div
 							className={`flex justify-between items-center   my-6 relative ${
 								!activeFormTab.gral && "hidden"
@@ -413,9 +426,8 @@ export default function MariachiForm({
 									className="font-extrabold w-3 h-3 mx-1"
 								/>
 							</div>
-						</div>
-
-						{arrayVideos.length == 0 || showAddV ? (
+						</div> */}
+					{/* {arrayVideos.length == 0 || showAddV ? (
 							<div className={`flex justify-between items-center  `}>
 								<div className="flex flex-col">
 									<div className=" items-center border-b border-teal-500 py-2">
@@ -463,8 +475,7 @@ export default function MariachiForm({
 										</div>
 									</div>
 								)
-							})}
-					</div>
+							})} */}
 				</div>
 
 				<Button

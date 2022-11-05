@@ -13,7 +13,12 @@ const nextConfig = {
 
 	reactStrictMode: true,
 	images: {
-		domains: ["localhost", "lh3.googleusercontent.com", "drive.google.com"],
+		domains: [
+			"localhost",
+			"res.cloudinary.com",
+			"lh3.googleusercontent.com",
+			"drive.google.com",
+		],
 	},
 
 	// async headers() {

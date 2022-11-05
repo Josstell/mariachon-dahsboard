@@ -9,6 +9,11 @@ export default {
 			title: "link del archivo",
 		},
 		{
+			name: "public_id",
+			type: "string",
+			title: "Cloudinary Id",
+		},
+		{
 			name: "metadata",
 			type: "object",
 			title: "Metadata",
