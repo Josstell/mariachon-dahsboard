@@ -1,5 +1,4 @@
-import Image from "next/image"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { regions } from "src/helpers/dataset"
 import useSearchUserByCategory from "src/hook/useSearchUserByCategory"
@@ -13,14 +12,8 @@ import {
 	RadioButton,
 	MultipleInput,
 } from "../Smart/Inputs"
-import {
-	TrashIcon,
-	PlusIcon,
-	PhotographIcon,
-	VideoCameraIcon,
-} from "@heroicons/react/outline"
+import { TrashIcon } from "@heroicons/react/outline"
 
-import { nanoid } from "@reduxjs/toolkit"
 import AddNewUserComponent from "../UserForm/AddNewUser"
 import { etapesData } from "src/helpers/utils"
 import Separator from "../Smart/Utils"
@@ -51,8 +44,8 @@ export default function MariachiForm({
 
 	//const [showEdit, setShowEdit] = useState(false)
 	//const [keyImage, setKeyImage] = useState("")
-	const [showAdd, setShowAdd] = useState(false)
-	const [showAddV, setShowAddV] = useState(false)
+	//const [showAdd, setShowAdd] = useState(false)
+	//const [showAddV, setShowAddV] = useState(false)
 
 	// const { setValue } = methods
 
@@ -80,11 +73,11 @@ export default function MariachiForm({
 	const [addUser, setAddUser] = useState(true)
 	const [role, setRole] = useState("Coordinador")
 
-	const imageRef = useRef("")
-	const imageAlt = useRef("")
+	// const imageRef = useRef("")
+	// const imageAlt = useRef("")
 
-	const videoRef = useRef("")
-	const videoAlt = useRef("")
+	// const videoRef = useRef("")
+	// const videoAlt = useRef("")
 
 	//Servicios
 
@@ -95,81 +88,81 @@ export default function MariachiForm({
 	//https://drive.google.com/file/d/1ycckhNleCKvSI3qsng2ikhEDKB_2174Y/view?usp=sharing
 	//https://drive.google.com/uc?export=view&id=1ycckhNleCKvSI3qsng2ikhEDKB_2174Y
 
-	const handleArrayImage = () => {
-		const urlSharedFromDrive = imageRef.current.value
-		const altDes = imageAlt.current.value
-		const urlDrive = "https://drive.google.com/uc?export=view&id="
-		const getId = urlSharedFromDrive.split("/", 6)[5]
+	// const handleArrayImage = () => {
+	// 	const urlSharedFromDrive = imageRef.current.value
+	// 	const altDes = imageAlt.current.value
+	// 	const urlDrive = "https://drive.google.com/uc?export=view&id="
+	// 	const getId = urlSharedFromDrive.split("/", 6)[5]
 
-		if (!(imageRef.current.value === "")) {
-			setArrayImages((oldArray) => [
-				...oldArray,
-				{
-					_key: nanoid(),
+	// 	if (!(imageRef.current.value === "")) {
+	// 		setArrayImages((oldArray) => [
+	// 			...oldArray,
+	// 			{
+	// 				_key: nanoid(),
 
-					url: urlDrive + getId,
-					metadata: { alt: altDes },
-				},
-			])
+	// 				url: urlDrive + getId,
+	// 				metadata: { alt: altDes },
+	// 			},
+	// 		])
 
-			imageRef.current.value = ""
-			imageAlt.current.value = ""
+	// 		imageRef.current.value = ""
+	// 		imageAlt.current.value = ""
 
-			setShowAdd(false)
-		}
-	}
+	// 		setShowAdd(false)
+	// 	}
+	// }
 
-	const handleArrayVideo = () => {
-		const urlSharedFromDrive = videoRef.current.value
-		const altDes = videoAlt.current.value
-		const urlDrive = "https://drive.google.com/file/d/"
-		const getId = urlSharedFromDrive.split("/", 6)[5]
+	// const handleArrayVideo = () => {
+	// 	const urlSharedFromDrive = videoRef.current.value
+	// 	const altDes = videoAlt.current.value
+	// 	const urlDrive = "https://drive.google.com/file/d/"
+	// 	const getId = urlSharedFromDrive.split("/", 6)[5]
 
-		if (!(videoRef.current.value === "")) {
-			setArrayVideos((oldArray) => [
-				...oldArray,
-				{
-					_key: nanoid(),
+	// 	if (!(videoRef.current.value === "")) {
+	// 		setArrayVideos((oldArray) => [
+	// 			...oldArray,
+	// 			{
+	// 				_key: nanoid(),
 
-					url: urlDrive + getId + "/preview",
-					metadata: { alt: altDes },
-				},
-			])
+	// 				url: urlDrive + getId + "/preview",
+	// 				metadata: { alt: altDes },
+	// 			},
+	// 		])
 
-			videoRef.current.value = ""
-			videoAlt.current.value = ""
+	// 		videoRef.current.value = ""
+	// 		videoAlt.current.value = ""
 
-			setShowAddV(false)
-		}
-	}
+	// 		setShowAddV(false)
+	// 	}
+	// }
 
-	const handleDeletePhoto = (image) => {
-		const key = image?._key ? image?._key : image.key
+	// const handleDeletePhoto = (image) => {
+	// 	const key = image?._key ? image?._key : image.key
 
-		if (image?._key) {
-			setArrayImages(arrayImages.filter((img) => img._key !== key))
-		} else {
-			setArrayImages(arrayImages.filter((img) => img.key !== key))
-		}
-	}
+	// 	if (image?._key) {
+	// 		setArrayImages(arrayImages.filter((img) => img._key !== key))
+	// 	} else {
+	// 		setArrayImages(arrayImages.filter((img) => img.key !== key))
+	// 	}
+	// }
 
-	const handleDeleteVideo = (video) => {
-		const key = video?._key ? video?._key : video.key
+	// const handleDeleteVideo = (video) => {
+	// 	const key = video?._key ? video?._key : video.key
 
-		if (video?._key) {
-			setArrayVideos(arrayVideos.filter((vid) => vid._key !== key))
-		} else {
-			setArrayVideos(arrayVideos.filter((vid) => vid.key !== key))
-		}
-	}
+	// 	if (video?._key) {
+	// 		setArrayVideos(arrayVideos.filter((vid) => vid._key !== key))
+	// 	} else {
+	// 		setArrayVideos(arrayVideos.filter((vid) => vid.key !== key))
+	// 	}
+	// }
 
-	const handleShowAdd = () => {
-		setShowAdd(!showAdd)
-	}
+	// const handleShowAdd = () => {
+	// 	setShowAdd(!showAdd)
+	// }
 
-	const handleShowAddV = () => {
-		setShowAddV(!showAddV)
-	}
+	// const handleShowAddV = () => {
+	// 	setShowAddV(!showAddV)
+	// }
 
 	const {
 		setError,

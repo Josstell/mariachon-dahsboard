@@ -1,14 +1,8 @@
-import { useRef, useCallback } from "react"
+import { useCallback } from "react"
 import Image from "next/image"
 import { useDropzone } from "react-dropzone"
 import toast, { Toaster } from "react-hot-toast"
-import {
-	PhotographIcon,
-	PlusIcon,
-	TrashIcon,
-	PencilIcon,
-} from "@heroicons/react/solid"
-import { nanoid } from "@reduxjs/toolkit"
+import { TrashIcon, PencilIcon } from "@heroicons/react/solid"
 
 const url = process.env.NEXT_PUBLIC_SERVER_OWN
 
