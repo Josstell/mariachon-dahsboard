@@ -110,7 +110,7 @@ const UploadLogo = ({ file, methods, logo, setLogo }) => {
 				<div className="relative w-64 h-40 ">
 					<Image
 						className="rounded-sm"
-						src="/images/icons/logoMariachon.png"
+						src="https://res.cloudinary.com/djh8swesy/image/upload/v1667933183/Mariachon/Logo/logomariachon_ep2cdc.png"
 						layout="fill"
 						objectFit="contain"
 						alt=""
