@@ -39,6 +39,7 @@ const addNewMariachi = () => {
 
 	const [arrayImages, setArrayImages] = useState([])
 	const [arrayVideos, setArrayVideos] = useState([])
+	const [logo, setLogo] = useState([])
 	const [crewElements, setCrewElements] = useState([])
 	const [loading, setLoading] = useState(false)
 
@@ -219,6 +220,7 @@ const addNewMariachi = () => {
 			crew: dataElements,
 			images: arrayImages,
 			videos: arrayVideos,
+			logo: logo.length > 0 ? logo[0] : null,
 		}
 
 		const createMutations = [
@@ -234,6 +236,11 @@ const addNewMariachi = () => {
 				)
 			})
 			.catch((err) => console.log(err))
+			.finally(() => {
+				setLogo([])
+				setArrayImages([])
+				setArrayVideos([])
+			})
 	}
 
 	let toastId
@@ -291,6 +298,8 @@ const addNewMariachi = () => {
 									setArrayImages={setArrayImages}
 									arrayVideos={arrayVideos}
 									setArrayVideos={setArrayVideos}
+									logo={logo}
+									setLogo={setLogo}
 									crewElements={crewElements}
 									setCrewElements={setCrewElements}
 									loading={loading}

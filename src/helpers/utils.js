@@ -247,6 +247,7 @@ export const transformDataMariachiToUpdate = (dataMariachi) => {
 		description: dataMariachi?.description,
 		coordinator: dataMariachi?.coordinator,
 		members: parseInt(dataMariachi?.members) || 0,
+		logo: dataMariachi?.logo,
 		images: dataMariachi?.images || [],
 		videos: dataMariachi?.videos || [],
 		service: dataMariachi?.service,

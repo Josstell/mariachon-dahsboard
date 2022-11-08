@@ -333,13 +333,13 @@ const TableMariachis = () => {
 											>
 												<a>
 													{mariachi?.logo ? (
-														<div className="w-8 h-8 flex flex-col  relative cursor-pointer">
+														<div className="w-10 h-10 flex flex-col  relative cursor-pointer">
 															<Image
 																className="rounded-full"
-																src={mariachi.logo}
+																src={mariachi.logo.url}
 																layout="fill"
 																objectFit="cover"
-																alt=""
+																alt={mariachi.logo.metadata.alt}
 															/>
 														</div>
 													) : (

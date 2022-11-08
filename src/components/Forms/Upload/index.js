@@ -24,7 +24,6 @@ const UploadImageVideo = ({ file, methods, arrayImages, setArrayImages }) => {
 			let formData = new FormData()
 
 			formData.append(`${file}`, acceptedFile)
-
 			//		formData.append("video", acceptedFile)çç
 			const folderMariachi = getValues("name")
 
@@ -72,17 +71,6 @@ const UploadImageVideo = ({ file, methods, arrayImages, setArrayImages }) => {
 			}
 		})
 	}, [])
-
-	// const saveFile = (file,) => {
-	// 	return new Promise((resolve, reject) => {
-	// 		fetch(url + file, {
-	// 			method: "post",
-	// 			body: formData,
-	// 		})
-	// 			.then((res) => resolve(res.json()))
-	// 			.catch((err) => reject(err))
-	// 	})
-	// }
 
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({
 		onDrop,
@@ -148,9 +136,12 @@ const UploadImageVideo = ({ file, methods, arrayImages, setArrayImages }) => {
 										/>
 									</div>
 								) : (
-									<video width="160" height="120" controls>
-										<source src={image.secure_url} type="video/mp4" />
-									</video>
+									<div>
+										<video width="160" height="120" controls>
+											<source src={image.secure_url} type="video/mp4" />
+										</video>
+										<p>{image.metadata.alt}</p>
+									</div>
 								)}
 								<div className="inline-flex	">
 									<TrashIcon

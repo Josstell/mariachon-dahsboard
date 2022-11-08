@@ -40,6 +40,8 @@ const mariachiById = ({ slug }) => {
 
 	const { data, isLoading } = useGetMariachiAPIByIdQuery(slug)
 
+	console.log("mariachi to edit: ", data)
+
 	const [updateMariachiApi, { error: errorUp, isSuccess: isSuccessUp }] =
 		useAddUpdateNewMariachiMutation()
 
@@ -53,6 +55,10 @@ const mariachiById = ({ slug }) => {
 
 	const [arrayImages, setArrayImages] = useState(data?.result?.images || [])
 	const [arrayVideos, setArrayVideos] = useState(data?.result?.videos || [])
+	const [logo, setLogo] = useState(
+		data?.result?.logo === null ? [] : [data?.result?.logo]
+	)
+
 	const [crewElements, setCrewElements] = useState(
 		data?.result?.crew?.filter((_, index) => index > 0) || []
 	)
@@ -199,6 +205,7 @@ const mariachiById = ({ slug }) => {
 				},
 			},
 			crew: dataElements,
+			logo: logo.length > 0 ? logo[0] : null,
 			stage: [dataForm?.stage],
 		}
 
@@ -220,6 +227,11 @@ const mariachiById = ({ slug }) => {
 				)
 			})
 			.catch((err) => console.log(err))
+			.finally(() => {
+				setLogo([])
+				setArrayImages([])
+				setArrayVideos([])
+			})
 	}
 
 	let toastId
@@ -283,6 +295,8 @@ const mariachiById = ({ slug }) => {
 									setArrayImages={setArrayImages}
 									arrayVideos={arrayVideos}
 									setArrayVideos={setArrayVideos}
+									logo={logo}
+									setLogo={setLogo}
 									crewElements={crewElements}
 									setCrewElements={setCrewElements}
 									loading={loading}

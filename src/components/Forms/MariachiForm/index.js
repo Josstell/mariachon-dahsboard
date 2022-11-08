@@ -25,6 +25,7 @@ import AddNewUserComponent from "../UserForm/AddNewUser"
 import { etapesData } from "src/helpers/utils"
 import Separator from "../Smart/Utils"
 import UploadImageVideo from "../Upload"
+import UploadLogo from "../Upload/UploadLogo"
 
 export default function MariachiForm({
 	methods,
@@ -34,6 +35,8 @@ export default function MariachiForm({
 	setArrayImages,
 	arrayVideos,
 	setArrayVideos,
+	logo,
+	setLogo,
 	isSaving,
 	crewElements,
 	setCrewElements,
@@ -324,6 +327,18 @@ export default function MariachiForm({
 					keyNames={["hora", "serenata", "contrato"]}
 					type="text"
 				/>
+				<Separator hidden={activeFormTab.gral} />
+
+				<div className={`${!activeFormTab.gral && "hidden"}`}>
+					<h2 className="text-2xl text-left">Logo</h2>
+					<UploadLogo
+						file="image"
+						methods={methods}
+						logo={logo}
+						setLogo={setLogo}
+					/>
+				</div>
+
 				<Separator hidden={activeFormTab.gral} />
 
 				<div className={`${!activeFormTab.gral && "hidden"}`}>
