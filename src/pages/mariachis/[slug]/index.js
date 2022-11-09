@@ -43,8 +43,6 @@ const mariachiById = ({ slug }) => {
 		refetchOnReconnect: true,
 	})
 
-	console.log("mariachi to edit: ", data, data?.result?.logo)
-
 	const [updateMariachiApi, { error: errorUp, isSuccess: isSuccessUp }] =
 		useAddUpdateNewMariachiMutation()
 
