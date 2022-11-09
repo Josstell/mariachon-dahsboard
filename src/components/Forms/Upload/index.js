@@ -127,22 +127,20 @@ const UploadImageVideo = ({ file, methods, arrayImages, setArrayImages }) => {
 						<div className="my-5 mt-5" key={image._key}>
 							<div className="flex justify-between items-center">
 								{file === "image" ? (
-									<div className="w-10 h-10 border-2 border-white rounded-full relative flex">
-										<Image
-											className="rounded-full "
-											src={image.url}
-											alt={image.metadata.alt}
-											layout="fill"
-											objectFit="cover"
-										/>
+									<div className="flex justify-between items-center">
+										<div className="w-10 h-10 border-2 border-white rounded-full relative flex">
+											<Image
+												className="rounded-full "
+												src={image.url}
+												alt={image.metadata.alt}
+												layout="fill"
+												objectFit="cover"
+											/>
+										</div>
+										<p className="px-2">{image.metadata.alt}</p>
 									</div>
 								) : (
-									<div>
-										<video width="160" height="120" controls>
-											<source src={image.secure_url} type="video/mp4" />
-										</video>
-										<p>{image.metadata.alt}</p>
-									</div>
+									<video id={image.public_id} controls muted></video>
 								)}
 								<div className="inline-flex	">
 									<TrashIcon
