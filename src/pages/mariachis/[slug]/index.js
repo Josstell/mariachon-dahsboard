@@ -38,9 +38,12 @@ const mariachiById = ({ slug }) => {
 	// 	state.mariachis.mariachis.find((mar) => mar.slug.current === slug)
 	// )
 
-	const { data, isLoading } = useGetMariachiAPIByIdQuery(slug)
+	const { data, isLoading } = useGetMariachiAPIByIdQuery(slug, {
+		refetchOnMountOrArgChange: true,
+		refetchOnReconnect: true,
+	})
 
-	console.log("mariachi to edit: ", data)
+	console.log("mariachi to edit: ", data, data?.result?.logo)
 
 	const [updateMariachiApi, { error: errorUp, isSuccess: isSuccessUp }] =
 		useAddUpdateNewMariachiMutation()
@@ -65,6 +68,7 @@ const mariachiById = ({ slug }) => {
 	const [loading, setLoading] = useState(false)
 
 	//Activar Tab
+
 	const activeFormTab = useSelector(
 		(state) => state.mariachis.mariachiTabActive
 	)
@@ -124,6 +128,13 @@ const mariachiById = ({ slug }) => {
 		setValue("coordinator", data?.result?.coordinator._id)
 		setValue("elements", "")
 		setValue("stage", data?.result?.stage[0] || "PROSPECTO")
+
+		setArrayImages(data?.result?.images || [])
+		setArrayVideos(data?.result?.videos || [])
+		setCrewElements(data?.result?.crew?.filter((_, index) => index > 0) || [])
+		setLogo(data?.result?.logo === null ? [] : [data?.result?.logo])
+
+		console.log("useEffect", data?.result?.logo)
 
 		//
 	}, [data])
