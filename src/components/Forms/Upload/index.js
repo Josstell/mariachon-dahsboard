@@ -43,9 +43,10 @@ const UploadImageVideo = ({ file, methods, arrayImages, setArrayImages }) => {
 				if (response) {
 					const data = await response.json()
 
-					console.log("response: ", data)
-
-					const des = descriptionRef.current.value
+					const des =
+						descriptionRef?.current?.value !== ""
+							? descriptionRef?.current?.value
+							: `${arrayImages.length + 1}-${folderMariachi}/${file}`
 
 					//setUploadedFiles((old) => [...old, { ...data, description: des }])
 
