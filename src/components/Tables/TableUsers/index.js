@@ -15,6 +15,7 @@ import { useRouter } from "next/router"
 import { useGetUsersQuery } from "store/features/usersApi"
 import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 import SpinnerLogo from "src/components/Spinners/SpinnerLogo"
+import { phoneFormat } from "src/helpers/utils"
 
 // const query = groq`
 // *[_type == "user" && !(_id in path('drafts.**'))  ] | order(_createdAt desc)
@@ -33,8 +34,6 @@ const TableUser = () => {
 		refetchOnFocus: true,
 		refetchOnReconnect: true,
 	})
-
-	console.log(usersApi, isLoading)
 
 	// useEffect(() => {
 	// 	if (isSuccess) {
@@ -306,7 +305,7 @@ const TableUser = () => {
 										{user.email}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{user?.tel ? user.tel : "no disponible"}
+										{user?.tel ? phoneFormat(user.tel) : "no disponible"}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{user?.categorySet &&

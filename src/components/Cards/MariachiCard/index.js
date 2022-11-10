@@ -10,6 +10,7 @@ import PricesIcon from "src/components/SVG/Icons/PricesIcon"
 import { selectAllUsers } from "store/features/users/userSlice"
 
 import { VideoCameraIcon, PhotographIcon } from "@heroicons/react/outline"
+import { formatoMoneda } from "src/helpers/utils"
 
 const MariachiCard = ({ mariachiUp, arrayImages, arrayVideos }) => {
 	const [coordinator, setCoordinator] = useState({})
@@ -60,13 +61,16 @@ const MariachiCard = ({ mariachiUp, arrayImages, arrayVideos }) => {
 						<PricesIcon className="fill-slate-900 dark:fill-slate-100 w-7 h-7" />{" "}
 						<div className="mx-4">
 							<h5 className="text-xs font-mono text-slate-900 dark:text-slate-100 ">
-								<span>Serenata:</span> ${mariachiUp?.service?.serenata?.regular}
+								<span>Serenata:</span>
+								{formatoMoneda(mariachiUp?.service?.serenata?.regular || 0)}
 							</h5>
 							<h5 className="text-xs font-mono text-slate-900 dark:text-slate-100">
-								<span>Hora:</span> ${mariachiUp?.service?.hora?.regular}
+								<span>Hora:</span>
+								{formatoMoneda(mariachiUp?.service?.hora?.regular || 0)}
 							</h5>
 							<h5 className="text-xs font-mono text-slate-900 dark:text-slate-100">
-								<span>Contrato:</span> ${mariachiUp?.service?.contrato?.regular}
+								<span>Contrato:</span>
+								{formatoMoneda(mariachiUp?.service?.contrato?.regular || 0)}
 							</h5>
 						</div>
 						<div>

@@ -18,7 +18,7 @@ import TotalSum from "src/components/SVG/Icons/TotalSum"
 import { useGetMariachisQuery } from "store/features/mariachisAPI"
 import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 import { useRouter } from "next/router"
-import { formatoMoneda } from "src/helpers/utils"
+import { formatoMoneda, phoneFormat } from "src/helpers/utils"
 
 const TableMariachis = () => {
 	const router = useRouter()
@@ -360,7 +360,9 @@ const TableMariachis = () => {
 										{mariachi?.coordinator?.name}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-										{mariachi?.tel ? mariachi.tel : "no disponible"}{" "}
+										{mariachi?.tel
+											? phoneFormat(mariachi?.tel)
+											: "no disponible"}{" "}
 									</td>
 									<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 										{mariachi.region}

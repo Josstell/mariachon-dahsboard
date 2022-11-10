@@ -2,6 +2,7 @@
 import Image from "next/image"
 import React, { useEffect, useState } from "react"
 import GetLogoWithNameV from "src/components/GetLogoWithName/GetLogoWithNameV"
+import { phoneFormat } from "src/helpers/utils"
 
 const UserCard = ({ userUpdat }) => {
 	const [userUpdate, setUserUpdate] = useState(userUpdat)
@@ -64,7 +65,7 @@ const UserCard = ({ userUpdat }) => {
 					{userUpdate?.email || "no disponible"}
 				</h3>
 				<h3 className="text-xs font-light ">
-					{userUpdate?.tel || "no diponible"}
+					{phoneFormat(userUpdate?.tel) || "no diponible"}
 				</h3>
 			</div>
 		</div>

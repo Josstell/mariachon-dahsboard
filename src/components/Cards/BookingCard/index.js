@@ -7,7 +7,7 @@ import ClientIcon from "src/components/SVG/Icons/ClientIcon"
 import LogoMariachon from "src/components/SVG/Icons/LogoMariachon"
 import MessageIcon from "src/components/SVG/Icons/MessageIcon"
 import PlaylistIcon from "src/components/SVG/Icons/PlaylistIcon"
-import { formatoMoneda } from "src/helpers/utils"
+import { formatoMoneda, phoneFormat } from "src/helpers/utils"
 
 export default function BookingCard({ reserva, data }) {
 	const options = {
@@ -101,8 +101,8 @@ export default function BookingCard({ reserva, data }) {
 						</h4>
 						<h5 className="text-sm text-slate-900/50 dark:text-slate-100/50 ">
 							{reserva?.client?.tel === undefined
-								? data?.client?.tel
-								: reserva?.client?.tel}
+								? phoneFormat(data?.client?.tel)
+								: phoneFormat(reserva?.client?.tel)}
 							,
 							{reserva?.client?.email === undefined
 								? data?.client?.email
