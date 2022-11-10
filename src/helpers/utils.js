@@ -286,3 +286,18 @@ export const transformDataMariachiToAdd = (dataMariachi) => {
 		},
 	}
 }
+
+export const formatoMoneda = (valor) => {
+	return valor.toLocaleString("en-US", {
+		style: "currency",
+		currency: "USD",
+		minimumFractionDigit: 2,
+	})
+}
+
+export const formatoPorcentaje = (valor) => {
+	return valor.toLocaleString("en-US", {
+		style: "percent",
+		minimumFractionDigit: 2,
+	})
+}

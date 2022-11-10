@@ -10,6 +10,7 @@ import LupaSearchIcon from "src/components/SVG/Icons/LupaSearchIcon"
 import {
 	createUrlWhatsApp,
 	dateGral,
+	formatoMoneda,
 	optionsDate,
 	timeConverterToCommonPeople,
 } from "src/helpers/utils"
@@ -493,13 +494,15 @@ const TableBookings = ({ userAdmin }) => {
 											{booking?.orderItems?.qty}
 										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-											{booking?.orderItems?.price * booking?.orderItems?.qty}
+											{formatoMoneda(
+												booking?.orderItems?.price * booking?.orderItems?.qty
+											)}
 										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-											{booking?.orderItems?.deposit}
+											{formatoMoneda(booking?.orderItems?.deposit)}
 										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-											{booking?.orderItems?.fee}
+											{formatoMoneda(booking?.orderItems?.fee)}
 										</td>
 										<td
 											className={`border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 `}

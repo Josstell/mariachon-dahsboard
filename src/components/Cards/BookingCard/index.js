@@ -7,6 +7,7 @@ import ClientIcon from "src/components/SVG/Icons/ClientIcon"
 import LogoMariachon from "src/components/SVG/Icons/LogoMariachon"
 import MessageIcon from "src/components/SVG/Icons/MessageIcon"
 import PlaylistIcon from "src/components/SVG/Icons/PlaylistIcon"
+import { formatoMoneda } from "src/helpers/utils"
 
 export default function BookingCard({ reserva, data }) {
 	const options = {
@@ -191,10 +192,9 @@ export default function BookingCard({ reserva, data }) {
 							<p>Precio: </p>
 						</div>
 						<h5>
-							$
 							{reserva?.orderItems?.price === undefined
-								? data?.orderItems?.price
-								: reserva?.orderItems?.price}
+								? formatoMoneda(data?.orderItems?.price * 1)
+								: formatoMoneda(reserva?.orderItems?.price * 1)}
 						</h5>
 					</div>
 
@@ -203,10 +203,9 @@ export default function BookingCard({ reserva, data }) {
 							<p>Deposito: </p>
 						</div>
 						<p>
-							$
 							{reserva?.orderItems?.deposit === undefined
-								? data?.orderItems?.deposit
-								: reserva?.orderItems?.deposit}
+								? formatoMoneda(data?.orderItems?.deposit * 1)
+								: formatoMoneda(reserva?.orderItems?.deposit * 1)}
 						</p>
 					</div>
 					<div className="flex justify-between  items-center m-2 px-2">
@@ -214,12 +213,16 @@ export default function BookingCard({ reserva, data }) {
 							<p>Resta: </p>
 						</div>
 						<p>
-							$
 							{reserva?.orderItems?.price === undefined
-								? (data?.orderItems?.price - data?.orderItems?.deposit) *
-								  data?.orderItems?.qty
-								: (reserva?.orderItems?.price - reserva?.orderItems?.deposit) *
-								  reserva?.orderItems?.qty}
+								? formatoMoneda(
+										(data?.orderItems?.price - data?.orderItems?.deposit) *
+											data?.orderItems?.qty
+								  )
+								: formatoMoneda(
+										(reserva?.orderItems?.price -
+											reserva?.orderItems?.deposit) *
+											reserva?.orderItems?.qty
+								  )}
 						</p>
 					</div>
 				</div>

@@ -1,6 +1,6 @@
 import sgMail from "@sendgrid/mail"
 import handlerCors from "src/helpers/api/allowCors"
-import { timeConverterToCommonPeople } from "src/helpers/utils"
+import { formatoMoneda, timeConverterToCommonPeople } from "src/helpers/utils"
 
 sgMail.setApiKey(process.env.API_KEY_SENDING_GRID)
 
@@ -39,13 +39,16 @@ export default handlerCors().post((req, res) => {
 		elementos: req.body?.orderItems?.mariachi?.members || "",
 		servicio: req.body?.orderItems?.service.toUpperCase() || "",
 		qty: req.body?.orderItems?.qty * 1 || 0,
-		precio: req.body?.orderItems?.price * 1 || 0,
-		deposito: req.body?.orderItems?.deposit * 1 || 0,
-		comision: req.body?.orderItems?.fee * 1 || 0,
-		resta:
+		precio: formatoMoneda(req.body?.orderItems?.price * 1 || 0),
+		deposito: formatoMoneda(req.body?.orderItems?.deposit * 1 || 0),
+		comision: formatoMoneda(req.body?.orderItems?.fee * 1 || 0),
+		resta: formatoMoneda(
 			req.body?.orderItems?.price * req.body?.orderItems?.qty -
-				req.body?.orderItems?.deposit || 0,
-		subtotal: req.body?.orderItems?.price * req.body?.orderItems?.qty || 0,
+				req.body?.orderItems?.deposit || 0
+		),
+		subtotal: formatoMoneda(
+			req.body?.orderItems?.price * req.body?.orderItems?.qty || 0
+		),
 		categoria: req.body?.orderItems?.categorySet.toUpperCase() || "Normal",
 		mensaje: req.body?.message || "",
 		status: req.body?.status[0] || "Pendiente",

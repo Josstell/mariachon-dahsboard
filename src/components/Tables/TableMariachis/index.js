@@ -18,6 +18,7 @@ import TotalSum from "src/components/SVG/Icons/TotalSum"
 import { useGetMariachisQuery } from "store/features/mariachisAPI"
 import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
 import { useRouter } from "next/router"
+import { formatoMoneda } from "src/helpers/utils"
 
 const TableMariachis = () => {
 	const router = useRouter()
@@ -369,7 +370,8 @@ const TableMariachis = () => {
 											? getServices(mariachi.service.serenata).map((ser) => (
 													<div className="text-[8px] uppercase" key={ser}>
 														{ser}
-														{` ->`} ${mariachi.service.serenata[ser]}
+														{` ->`}
+														{formatoMoneda(mariachi.service.serenata[ser])}
 													</div>
 											  ))
 											: null}
@@ -379,7 +381,7 @@ const TableMariachis = () => {
 											? getServices(mariachi.service.hora).map((ser) => (
 													<div className="text-[8px] uppercase" key={ser}>
 														{ser}
-														{` ->`} ${mariachi.service.hora[ser]}
+														{` ->`} {formatoMoneda(mariachi.service.hora[ser])}
 													</div>
 											  ))
 											: null}
@@ -389,7 +391,8 @@ const TableMariachis = () => {
 											? getServices(mariachi.service.contrato).map((ser) => (
 													<div className="text-[8px] uppercase" key={ser}>
 														{ser}
-														{` ->`} ${mariachi.service.contrato[ser]}
+														{` ->`}
+														{formatoMoneda(mariachi.service.contrato[ser])}
 													</div>
 											  ))
 											: null}
