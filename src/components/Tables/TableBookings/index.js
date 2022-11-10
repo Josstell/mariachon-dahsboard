@@ -468,7 +468,11 @@ const TableBookings = ({ userAdmin }) => {
 											{booking?.shippingAddress?.region}
 										</td>
 										<td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-											{booking?.orderItems?.mariachi?.logo ? (
+											{booking?.orderItems?.mariachi?.name ? (
+												<div className="uppercase">
+													{booking?.orderItems?.mariachi?.name}{" "}
+												</div>
+											) : booking?.orderItems?.mariachi?.logo ? (
 												<div className="w-8 h-8 flex flex-col  relative cursor-pointer">
 													<Image
 														className="rounded-full"
@@ -477,10 +481,6 @@ const TableBookings = ({ userAdmin }) => {
 														objectFit="cover"
 														alt=""
 													/>
-												</div>
-											) : booking?.orderItems?.mariachi?.name ? (
-												<div className="uppercase">
-													{booking?.orderItems?.mariachi?.name}{" "}
 												</div>
 											) : (
 												<GetLogoWithName
