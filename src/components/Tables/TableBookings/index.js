@@ -22,7 +22,7 @@ import {
 	setStatusBooking,
 	setStatusBookingGS,
 } from "store/features/bookings/bookingSlice"
-import { selectAllUsers } from "store/features/users/userSlice"
+//import { selectAllUsers } from "store/features/users/userSlice"
 
 import { regions } from "src/helpers/dataset"
 import SearchWithModalMariachis from "src/components/Forms/Smart/SearchWithModal/SearchWithModalMariachis"
@@ -36,6 +36,7 @@ import {
 	useGetBookingsQuery,
 } from "store/features/bookingsApi"
 import SpinnerCircular from "src/components/Spinners/SpinnerCircular"
+import { useGetUsersQuery } from "store/features/usersApi"
 
 const TableBookings = ({ userAdmin }) => {
 	const dispatch = useDispatch()
@@ -49,6 +50,14 @@ const TableBookings = ({ userAdmin }) => {
 		refetchOnFocus: true,
 		refetchOnReconnect: true,
 	})
+	const { data: usersApi, isFetching: isFetchingUsers } = useGetUsersQuery(
+		undefined,
+		{
+			refetchOnMountOrArgChange: true,
+			refetchOnFocus: true,
+			refetchOnReconnect: true,
+		}
+	)
 
 	const [updateBookingApi, { error: errorUp, isSuccess: isSuccessUp }] =
 		useAddUpdateNewBookingMutation()
@@ -152,7 +161,7 @@ const TableBookings = ({ userAdmin }) => {
 
 	//const BookingsData = useSelector(selectAllBookings)
 
-	const users = useSelector(selectAllUsers)
+	const users = usersApi.result
 
 	const [regionSelected, setRegionSelected] = useState("All")
 
@@ -276,7 +285,7 @@ const TableBookings = ({ userAdmin }) => {
 						<div className="relative w-full px-4 max-w-full flex justify-between divide-x-2 md:divide-x-0 pr-2">
 							<h3 className="font-semibold text-xs md:text-lg text-slate-700 dark:text-white  flex flex-col justify-center items-center">
 								<span>Reserva</span>
-								{isFetching ? (
+								{isFetching || isFetchingUsers ? (
 									<SpinnerCircular />
 								) : (
 									<div className="flex justify-center items-center">

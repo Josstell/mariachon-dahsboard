@@ -31,7 +31,10 @@ import {
 } from "store/features/usersApi"
 
 const userById = ({ id }) => {
-	const { data: dataUser, isLoading } = useGetUserAPIByIdQuery(id)
+	const { data: dataUser, isLoading } = useGetUserAPIByIdQuery(id, {
+		refetchOnMountOrArgChange: true,
+		refetchOnReconnect: true,
+	})
 
 	const [updateUserApi, { error: errorUp, isSuccess: isSuccessUp }] =
 		useAddUpdateNewUserMutation()
@@ -130,7 +133,9 @@ const userById = ({ id }) => {
 
 		Promise.all([updateUserApi(createMutations)])
 			.then((addPromise) => {
-				dispatch(addClientToGoogleSheet(addPromise[0].data.results[0].document))
+				const userToUpdate = addPromise[0].data.results[0].document
+				dispatch(addClientToGoogleSheet(userToUpdate))
+				///	dispatch(setUpdatedUser(userToUpdate))
 			})
 			.catch((err) => console.log(err))
 	}
