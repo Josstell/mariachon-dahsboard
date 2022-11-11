@@ -161,7 +161,7 @@ const TableBookings = ({ userAdmin }) => {
 
 	//const BookingsData = useSelector(selectAllBookings)
 
-	const [users, setUsers] = useState(usersApi?.result || [])
+	const [users, setUsers] = useState([])
 
 	useEffect(() => {
 		setUsers(usersApi?.result)
@@ -439,11 +439,14 @@ const TableBookings = ({ userAdmin }) => {
 						</thead>
 						<tbody>
 							{bookingsDataSearch?.map((booking) => {
-								const crewUserById = users.filter((user) =>
-									booking?.orderItems?.mariachi?.crew.find(
-										(cre) => cre._ref === user._id
-									)
-								)
+								const crewUserById =
+									users !== []
+										? users.filter((user) =>
+												booking?.orderItems?.mariachi?.crew.find(
+													(cre) => cre._ref === user._id
+												)
+										  )
+										: []
 								crewUserById.unshift({
 									name: "Mandar a: ",
 									_id: 0,
