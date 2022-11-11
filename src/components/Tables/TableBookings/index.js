@@ -161,7 +161,11 @@ const TableBookings = ({ userAdmin }) => {
 
 	//const BookingsData = useSelector(selectAllBookings)
 
-	const users = usersApi.result
+	const [users, setUsers] = useState(usersApi?.result || [])
+
+	useEffect(() => {
+		setUsers(usersApi?.result)
+	}, [usersApi])
 
 	const [regionSelected, setRegionSelected] = useState("All")
 
