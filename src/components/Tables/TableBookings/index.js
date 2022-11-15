@@ -161,7 +161,11 @@ const TableBookings = ({ userAdmin }) => {
 
 	//const BookingsData = useSelector(selectAllBookings)
 
-	//const users = usersApi?.result || []
+	// const [users, setUsers] = useState([])
+
+	// useEffect(() => {
+	// 	setUsers(usersApi?.result)
+	// }, [usersApi])
 
 	const [regionSelected, setRegionSelected] = useState("All")
 
@@ -435,11 +439,11 @@ const TableBookings = ({ userAdmin }) => {
 						</thead>
 						<tbody>
 							{bookingsDataSearch?.map((booking) => {
-								const crewUserById = usersApi?.result ? usersApi?.result.filter((user) =>
+								const crewUserById = users.filter((user) =>
 									booking?.orderItems?.mariachi?.crew.find(
 										(cre) => cre._ref === user._id
 									)
-								) : []
+								)
 								crewUserById.unshift({
 									name: "Mandar a: ",
 									_id: 0,
