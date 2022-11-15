@@ -66,14 +66,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 			}
 		}
 
-		if (!store.getState().users.users.length) {
-			await store.dispatch(fetchUsersNew(session))
-		}
+		await store.dispatch(fetchUsersNew(session))
 
-		if (!store.getState().mariachis.mariachis.length) {
-			const { data } = await store.dispatch(getMariachis.initiate())
-			await store.dispatch(setMariachis(data.result))
-		}
+		const { data } = await store.dispatch(getMariachis.initiate())
+		await store.dispatch(setMariachis(data.result))
 
 		await store.dispatch(setStatusUser("idle"))
 		await store.dispatch(setStatus("idle"))

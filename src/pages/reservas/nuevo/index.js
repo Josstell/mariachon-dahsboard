@@ -21,13 +21,14 @@ import {
 	setStatusBookingEmail,
 	setStatusBookingGS,
 } from "store/features/bookings/bookingSlice"
-import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
+//import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { selectAllUsers, selectUserAdmin } from "store/features/users/userSlice"
 
 import toast, { Toaster } from "react-hot-toast"
 import { nanoid } from "@reduxjs/toolkit"
 import { dateGral, optionsDate } from "src/helpers/utils"
 import { useAddUpdateNewBookingMutation } from "store/features/bookingsApi"
+import { useGetMariachisQuery } from "store/features/mariachisAPI"
 
 const data = {
 	dateAndTime: new Date(),
@@ -83,7 +84,18 @@ const newBooking = () => {
 
 	const userAdmin = useSelector(selectUserAdmin)
 
-	const dataMariachi = useSelector(selectAllMariachis)
+	const {
+		data: dataMariachi,
+		isLoading,
+		isFetching,
+	} = useGetMariachisQuery(undefined, {
+		refetchOnMountOrArgChange: true,
+		refetchOnFocus: true,
+		refetchOnReconnect: true,
+	})
+
+	//const dataMariachi = useSelector(selectAllMariachis)
+
 	const users = useSelector(selectAllUsers)
 
 	const [reservaData, setreservaData] = useState(data)
@@ -190,16 +202,20 @@ const newBooking = () => {
 		//if (mariachiSelected._id !== dataReservaToCard.orderItems.mariachi._id)
 
 		if (dataReservaToCard.orderItems.mariachi._id === undefined) {
-			const marSeleected = dataMariachi.find(
-				(dat) => dat._id === data.orderItems.mariachi._id
-			)
+			const marSeleected = dataMariachi?.result
+				? dataMariachi?.result.find(
+						(dat) => dat._id === data.orderItems.mariachi._id
+				  )
+				: []
 			setMariachiSelected(marSeleected)
 			setValue("members", marSeleected?.members)
 			setValue("category_mariachi", marSeleected?.categorySet)
 		} else {
-			const marSeleected = dataMariachi.find(
-				(dat) => dat._id === dataReservaToCard.orderItems.mariachi._id
-			)
+			const marSeleected = dataMariachi?.result
+				? dataMariachi?.result.find(
+						(dat) => dat._id === dataReservaToCard.orderItems.mariachi._id
+				  )
+				: []
 			setMariachiSelected(marSeleected)
 			setValue("members", marSeleected?.members)
 			setValue("category_mariachi", marSeleected?.categorySet)
@@ -444,7 +460,7 @@ const newBooking = () => {
 		}
 	}, [router, status, statusBookGS, isSuccessAdd, errorAdd, statusBEmail])
 
-	if (!userAdmin.exist || router.isFallback) {
+	if (!userAdmin.exist || isLoading || isFetching) {
 		return <SpinnerLogo />
 	}
 

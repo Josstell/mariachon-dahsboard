@@ -37,9 +37,10 @@ const TableMariachis = () => {
 
 	useEffect(() => {
 		if (isSuccess) {
+			console.log("Entramos correctamente")
 			dispatch(setMariachis(mariachisData.result))
 		}
-	}, [isFetching, isSuccess])
+	}, [isFetching, isSuccess, mariachisData])
 
 	//const mariachisData = useSelector(selectAllMariachis)
 	//const usersData = useSelector(selectAllUsers)

@@ -5,11 +5,12 @@ import { HYDRATE } from "next-redux-wrapper"
 // Define a service using a base URL and expected endpoints
 
 const queryMariachis = encodeURIComponent(
-	`*[_type == "mariachi" && !(_id in path('drafts.**')) ]| order(_createdAt desc){
+	`*[_type == "mariachi" && !(_id in path('drafts.**')) ] | order(_createdAt desc){
   _id,
   createdBy,
 modifiedBy,
 dateCreated,
+members, 
 dateModified,
   slug{
   current
@@ -27,7 +28,6 @@ coordinator->{
   tel
 },
 crew,
-members,
 service,
 categorySet,
 logo, 

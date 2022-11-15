@@ -199,6 +199,7 @@ const mariachisSlice = createSlice({
 			state.mariachiTabActive = action.payload
 		},
 		setMariachis: (state, action) => {
+			state.mariachis = []
 			state.mariachis = action.payload
 		},
 		setStatus: (state, action) => {

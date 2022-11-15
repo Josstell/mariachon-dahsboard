@@ -22,7 +22,7 @@ import {
 	setStatusBookingEmail,
 	setStatusBookingGS,
 } from "store/features/bookings/bookingSlice"
-import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
+//import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { selectUserAdmin } from "store/features/users/userSlice"
 
 import toast, { Toaster } from "react-hot-toast"
@@ -33,6 +33,7 @@ import {
 	useAddUpdateNewBookingMutation,
 	useGetBookingAPIByIdQuery,
 } from "store/features/bookingsApi"
+import { useGetMariachisQuery } from "store/features/mariachisAPI"
 
 const reservaById = ({ id }) => {
 	// const data = useSelector((state) =>
@@ -53,7 +54,17 @@ const reservaById = ({ id }) => {
 
 	const userAdmin = useSelector(selectUserAdmin)
 
-	const dataMariachi = useSelector(selectAllMariachis)
+	const {
+		data: dataMariachi,
+		isLoading: isLoadingMa,
+		isFetching: isFetchingMa,
+	} = useGetMariachisQuery(undefined, {
+		refetchOnMountOrArgChange: true,
+		refetchOnFocus: true,
+		refetchOnReconnect: true,
+	})
+
+	//const dataMariachi = useSelector(selectAllMariachis)
 
 	const [reservaData, setreservaData] = useState(data?.result || {})
 
@@ -171,16 +182,20 @@ const reservaById = ({ id }) => {
 		//if (mariachiSelected._id !== dataReservaToCard.orderItems.mariachi._id)
 
 		if (dataReservaToCard.orderItems.mariachi._id === undefined) {
-			const marSeleected = dataMariachi.find(
-				(dat) => dat._id === data?.result.orderItems.mariachi._id
-			)
+			const marSeleected = dataMariachi?.result
+				? dataMariachi?.result.find(
+						(dat) => dat._id === data?.result.orderItems.mariachi._id
+				  )
+				: []
 			setMariachiSelected(marSeleected)
 			setValue("members", marSeleected?.members)
 			setValue("category_mariachi", marSeleected?.categorySet)
 		} else {
-			const marSeleected = dataMariachi.find(
-				(dat) => dat._id === dataReservaToCard.orderItems.mariachi._id
-			)
+			const marSeleected = dataMariachi?.result
+				? dataMariachi?.result.find(
+						(dat) => dat._id === dataReservaToCard.orderItems.mariachi._id
+				  )
+				: []
 			setMariachiSelected(marSeleected)
 			setValue("members", marSeleected?.members)
 			setValue("category_mariachi", marSeleected?.categorySet)
@@ -436,7 +451,7 @@ const reservaById = ({ id }) => {
 		}
 	}, [router, status, statusBookGS, isSuccessUp, errorUp, statusBEmail])
 
-	if (!userAdmin.exist || router.isFallback) {
+	if (!userAdmin.exist || router.isFallback || isLoadingMa || isFetchingMa) {
 		return <SpinnerLogo />
 	}
 

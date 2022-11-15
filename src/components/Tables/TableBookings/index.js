@@ -161,7 +161,7 @@ const TableBookings = ({ userAdmin }) => {
 
 	//const BookingsData = useSelector(selectAllBookings)
 
-	const users = usersApi.result
+	//const users = usersApi?.result || []
 
 	const [regionSelected, setRegionSelected] = useState("All")
 
@@ -191,7 +191,7 @@ const TableBookings = ({ userAdmin }) => {
 		}
 		toastIdUpWhats = toast.loading("Cargando...")
 
-		const coorSelected = users.find((user) => user._id === sendMariachiValue)
+		const coorSelected = usersApi?.result ? usersApi?.result.find((user) => user._id === sendMariachiValue) : []
 
 		createUrlWhatsApp({ ...reservationData, coordinator: coorSelected })
 
@@ -435,11 +435,11 @@ const TableBookings = ({ userAdmin }) => {
 						</thead>
 						<tbody>
 							{bookingsDataSearch?.map((booking) => {
-								const crewUserById = users.filter((user) =>
+								const crewUserById = usersApi?.result ? usersApi?.result.filter((user) =>
 									booking?.orderItems?.mariachi?.crew.find(
 										(cre) => cre._ref === user._id
 									)
-								)
+								) : []
 								crewUserById.unshift({
 									name: "Mandar a: ",
 									_id: 0,
