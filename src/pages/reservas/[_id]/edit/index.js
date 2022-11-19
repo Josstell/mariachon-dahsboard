@@ -471,7 +471,6 @@ const reservaById = ({ id }) => {
 									setArrayPlayList={setArrayPlayList}
 									setMariachibyId={setMariachibyId}
 									setUserbyId={setUserbyId}
-									mariachis={dataMariachi?.result || []}
 									loading={loading}
 								/>
 								<Toaster />

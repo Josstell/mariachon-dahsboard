@@ -13,6 +13,7 @@ import { useSelector } from "react-redux"
 import AddNewUserComponent from "../UserForm/AddNewUser"
 import Separator from "../Smart/Utils"
 import { statusReserva } from "src/helpers/utils"
+import { mariachisSanityApi } from "store/features/mariachisAPI"
 
 //import { setDispBookingTabActive } from "store/features/bookings/bookingSlice"
 
@@ -25,7 +26,6 @@ const BookingForm = ({
 	onSubmit,
 	isSaving,
 	loading,
-	mariachis,
 }) => {
 	const regionData = regions.response.estado
 
@@ -35,6 +35,10 @@ const BookingForm = ({
 	const activeFormTab = useSelector((state) => state.bookings.bookingTabActive)
 
 	//const dispatch = useDispatch()
+
+	const {
+		data: { result: mariachisForm },
+	} = useSelector(mariachisSanityApi.endpoints.getMariachis.select())
 
 	const users = useSelector(selectAllUsers)
 	//const mariachis = useSelector(selectAllMariachis)
@@ -149,7 +153,9 @@ const BookingForm = ({
 	}
 
 	const hangleGetMariachi = (e) => {
-		const mariachiSelected = mariachis.find((mar) => mar._id === e.target.value)
+		const mariachiSelected = mariachisForm.find(
+			(mar) => mar._id === e.target.value
+		)
 		setMariachibyId(mariachiSelected)
 	}
 
@@ -176,7 +182,7 @@ const BookingForm = ({
 		(user) => user._id === getValues("clientId")
 	)
 
-	const mariachisIfPartner = mariachis.filter(
+	const mariachisIfPartner = mariachisForm.filter(
 		(mar) => mar.stage[0] === "AFILIADO" && mar.region === regionSelected
 	)
 
