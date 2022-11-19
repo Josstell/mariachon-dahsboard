@@ -90,8 +90,6 @@ const newBooking = () => {
 		isFetching,
 	} = useGetMariachisQuery(undefined, {
 		refetchOnMountOrArgChange: true,
-		refetchOnFocus: true,
-		refetchOnReconnect: true,
 	})
 
 	//const dataMariachi = useSelector(selectAllMariachis)

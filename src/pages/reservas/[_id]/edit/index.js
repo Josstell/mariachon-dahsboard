@@ -60,8 +60,6 @@ const reservaById = ({ id }) => {
 		isFetching: isFetchingMa,
 	} = useGetMariachisQuery(undefined, {
 		refetchOnMountOrArgChange: true,
-		refetchOnFocus: true,
-		refetchOnReconnect: true,
 	})
 
 	//const dataMariachi = useSelector(selectAllMariachis)
