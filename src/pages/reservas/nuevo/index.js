@@ -482,6 +482,7 @@ const newBooking = () => {
 									setUserbyId={setUserbyId}
 									isSaving
 									loading={loading}
+									mariachis={dataMariachi?.result || []}
 								/>
 
 								<Toaster />

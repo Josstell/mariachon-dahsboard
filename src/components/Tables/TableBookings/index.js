@@ -50,6 +50,7 @@ const TableBookings = ({ userAdmin }) => {
 		refetchOnFocus: true,
 		refetchOnReconnect: true,
 	})
+	
 	const { data: usersApi, isFetching: isFetchingUsers } = useGetUsersQuery(
 		undefined,
 		{

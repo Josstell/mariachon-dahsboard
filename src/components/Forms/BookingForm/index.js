@@ -8,11 +8,12 @@ import { Button, Input, RadioButton, Select, TextArea } from "../Smart/Inputs"
 import { TrashIcon } from "@heroicons/react/outline"
 
 import { regions } from "../../../helpers/dataset"
-import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
+//import { selectAllMariachis } from "store/features/mariachis/mariachiSlice"
 import { useSelector } from "react-redux"
 import AddNewUserComponent from "../UserForm/AddNewUser"
 import Separator from "../Smart/Utils"
 import { statusReserva } from "src/helpers/utils"
+
 //import { setDispBookingTabActive } from "store/features/bookings/bookingSlice"
 
 const BookingForm = ({
@@ -24,6 +25,7 @@ const BookingForm = ({
 	onSubmit,
 	isSaving,
 	loading,
+	mariachis,
 }) => {
 	const regionData = regions.response.estado
 
@@ -35,7 +37,7 @@ const BookingForm = ({
 	//const dispatch = useDispatch()
 
 	const users = useSelector(selectAllUsers)
-	const mariachis = useSelector(selectAllMariachis)
+	//const mariachis = useSelector(selectAllMariachis)
 
 	const usersByClient = useSearchUserByCategory(users, "Cliente")
 
