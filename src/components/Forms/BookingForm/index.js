@@ -47,8 +47,8 @@ const BookingForm = ({
 
 	const { getValues } = methods
 
-	// useEffect(() => {
 	// 	if (!addUser) {
+	// useEffect(() => {
 	// 		const tabOnlyClientActive = {
 	// 			client: true,
 	// 			address: false,

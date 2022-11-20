@@ -354,6 +354,8 @@ const newBooking = () => {
 		setLoading(true)
 		toastIdRe = toast.loading("Cargando...")
 
+		let evetDate = new Date(dataForm.dateAndTime)
+
 		const reservaAdd = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
 			host: {
@@ -364,7 +366,7 @@ const newBooking = () => {
 			createdBy: { _ref: userAdmin._id, _type: "reference" },
 			dateCreated: dateGral.toLocaleDateString("es-MX", optionsDate),
 
-			dateAndTime: dataForm.dateAndTime,
+			dateAndTime: evetDate.toISOString(),
 			message: dataForm.message,
 			orderItems: [
 				{

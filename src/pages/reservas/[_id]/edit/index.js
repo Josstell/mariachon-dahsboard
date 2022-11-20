@@ -341,6 +341,7 @@ const reservaById = ({ id }) => {
 		} else {
 			statusReservation = [dataForm.statusReserva]
 		}
+		let evetDate = new Date(dataForm.dateAndTime)
 
 		const reservaUpdate = {
 			client: { _ref: dataForm.clientId, _type: "reference" },
@@ -352,7 +353,7 @@ const reservaById = ({ id }) => {
 			modifiedBy: { _ref: userAdmin._id, _type: "reference" },
 			dateModified: dateGral.toLocaleDateString("es-MX", optionsDate),
 
-			dateAndTime: dataForm.dateAndTime,
+			dateAndTime: evetDate.toISOString(),
 			message: dataForm.message,
 			orderItems: [
 				{
@@ -404,7 +405,7 @@ const reservaById = ({ id }) => {
 			.then((updatePromise) => {
 				const dataToUpdate = updatePromise[0].data.results[0].document
 
-				dispatch(addBookingToGoogleSheet({ ...dataToUpdate, sendEmail: true }))
+				dispatch(addBookingToGoogleSheet({ ...dataToUpdate, sendEmail: false }))
 			})
 			.catch((err) => console.log(err))
 
