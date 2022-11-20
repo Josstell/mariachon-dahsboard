@@ -50,7 +50,7 @@ const TableBookings = ({ userAdmin }) => {
 		refetchOnFocus: true,
 		refetchOnReconnect: true,
 	})
-	
+
 	const { data: usersApi, isFetching: isFetchingUsers } = useGetUsersQuery(
 		undefined,
 		{
@@ -441,7 +441,7 @@ const TableBookings = ({ userAdmin }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{bookingsDataSearch?.map((booking) => {
+							{bookingsDataSearch?.map((booking, indexBo) => {
 								const crewUserById = usersApi?.result
 									? usersApi?.result.filter((user) =>
 											booking?.orderItems?.mariachi?.crew.find(
@@ -466,6 +466,7 @@ const TableBookings = ({ userAdmin }) => {
 													dark:text-white cursor-pointer"
 												onClick={() => handleReservaUrl(booking._id)}
 											>
+												<span className="text-red-500">{indexBo}: </span>
 												{booking?.reserva || booking?._id}
 											</span>
 										</th>
