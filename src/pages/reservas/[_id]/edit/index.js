@@ -405,7 +405,7 @@ const reservaById = ({ id }) => {
 			.then((updatePromise) => {
 				const dataToUpdate = updatePromise[0].data.results[0].document
 
-				dispatch(addBookingToGoogleSheet({ ...dataToUpdate, sendEmail: false }))
+				dispatch(addBookingToGoogleSheet({ ...dataToUpdate, sendEmail: true }))
 			})
 			.catch((err) => console.log(err))
 

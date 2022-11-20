@@ -441,7 +441,7 @@ const TableBookings = ({ userAdmin }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{bookingsDataSearch?.map((booking, indexBo) => {
+							{bookingsDataSearch?.map((booking) => {
 								const crewUserById = usersApi?.result
 									? usersApi?.result.filter((user) =>
 											booking?.orderItems?.mariachi?.crew.find(
@@ -466,7 +466,7 @@ const TableBookings = ({ userAdmin }) => {
 													dark:text-white cursor-pointer"
 												onClick={() => handleReservaUrl(booking._id)}
 											>
-												<span className="text-red-500">{indexBo}: </span>
+												<span className="text-red-500"> </span>
 												{booking?.reserva || booking?._id}
 											</span>
 										</th>

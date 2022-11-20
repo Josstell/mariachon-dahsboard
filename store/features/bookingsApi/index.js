@@ -4,8 +4,11 @@ import { HYDRATE } from "next-redux-wrapper"
 
 // Define a service using a base URL and expected endpoints
 
+//| order(dateTime(_createdAt) desc)
+//| order(_createdAt desc)
+
 const queryBookings = encodeURIComponent(
-	`*[_type == "booking"  && !(_id in path('drafts.**'))]| order(_createdAt desc){
+	`*[_type == "booking"  && !(_id in path('drafts.**'))] | order(dateTime(dateAndTime) desc) {
  _id,
  reserva,
  host,
