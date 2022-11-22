@@ -220,18 +220,18 @@ export const timeConverterToCommonPeople = (dateFormal) => {
 			var dayBefore = getDayBefore(timeFormal)
 
 			return (
-				timeFormal.toLocaleTimeString("es-US") +
+				timeFormal.toLocaleTimeString("es-MX") +
 				" de la madrugada de " +
 				dayBefore.dayAfter.toLocaleDateString("es-MX", options) +
 				" para " +
 				dayBefore.day.toLocaleDateString("es-MX", options)
 			)
 		case hour >= 6 && hour < 12:
-			return timeFormal.toLocaleTimeString("en-US") + " de la mañana."
+			return timeFormal.toLocaleTimeString("en-MX") + " de la mañana."
 		case hour >= 12 && hour < 19:
-			return timeFormal.toLocaleTimeString("en-US") + " de la tarde."
+			return timeFormal.toLocaleTimeString("en-MX") + " de la tarde."
 		case hour >= 19 && hour <= 23:
-			return timeFormal.toLocaleTimeString("en-US") + " de la noche."
+			return timeFormal.toLocaleTimeString("en-MX") + " de la noche."
 	}
 }
 

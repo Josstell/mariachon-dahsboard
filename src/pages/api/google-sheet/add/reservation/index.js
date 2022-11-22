@@ -22,7 +22,7 @@ export default handlerCors().post(async (req, res) => {
 
 	//   const date = new Date()
 
-	const date = req.body?.dateAndTime
+	let date = req.body?.dateAndTime
 		? new Date(req.body?.dateAndTime)
 		: new Date()
 
