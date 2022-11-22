@@ -216,22 +216,23 @@ export const timeConverterToCommonPeople = (dateFormal) => {
 
 	switch (true) {
 		case hour >= 0 && hour < 6:
-			const options = { weekday: "long" }
+			// eslint-disable-next-line no-case-declarations
+			const options = { weekday: "long", timeZone: "America/Mexico_City" }
 			var dayBefore = getDayBefore(timeFormal)
 
 			return (
-				timeFormal.toLocaleTimeString("es-MX") +
+				timeFormal.toLocaleTimeString("es-MX", options) +
 				" de la madrugada de " +
 				dayBefore.dayAfter.toLocaleDateString("es-MX", options) +
 				" para " +
 				dayBefore.day.toLocaleDateString("es-MX", options)
 			)
 		case hour >= 6 && hour < 12:
-			return timeFormal.toLocaleTimeString("en-MX") + " de la mañana."
+			return timeFormal.toLocaleTimeString("en-MX", options) + " de la mañana."
 		case hour >= 12 && hour < 19:
-			return timeFormal.toLocaleTimeString("en-MX") + " de la tarde."
+			return timeFormal.toLocaleTimeString("en-MX", options) + " de la tarde."
 		case hour >= 19 && hour <= 23:
-			return timeFormal.toLocaleTimeString("en-MX") + " de la noche."
+			return timeFormal.toLocaleTimeString("en-MX", options) + " de la noche."
 	}
 }
 
