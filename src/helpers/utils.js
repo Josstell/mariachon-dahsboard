@@ -230,9 +230,15 @@ export const timeConverterToCommonPeople = (dateFormal) => {
 			return (
 				timeFormal.toLocaleTimeString("es-MX", options) +
 				" de la madrugada de " +
-				dayBefore.dayAfter.toLocaleDateString("es-MX", options) +
+				dayBefore.dayAfter.toLocaleDateString("es-MX", {
+					weekday: "long",
+					timeZone: "America/Mexico_City",
+				}) +
 				" para " +
-				dayBefore.day.toLocaleDateString("es-MX", options)
+				dayBefore.day.toLocaleDateString("es-MX", {
+					weekday: "long",
+					timeZone: "America/Mexico_City",
+				})
 			)
 		case hour >= 6 && hour < 12:
 			return timeFormal.toLocaleTimeString("en-MX", options) + " de la mañana."
