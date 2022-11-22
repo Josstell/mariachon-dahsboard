@@ -211,13 +211,14 @@ var getDayBefore = (datimeFormal) => {
 }
 
 export const timeConverterToCommonPeople = (dateFormal) => {
+	const options = { weekday: "long", timeZone: "America/Mexico_City" }
+
 	var timeFormal = new Date(dateFormal)
-	var hour = timeFormal.getHours()
+	var hour = timeFormal.toLocaleTimeString("es-MX", options) * 1
 
 	switch (true) {
 		case hour >= 0 && hour < 6:
 			// eslint-disable-next-line no-case-declarations
-			const options = { weekday: "long", timeZone: "America/Mexico_City" }
 			var dayBefore = getDayBefore(timeFormal)
 
 			return (
