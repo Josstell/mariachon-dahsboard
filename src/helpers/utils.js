@@ -214,7 +214,10 @@ export const timeConverterToCommonPeople = (dateFormal) => {
 	const options = { weekday: "long", timeZone: "America/Mexico_City" }
 
 	var timeFormal = new Date(dateFormal)
-	var hour = timeFormal.toLocaleTimeString("es-MX", options) * 1
+
+	const timeHour = timeFormal.toLocaleTimeString("es-MX", options)
+
+	var hour = timeHour.getHours()
 
 	switch (true) {
 		case hour >= 0 && hour < 6:
