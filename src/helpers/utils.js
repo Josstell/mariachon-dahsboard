@@ -213,11 +213,13 @@ var getDayBefore = (datimeFormal) => {
 export const timeConverterToCommonPeople = (dateFormal) => {
 	const options = { weekday: "long", timeZone: "America/Mexico_City" }
 
-	var timeFormal = new Date(dateFormal)
+	var timeFormal = new Date(
+		new Date(dateFormal).toLocaleString("en-US", {
+			timeZone: "America/Mexico_City",
+		})
+	)
 
-	const timeHour = timeFormal.toLocaleTimeString("es-MX", options)
-
-	var hour = timeHour.getHours()
+	var hour = timeFormal.getHours()
 
 	switch (true) {
 		case hour >= 0 && hour < 6:
