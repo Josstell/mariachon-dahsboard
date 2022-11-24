@@ -193,8 +193,10 @@ export default function BookingCard({ reserva, data }) {
 						</div>
 						<h5>
 							{reserva?.orderItems?.price === undefined
-								? formatoMoneda(data?.orderItems?.price * 1)
-								: formatoMoneda(reserva?.orderItems?.price * 1)}
+								? formatoMoneda(data?.orderItems?.price * data?.orderItems?.qty)
+								: formatoMoneda(
+										reserva?.orderItems?.price * data?.orderItems?.qty
+								  )}
 						</h5>
 					</div>
 
@@ -215,13 +217,12 @@ export default function BookingCard({ reserva, data }) {
 						<p>
 							{reserva?.orderItems?.price === undefined
 								? formatoMoneda(
-										(data?.orderItems?.price - data?.orderItems?.deposit) *
-											data?.orderItems?.qty
+										data?.orderItems?.price * data?.orderItems?.qty -
+											data?.orderItems?.deposit
 								  )
 								: formatoMoneda(
-										(reserva?.orderItems?.price -
-											reserva?.orderItems?.deposit) *
-											reserva?.orderItems?.qty
+										reserva?.orderItems?.price * reserva?.orderItems?.qty -
+											reserva?.orderItems?.deposit
 								  )}
 						</p>
 					</div>
