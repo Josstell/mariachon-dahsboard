@@ -192,10 +192,11 @@ export default function BookingCard({ reserva, data }) {
 							<p>Precio: </p>
 						</div>
 						<h5>
-							{reserva?.orderItems?.price === undefined
-								? formatoMoneda(data?.orderItems?.price * data?.orderItems?.qty)
+							{reserva?.orderItems?.price === undefined ||
+							isNaN(reserva?.orderItems?.price)
+								? formatoMoneda(0)
 								: formatoMoneda(
-										reserva?.orderItems?.price * data?.orderItems?.qty
+										reserva?.orderItems?.price * reserva?.orderItems?.qty
 								  )}
 						</h5>
 					</div>
@@ -205,7 +206,8 @@ export default function BookingCard({ reserva, data }) {
 							<p>Deposito: </p>
 						</div>
 						<p>
-							{reserva?.orderItems?.deposit === undefined
+							{reserva?.orderItems?.deposit === undefined ||
+							isNaN(reserva?.orderItems?.price)
 								? formatoMoneda(data?.orderItems?.deposit * 1)
 								: formatoMoneda(reserva?.orderItems?.deposit * 1)}
 						</p>
@@ -215,7 +217,8 @@ export default function BookingCard({ reserva, data }) {
 							<p>Resta: </p>
 						</div>
 						<p>
-							{reserva?.orderItems?.price === undefined
+							{reserva?.orderItems?.price === undefined ||
+							isNaN(reserva?.orderItems?.price)
 								? formatoMoneda(
 										data?.orderItems?.price * data?.orderItems?.qty -
 											data?.orderItems?.deposit
