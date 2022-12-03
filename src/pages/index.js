@@ -12,6 +12,7 @@ import {
 	selectUserAdmin,
 } from "../../store/features/users/userSlice"
 import { useDispatch, useSelector } from "react-redux"
+import Agenda from "src/components/Agenda"
 
 export default function Home() {
 	const userAdmin = useSelector(selectUserAdmin)
@@ -27,7 +28,9 @@ export default function Home() {
 	return (
 		<Layout>
 			{userAdmin.isAdmin ? (
-				<h3 className="font-robotoMono">Tienes derechos de usuario</h3>
+				<div className="no-scrollbar overflow-auto h-full w-full">
+					<Agenda />
+				</div>
 			) : (
 				<>
 					<MariachiForbiden className="w-40 fill-slate-900 dark:fill-slate-50" />
