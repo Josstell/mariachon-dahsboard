@@ -329,3 +329,20 @@ export const phoneFormat = (input) => {
 		return "something went wrong"
 	}
 }
+
+export const getDateAvantAndBefore = (dateSelected) => {
+	console.log("En funcion:", dateSelected)
+
+	const dateAB = {
+		before: new Date(dateSelected),
+		after: new Date(dateSelected),
+	}
+
+	dateAB.before.setDate(dateSelected.$D - 1)
+	dateAB.after.setDate(dateSelected.$D + 1)
+
+	return {
+		before: dateAB.before.toISOString(),
+		after: dateAB.after.toISOString(),
+	}
+}

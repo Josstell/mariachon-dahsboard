@@ -1,15 +1,29 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import dayjs from "dayjs"
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline"
 import { generateDate, monthsSpanish } from "src/helpers/calendar"
 import cn from "src/helpers/cn"
+import { getDateAvantAndBefore } from "src/helpers/utils"
+import {
+	useLazyGetBookingsByDateQuery,
+} from "store/features/bookingsApi"
+import { getBookingsByQuery } from "@lib/sanity"
+import SpinnerCircular from "../Spinners/SpinnerCircular"
 
 dayjs.locale("es") // use Spanish locale globally
 
 let nIntervId
 
 const Agenda = () => {
-	console.log(generateDate())
+	const [
+		getBookingsByDatelocal,
+		{
+			data: bookingsByDate,
+			isLoading: isLoadingDate,
+			isFetching: isFetchingDate,
+		},
+	] = useLazyGetBookingsByDateQuery()
+
 	const days = ["D", "L", "M", "M", "J", "V", "S"]
 
 	const currentDate = dayjs()
@@ -17,6 +31,17 @@ const Agenda = () => {
 	const [selectDate, setSelectDate] = useState(currentDate)
 
 	const [timeActual, setTimeActual] = useState(new Date())
+
+	console.log("Hola", bookingsByDate?.result)
+
+	useEffect(() => {
+		const dateAB = getDateAvantAndBefore(selectDate)
+		if (dateAB.before) {
+			console.log("before after", dateAB)
+
+			getBookingsByDatelocal(getBookingsByQuery(dateAB.before, dateAB.after))
+		}
+	}, [selectDate])
 
 	function changeTime() {
 		// comprobar si ya se ha configurado un intervalo
@@ -32,10 +57,9 @@ const Agenda = () => {
 
 	changeTime()
 
-	const reservas = [
-		{ id: 1, hour: 1 },
-		{ id: 2, hour: 3 },
-	]
+	
+
+	console.log("day selected", selectDate)
 
 	return (
 		<div className="flex flex-col md:flex-row    mx-12  divide-x-2 gap-10  items-center ">
@@ -106,43 +130,11 @@ const Agenda = () => {
 			</div>
 
 			<div className="no-scrollbar overflow-auto flex-1 h-96 px-2  sm:px-5 my-10">
-				<h1 className="font-semibold pb-5">
+				<h1 className="font-semibold pb-5 w-full flex gap-x-5">
 					Reservas para {selectDate.toDate().toDateString()}
+					{isFetchingDate || isLoadingDate ? <SpinnerCircular /> : null}
 				</h1>
-				<div className=" grid grid-flow-row auto-rows-max gap-2 ">
-					{Array(24)
-						.fill()
-						.map((e, i) => (
-							<div
-								key={i}
-								className={cn(
-									timeActual.getHours() === i
-										? "border-double border-t border-slate-50/50 flex flex-row "
-										: "border-double border-t border-slate-50/50 flex flex-row"
-								)}
-							>
-								<h2
-									className={cn(
-										timeActual.getHours() === i
-											? "text-red-600 py-2 px-1 w-3/12"
-											: "py-2 text-slate-100/50 px-1 w-3/12"
-									)}
-								>
-									{i < 10 ? "0" + i : i} : 00
-								</h2>
-								<div className="flex w-full flex-row justify-evenly items-center">
-									{reservas.map((reser) => {
-										console.log(reser.hour, i)
-										reser.hour === i ? (
-											<div className="border grow mx-2" key={reser.id}>
-												{reser.id}
-											</div>
-										) : null
-									})}
-								</div>
-							</div>
-						))}
-				</div>
+				{bookingsByDate?.result.map((reserva)=><div key={reserva._id}>{reserva.client.name}</div>)}
 			</div>
 		</div>
 	)

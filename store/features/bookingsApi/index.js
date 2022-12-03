@@ -162,6 +162,10 @@ export const bookingsSanityApi = createApi({
 			query: () => `/query/${dataset}?query=${queryBookings}`,
 			providesTags: ["Bookings"],
 		}),
+		getBookingsByDate: builder.query({
+			query: (queryDate) => `/query/${dataset}?query=${queryDate}`,
+			providesTags: ["Bookings"],
+		}),
 		getBookingAPIById: builder.query({
 			query: (id) =>
 				`/query/${dataset}?query=${queryBookingById}&%24id="${id}"`,
@@ -181,10 +185,16 @@ export const bookingsSanityApi = createApi({
 // auto-generated based on the defined endpoints
 export const {
 	useGetBookingsQuery,
+	useGetBookingsByDateQuery,
 	useGetBookingAPIByIdQuery,
 	useAddUpdateNewBookingMutation,
+	useLazyGetBookingsByDateQuery,
 	util: { getRunningOperationPromises },
 } = bookingsSanityApi
 
-export const { getBookings, getBookingAPIById, addUpdateNewBooking } =
-	bookingsSanityApi.endpoints
+export const {
+	getBookings,
+	getBookingsByDate,
+	getBookingAPIById,
+	addUpdateNewBooking,
+} = bookingsSanityApi.endpoints

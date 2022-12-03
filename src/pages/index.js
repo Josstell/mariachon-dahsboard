@@ -13,6 +13,10 @@ import {
 } from "../../store/features/users/userSlice"
 import { useDispatch, useSelector } from "react-redux"
 import Agenda from "src/components/Agenda"
+import { getBookingsByDate } from "store/features/bookingsApi"
+import { getDateAvantAndBefore } from "src/helpers/utils"
+import dayjs from "dayjs"
+import { getBookingsByQuery } from "@lib/sanity"
 
 export default function Home() {
 	const userAdmin = useSelector(selectUserAdmin)
@@ -63,7 +67,13 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		if (!store.getState().users.users.length) {
 			await store.dispatch(fetchUsersNew(session))
 		}
-		// await store.dispatch(fetchMariachis(true))
+
+		const today = getDateAvantAndBefore(dayjs(new Date()))
+
+
+		await store.dispatch(
+			getBookingsByDate.initiate(getBookingsByQuery(today.before, today.after))
+		)
 		// await store.dispatch(fetchBookings(true))
 
 		return {
