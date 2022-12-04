@@ -61,6 +61,13 @@ export const optionsDate = {
 	day: "numeric",
 }
 
+export const optionsDateShort = {
+	weekday: "short",
+	year: "numeric",
+	month: "short",
+	day: "numeric",
+}
+
 export const dateGral = new Date()
 
 export const etapesData = ["PROSPECTO", "MONITOREO", "AFILIADO", "ANULADO"]

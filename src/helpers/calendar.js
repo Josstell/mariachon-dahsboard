@@ -60,3 +60,5 @@ export const monthsSpanish = [
 	"noviembre",
 	"diciembre",
 ]
+
+export const weekSpanish =["domingo","lunes", "martes", "miercoles", "jueves", "viernes", "sabado"]

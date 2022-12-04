@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react"
 import dayjs from "dayjs"
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/outline"
-import { generateDate, monthsSpanish } from "src/helpers/calendar"
+import { generateDate, monthsSpanish, weekSpanish } from "src/helpers/calendar"
 import cn from "src/helpers/cn"
 import { getDateAvantAndBefore } from "src/helpers/utils"
-import {
-	useLazyGetBookingsByDateQuery,
-} from "store/features/bookingsApi"
+import { useLazyGetBookingsByDateQuery } from "store/features/bookingsApi"
 import { getBookingsByQuery } from "@lib/sanity"
 import SpinnerCircular from "../Spinners/SpinnerCircular"
+import BookingCalendar from "../Cards/BookingCard/BookingCalendar"
 
 dayjs.locale("es") // use Spanish locale globally
 
@@ -26,7 +25,7 @@ const Agenda = () => {
 
 	const days = ["D", "L", "M", "M", "J", "V", "S"]
 
-	const currentDate = dayjs()
+	const currentDate = dayjs().locale("es")
 	const [today, setToday] = useState(currentDate)
 	const [selectDate, setSelectDate] = useState(currentDate)
 
@@ -57,13 +56,11 @@ const Agenda = () => {
 
 	changeTime()
 
-	
-
 	console.log("day selected", selectDate)
 
 	return (
-		<div className="flex flex-col md:flex-row    mx-12  divide-x-2 gap-10  items-center ">
-			<div className="w-96 h-96 ">
+		<div className="flex flex-col md:flex-row    mx-12  sm:divide-x-2 gap-10  items-center ">
+			<div className="w-screen px-1 sm:p-0 sm:w-96 h-96 ">
 				<div className="flex justify-between">
 					<h1 className="font-semibold">
 						{monthsSpanish[today.month()].toUpperCase()}, {today.year()}
@@ -81,7 +78,7 @@ const Agenda = () => {
 								setToday(currentDate)
 							}}
 						>
-							Today
+							Hoy
 						</h1>
 						<ChevronRightIcon
 							className="w-5 cursor-pointer"
@@ -131,10 +128,15 @@ const Agenda = () => {
 
 			<div className="no-scrollbar overflow-auto flex-1 h-96 px-2  sm:px-5 my-10">
 				<h1 className="font-semibold pb-5 w-full flex gap-x-5">
-					Reservas para {selectDate.toDate().toDateString()}
+					Reservas: {weekSpanish[selectDate.day()]} {selectDate.date()} de{" "}
+					{monthsSpanish[selectDate.month()]}, {selectDate.year()}
 					{isFetchingDate || isLoadingDate ? <SpinnerCircular /> : null}
 				</h1>
-				{bookingsByDate?.result.map((reserva)=><div key={reserva._id}>{reserva.client.name}</div>)}
+				{bookingsByDate?.result.map((reserva) => (
+					<div key={reserva._id}>
+						<BookingCalendar reserva={reserva} />
+					</div>
+				))}
 			</div>
 		</div>
 	)
