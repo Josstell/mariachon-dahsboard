@@ -7,12 +7,13 @@ const handlerGoogle = async (req, res) => {
     return res.status(400).json({ error: 'Method not allowed' })
   }
 
-  const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }
+ const options = {
+		weekday: "long",
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+		timeZone: "America/Mexico_City",
+ }
 
   const date = new Date()
 

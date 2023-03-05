@@ -18,6 +18,7 @@ export default handlerCors().post(async (req, res) => {
 		year: "numeric",
 		month: "long",
 		day: "numeric",
+		timeZone: "America/Mexico_City",
 	}
 
 	//   const date = new Date()
