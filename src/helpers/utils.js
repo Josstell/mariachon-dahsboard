@@ -59,6 +59,7 @@ export const optionsDate = {
 	year: "numeric",
 	month: "long",
 	day: "numeric",
+	timeZone: "America/Mexico_City",
 }
 
 export const optionsDateShort = {
@@ -66,6 +67,7 @@ export const optionsDateShort = {
 	year: "numeric",
 	month: "short",
 	day: "numeric",
+	timeZone: "America/Mexico_City",
 }
 
 export const dateGral = new Date()
@@ -114,6 +116,7 @@ export const createUrlWhatsApp = (reservationData) => {
 		year: "numeric",
 		month: "long",
 		day: "numeric",
+		timeZone: "America/Mexico_City",
 	}
 
 	const mariachiCoordinatorPhone = "52" + reservationData?.coordinator?.tel
