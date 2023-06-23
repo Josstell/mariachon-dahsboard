@@ -8,7 +8,7 @@ import { HYDRATE } from "next-redux-wrapper"
 //| order(_createdAt desc)
 
 const queryBookings = encodeURIComponent(
-	`*[_type == "booking"  && !(_id in path('drafts.**'))] | order(dateTime(dateAndTime) desc) {
+	`*[_type == "booking"  && !(_id in path('drafts.**'))] | order(dateTime(dateAndTime) desc)[0...100] {
  _id,
  reserva,
  host,
