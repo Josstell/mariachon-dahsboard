@@ -30,7 +30,7 @@ export default function Layout({ children }) {
 
 	return (
 		<>
-			<div className=" grid grid-cols-12 ">
+			<div className="w-screen grid grid-cols-12 ">
 				<div className="bg-transparent col-span-12 h-16 z-10">
 					<NavBar setOpen={handleSideBar} open={open} />
 				</div>
@@ -193,7 +193,7 @@ export default function Layout({ children }) {
 				</div>
 
 				<div
-					className={` bg-slate-100 dark:bg-slate-900/80 col-span-12 md:col-span-9 h-[95vh] ${
+					className={` bg-slate-100 dark:bg-slate-900/80 col-span-12 md:col-span-11 h-[95vh] ${
 						open ? "col-span-6 md:col-span-9" : " md:col-span-11"
 					} transition-all duration-1600 ease-in `}
 				>
