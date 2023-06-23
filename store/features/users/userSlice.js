@@ -16,7 +16,7 @@ const initialState = {
 	error: null,
 }
 const query = groq`
-*[_type == "user" && !(_id in path('drafts.**'))] | order(_createdAt desc)[0...100]
+*[_type == "user" && !(_id in path('drafts.**'))] | order(_createdAt desc)
 `
 
 // get all users
