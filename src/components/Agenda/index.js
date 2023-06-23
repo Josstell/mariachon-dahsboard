@@ -56,7 +56,7 @@ const Agenda = () => {
 
 	changeTime()
 
-	console.log("day selected", selectDate)
+	console.log("day selected", selectDate, timeActual)
 
 	return (
 		<div className="flex flex-col md:flex-row    mx-12  sm:divide-x-2 gap-10  items-center ">
