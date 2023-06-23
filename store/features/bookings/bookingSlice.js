@@ -23,7 +23,7 @@ const initialState = {
 	},
 }
 const query = groq`
-*[_type == "booking"  && !(_id in path('drafts.**'))]| order(_createdAt desc){
+*[_type == "booking"  && !(_id in path('drafts.**'))]| order(_createdAt desc)[0...100]{
  _id,
  reserva,
  host,
