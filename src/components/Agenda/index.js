@@ -51,7 +51,7 @@ const Agenda = () => {
 
 	function getTime() {
 		setTimeActual(new Date())
-		console.log("hora", timeActual.getHours())
+		//console.log("hora", timeActual.getHours())
 	}
 
 	changeTime()
