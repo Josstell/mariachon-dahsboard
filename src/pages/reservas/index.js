@@ -77,7 +77,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 		await store.dispatch(getBookings.initiate())
 
-		await Promise.all(getRunningOperationPromises())
+		//await Promise.all(getRunningOperationPromises())
+
+		//await Promise.all(getRunningQueriesThunk())
 		// if (!existAdmin.users.admin) {
 		// 	return {
 		// 		redirect: {

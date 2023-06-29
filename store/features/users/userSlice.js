@@ -23,8 +23,10 @@ const query = groq`
 export const fetchUsersNew = createAsyncThunk(
 	"users/fetchUsersNew",
 	async (session) => {
+		console.log("Session: ", session)
 		try {
 			const users = await client.fetch(query)
+
 			if (!(users.length === 0)) {
 				const userAdmin = users.find(
 					(user) => user.email === session.user.email
