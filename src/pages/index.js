@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { getSession, useSession } from "next-auth/react"
+import { getSession } from "next-auth/react"
 
 import Layout from "../components/Layout"
 import MariachiForbiden from "../components/SVG/Icons/MariachiForbiden"
@@ -21,8 +21,6 @@ import { getBookingsByQuery } from "@lib/sanity"
 export default function Home() {
 	const userAdmin = useSelector(selectUserAdmin)
 
-
-
 	//const userUpdate = useSelector(selectUserUpdate)
 	const dispatch = useDispatch()
 
@@ -36,7 +34,7 @@ export default function Home() {
 		<Layout>
 			{userAdmin.isAdmin ? (
 				<div className="no-scrollbar overflow-auto h-full w-full">
-				<Agenda />
+					<Agenda />
 				</div>
 			) : (
 				<>
@@ -72,7 +70,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		}
 
 		const today = getDateAvantAndBefore(dayjs(new Date()))
-
 
 		await store.dispatch(
 			getBookingsByDate.initiate(getBookingsByQuery(today.before, today.after))

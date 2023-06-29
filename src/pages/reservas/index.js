@@ -11,10 +11,7 @@ import {
 	setStatusUser,
 } from "store/features/users/userSlice"
 import { setMariachis, setStatus } from "store/features/mariachis/mariachiSlice"
-import {
-	getBookings,
-	getRunningOperationPromises,
-} from "store/features/bookingsApi"
+import { getBookings } from "store/features/bookingsApi"
 import { useSelector } from "react-redux"
 import { getMariachis } from "store/features/mariachisAPI"
 // import HbookingCard from "src/components/Cards/BookingCard/HbookingCard"
