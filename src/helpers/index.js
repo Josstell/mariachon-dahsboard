@@ -32,6 +32,9 @@ export const toBase64 = (str) =>
 export const callApiGoogleSheet = async (SPREADSHEET_ID, SHEET_ID) => {
 	const doc = new GoogleSpreadsheet(SPREADSHEET_ID)
 
+	console.log("pass:", process.env.NEXT_PUBLIC_GOOGLE_SHEET_EMAIL_ACCOUNT)
+	console.log(process.env.NEXT_PUBLIC_GOOGLE_SHEET_PRIVATE_KEY)
+
 	await doc.useServiceAccountAuth({
 		client_email: process.env.NEXT_PUBLIC_GOOGLE_SHEET_EMAIL_ACCOUNT,
 		private_key: process.env.NEXT_PUBLIC_GOOGLE_SHEET_PRIVATE_KEY,
