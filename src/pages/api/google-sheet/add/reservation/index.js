@@ -27,8 +27,6 @@ export default handlerCors().post(async (req, res) => {
 		? new Date(req.body?.dateAndTime)
 		: new Date()
 
-	console.log("si llego", req.body)
-
 	let reservaDetails = {
 		id: req.body?.reserva,
 		clienteId: req.body?.client?._id || "",
@@ -70,6 +68,13 @@ export default handlerCors().post(async (req, res) => {
 		}
 	}
 
+	console.log(
+		"si llego",
+		req.body,
+		SPREADSHEET_ID_MARIACHON_MARIACHIS,
+		SHEET_ID_RESERVAS
+	)
+
 	const { sheet, sheetGoogle } = await callApiGoogleSheet(
 		SPREADSHEET_ID_MARIACHON_MARIACHIS,
 		SHEET_ID_RESERVAS
@@ -80,6 +85,7 @@ export default handlerCors().post(async (req, res) => {
 	)
 
 	//return res.status(200).json(reservaDetails)
+	console.log("fd", isDataAlreadySved)
 
 	if (isDataAlreadySved === undefined) {
 		try {
