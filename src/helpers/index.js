@@ -39,6 +39,8 @@ export const callApiGoogleSheet = async (SPREADSHEET_ID, SHEET_ID) => {
 		client_email: process.env.NEXT_PUBLIC_GOOGLE_SHEET_EMAIL_ACCOUNT,
 		private_key: process.env.NEXT_PUBLIC_GOOGLE_SHEET_PRIVATE_KEY,
 	})
+	console.log("paso")
+
 	await doc.loadInfo()
 	const sheet = doc.sheetsById[SHEET_ID]
 	const sheetGoogle = await sheet.getRows()
