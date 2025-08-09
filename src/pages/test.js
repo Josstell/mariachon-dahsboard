@@ -69,7 +69,7 @@ export default test
 export const getServerSideProps = wrapper.getServerSideProps(
 	(store) => async (ctx) => {
 		const session = await getSession(ctx)
-
+console.log(session)
 		if (!session) {
 			return {
 				redirect: {

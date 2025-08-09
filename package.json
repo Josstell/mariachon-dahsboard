@@ -34,13 +34,14 @@
 		"redux": "^4.2.0",
 		"sharp": "^0.31.1",
 		"url-slug": "^3.0.4",
-	    "postcss": "8.4.23",
+		"postcss": "8.4.23",
 		"tailwindcss": "^3.3.2",
-	    "autoprefixer": "10.4.14"
+		"autoprefixer": "10.4.14"
 	},
 	"devDependencies": {
 		"eslint": "8.10.0",
 		"eslint-config-next": "12.1.0",
 		"eslint-plugin-react-hooks": "^4.6.0"
-	}
+	},
+	"packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }
